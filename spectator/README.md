@@ -49,6 +49,7 @@ the space to the table.
 The adaptation monitor deliberately does not claim “accuracy”: poker has no
 labeled correct action. It reports observed chip outcomes, strategy changes,
 oscillation, and the existing second-half-versus-first-half directional gain.
+Each trail's Y-axis is chip count on an independently scaled per-agent range.
 Detailed reflection evidence remains available in `cited.md` and `/audit`.
 
 ---
