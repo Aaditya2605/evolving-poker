@@ -30,15 +30,15 @@ against — deterministic, free, and identical on every run.
 
 **Live mode**
 
-Append the WebSocket URL as a query parameter:
+The server automatically connects the page to its `/ws` endpoint:
 
 ```
-index.html?live=ws://localhost:8787/stream
+npm run demo
+# open http://localhost:8787
 ```
 
-The scripted timeline is skipped entirely and the UI is driven by real server
-events. The Play button becomes a `● LIVE` badge. Connection status appears in
-the Table Talk panel.
+The scripted timeline is skipped and the UI is driven by real server events.
+Use `?fixture=1` only when opening the standalone scripted design fixture.
 
 ---
 
@@ -79,25 +79,9 @@ Handled kinds: `turn_request`, `turn_action`, `hand_summary`, `evolution_event`.
 
 ### Three things to check before it works
 
-1. **Seat id mapping.** The `WID` map translates server ids (`playerA`,
-   `playerB`, …) to internal seat ids (`A`, `B`, `N`, `C`). If the fourth seat
-   is not named `playerN`, edit that one line.
-
-2. **Deal events.** Board and hole cards arrive as separate `TournamentEvent`
-   types, not as `trace` messages. `onEvent()` has placeholder handlers for
-   `hand_start` and `board`. Open the browser console on first connect — every
-   unrecognised event logs its real shape, then fill in the two handlers.
-
-3. **The `banter` field.** Agent chatter is currently written fiction. To make
-   it real, add one field to the reflection response schema:
-
-   ```
-   "banter": "one sentence, in character, addressed to the table. No numbers."
-   ```
-
-   This costs **zero extra LLM calls** — it rides along on the reflection call
-   that already happens once per agent per hand. The "no numbers" instruction
-   matters: dial values belong in the Evolution Log, not in chat.
+The live adapter is wired to `playerA` through `playerD`, the server's
+`hand_start` shape, and Band trace events. Table Talk shows the agents' real
+public decision reasons; it does not invent banter.
 
 ---
 

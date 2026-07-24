@@ -331,6 +331,7 @@ export interface TraceMessage {
 
 export type TournamentEvent =
   | { type: "tournament_start"; seed: string; players: PlayerState[]; totalHands: number }
+  | { type: "trace"; message: TraceMessage }
   | {
       type: "hand_start";
       handId: number;

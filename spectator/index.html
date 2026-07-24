@@ -48,6 +48,7 @@ header{display:flex;align-items:center;justify-content:space-between;gap:14px;
 .live{display:flex;align-items:center;gap:7px;border:1px solid var(--line);border-radius:3px;
   padding:7px 11px;font-size:10px;letter-spacing:.24em}
 .live .dot{width:7px;height:7px;border-radius:50%;background:var(--minus);animation:blink 1.4s infinite}
+.live.complete .dot{background:var(--plus);animation:none}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
 
 /* ================= LAYOUT ================= */
@@ -138,10 +139,13 @@ body.resizing{cursor:col-resize;user-select:none}
 .seat.folded{filter:grayscale(.92) opacity(.4)}
 .seat .nm{font-family:var(--disp);font-size:21px;font-weight:800;letter-spacing:.1em;
   color:var(--ac);line-height:1.05;text-transform:uppercase}
+.seat .model{font-size:8px;color:var(--muted);max-width:152px;overflow:hidden;
+  text-overflow:ellipsis;white-space:nowrap;margin-top:2px}
 .seat .chips{font-size:13px;font-weight:500;color:var(--cream);line-height:1.5;margin-top:1px}
 .seat .hole{display:flex;gap:4px;justify-content:center;margin-top:3px;min-height:36px}
 .seat .status{margin-top:4px;display:inline-block;font-size:10px;letter-spacing:.08em;
   padding:3px 9px;border-radius:2px;background:rgba(4,10,6,.72);border:1px solid var(--line);min-height:15px}
+.seat .status:empty{visibility:hidden}
 .seat .status.action{border-color:var(--ac);color:var(--ac)}
 .dials{margin:4px auto 0;width:100%;display:flex;flex-direction:row;justify-content:center;gap:9px}
 .dial{display:flex;flex-direction:column;align-items:center;gap:2px;width:40px;font-size:7.5px;
@@ -277,10 +281,10 @@ body.notes #legend{display:block}
     <h1>Evolving <span>Poker</span></h1>
   </div>
   <div class="hud">
-    <div class="stat"><div class="k">Hand</div><div class="v"><span id="handNo">3</span> of 6</div></div>
+    <div class="stat"><div class="k">Hand</div><div class="v"><span id="handNo">0</span> of 6</div></div>
     <div class="stat"><div class="k">Pot</div><div class="v" id="potNo">$0</div></div>
-    <div class="stat"><div class="k">Pioneer calls</div><div class="v" id="callNo">8</div></div>
-    <div class="stat"><div class="k">Est cost</div><div class="v" id="costNo">$0.014</div></div>
+    <div class="stat"><div class="k">Pioneer calls</div><div class="v" id="callNo">0</div></div>
+    <div class="stat"><div class="k">Est cost</div><div class="v" id="costNo">$0.000</div></div>
     <div class="controls">
       <button id="btnPlay" class="active" aria-label="Play or pause">⏸ Pause</button>
       <button id="btnSpeed" aria-label="Playback speed">1×</button>
@@ -335,7 +339,7 @@ body.notes #legend{display:block}
 </div>
 
 <footer>
-  <div>models stay fixed — strategy memory evolves</div>
+  <div>models decide every action — strategy memory evolves</div>
 </footer>
 
 <button id="notesBtn">Design notes</button>
@@ -385,16 +389,16 @@ function crew(c,w){
    bp       → bet chips, in the band beside the board / pot
    sb       → decision bubble, in the outer felt margin */
 const P = [
-  {id:'A', nm:'ATLAS', model:'Qwen3-8B',      wid:'playerA', ac:'var(--pA)', chips:1000, s:{a:.50,b:.30,c:.50},
+  {id:'A', nm:'ATLAS', model:'Qwen/Qwen3-8B', wid:'playerA', ac:'var(--pA)', chips:1000, s:{a:.50,b:.30,c:.50},
    col:{fill:'#5bd6c0',shade:'#268a7b',light:'#9ff0e2'},
    pos:['min(27%, calc(50% - 168px))',0], anc:'top'},
-  {id:'N', nm:'NOVA',  model:'Llama-3.3-70B', wid:'playerN', ac:'var(--pN)', chips:1000, s:{a:.50,b:.30,c:.50},
-   col:{fill:'#f0789c',shade:'#a83b5c',light:'#ffb6cb'},
-   pos:['max(73%, calc(50% + 168px))',0], anc:'top'},
-  {id:'B', nm:'VEGA',  model:'GPT-OSS-20B',   wid:'playerB', ac:'var(--pB)', chips:1000, s:{a:.50,b:.30,c:.50},
+  {id:'B', nm:'BOREAS', model:'claude-haiku-4-5', wid:'playerB', ac:'var(--pB)', chips:1000, s:{a:.60,b:.80,c:.50},
    col:{fill:'#b78bff',shade:'#6a45ad',light:'#dcc6ff'},
+   pos:['max(73%, calc(50% + 168px))',0], anc:'top'},
+  {id:'C', nm:'CIPHER', model:'meta-llama/Llama-3.1-8B-Instruct', wid:'playerC', ac:'var(--pN)', chips:1000, s:{a:.35,b:.05,c:.60},
+   col:{fill:'#f0789c',shade:'#a83b5c',light:'#ffb6cb'},
    pos:['14%',0], anc:'bottom'},
-  {id:'C', nm:'ORION', model:'DeepSeek-V3.1', wid:'playerC', ac:'var(--pC)', chips:1000, s:{a:.50,b:.30,c:.50},
+  {id:'D', nm:'DELTA', model:'deepseek-ai/DeepSeek-V3', wid:'playerD', ac:'var(--pC)', chips:1000, s:{a:.50,b:.25,c:.50},
    col:{fill:'#f0a868',shade:'#a8632a',light:'#ffd0a4'},
    pos:['86%',0], anc:'bottom'},
 ];
@@ -411,6 +415,7 @@ P.forEach(p=>{
     <div class="dbtn">D</div>
     <div class="av">${crew(p.col,72)}</div>
     <div class="nm">${p.nm}</div>
+    <div class="model" id="model${p.id}">${p.model}</div>
     <div class="chips" id="ch${p.id}">$1,000</div>
     <div class="hole" id="hole${p.id}"></div>
     <div class="status" id="st${p.id}">&nbsp;</div>
@@ -444,13 +449,15 @@ function clearBets(){P.forEach(p=>bet(p.id,0));}
 
 /* ================= HELPERS ================= */
 const evo=$('evo'), board=$('board'), chatEl=$('chat'), tick=$('tick');
-let calls=8, cost=0.014, reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
+let calls=0, cost=0, reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
 const fmt$=n=>'$'+n.toLocaleString();
 function chips(id,v){const p=ROSTER[id];p.chips=v;$('ch'+id).textContent=fmt$(v);}
 function pot(v){$('potNo').textContent=fmt$(v);$('potCenter').textContent=fmt$(v);
   $('potChips').innerHTML=chipStack(v,22,6);}
 function hand(n){$('handNo').textContent=n;}
-function cardEl(c,mini){const d=document.createElement('div');
+function cardEl(c,mini){const suit={h:'♥',d:'♦',c:'♣',s:'♠'}[c.slice(-1).toLowerCase()];
+  if(suit)c=c.slice(0,-1).toUpperCase()+suit;
+  const d=document.createElement('div');
   d.className='card'+(mini?' mini':'')+(/[♥♦]/.test(c)?' red':'');
   d.innerHTML=`${c.slice(0,-1)}<small>${c.slice(-1)}</small>`;return d;}
 function community(list){board.innerHTML='';list.forEach((c,i)=>{const d=cardEl(c,false);board.appendChild(d);
@@ -458,7 +465,7 @@ function community(list){board.innerHTML='';list.forEach((c,i)=>{const d=cardEl(
 function hole(id,cards){const h=$('hole'+id);h.innerHTML='';
   cards.forEach((c,i)=>{const d=cardEl(c,true);h.appendChild(d);setTimeout(()=>d.classList.add('dealt'),100*i+70);});}
 function clearHoles(){P.forEach(p=>{$('hole'+p.id).innerHTML='';});}
-function status(id,txt,on){const s=$('st'+id);s.innerHTML=txt||'&nbsp;';s.classList.toggle('action',!!on);}
+function status(id,txt,on){const s=$('st'+id);s.textContent=txt||'';s.classList.toggle('action',!!on);}
 function thinking(id,on){$('seat'+id).classList.toggle('thinking',on);if(on)status(id,'DECIDING…');}
 function fold(id){$('seat'+id).classList.add('folded');status(id,'FOLD');}
 function unfold(){P.forEach(p=>{$('seat'+p.id).classList.remove('folded');status(p.id,'');});}
@@ -468,7 +475,7 @@ function setDial(id,d,v,flash){const p=ROSTER[id];
   p.s[d]=v;const el=$('d'+id+d);el.querySelector('i').style.width=(v*100)+'%';
   el.querySelector('.val').textContent=v.toFixed(2);
   if(flash&&!reduced){el.classList.remove('flash');void el.offsetWidth;el.classList.add('flash');}}
-function bumpCall(lat,c){calls++;cost=+(cost+c).toFixed(4);
+function bumpCall(lat,c,n=1){calls+=n;cost=+(cost+c).toFixed(4);
   $('callNo').textContent=calls;$('costNo').textContent='$'+cost.toFixed(3);}
 
 /* ---- decision bubble ---- */
@@ -519,6 +526,7 @@ function act(id,verb,amount,potAfter,bubbleLine,chatLine){
               : verb==='check'?'CHECK':'FOLD';
   thinking(id,false);
   if(verb==='fold'){fold(id);}else{status(id,label,true);}
+  if(amount)chips(id,Math.max(0,ROSTER[id].chips-amount));
   if(amount)bet(id,amount);
   if(potAfter)pot(potAfter);
   const head = verb==='raise'?`Raise $${amount}`:verb==='call'?`Call $${amount}`
@@ -551,7 +559,7 @@ const band=t=>chat('X',t);
 
 /* ================= EVOLUTION CARDS ================= */
 const DL={a:'aggr',b:'bluff',c:'call'};
-function evoCard({id,handN,before,after,reason,evidence,st,lat,c$}){
+function evoCard({id,handN,before,after,reason,evidence,st,lat,c$,llmCalls=1}){
   const p=ROSTER[id];
   const cls = st==='no_change'?'nochange': st==='applied'?'':'invalid';
   const gold = st==='applied' && Math.abs((after.b??0)-(before.b??0))>=0.15 ? ' gold':'';
@@ -573,7 +581,7 @@ function evoCard({id,handN,before,after,reason,evidence,st,lat,c$}){
       <span>${lat}ms · $${c$.toFixed(4)}</span></div>`;
   evo.appendChild(card);evo.scrollTop=evo.scrollHeight;
   $('seat'+id).classList.add('reflecting');setTimeout(()=>$('seat'+id).classList.remove('reflecting'),2200);
-  bumpCall(lat,c$);
+  bumpCall(lat,c$,llmCalls);
   const s=M[id];s.lat=s.lat?Math.round((s.lat+lat)/2):lat;s.cost=+(s.cost+c$).toFixed(4);
   if(st==='no_change')s.noch++;
   /* commentary line for the same event */
@@ -655,7 +663,7 @@ $('notesBtn').onclick=()=>document.body.classList.toggle('notes');
 function hardReset(){
   P.forEach(p=>{chips(p.id,1000);['a','b','c'].forEach((d,i)=>setDial(p.id,d,[.5,.3,.5][i],false));});
   Object.values(M).forEach(m=>{m.vol=0;m.noch=0;m.osc=0;m.lat=0;m.cost=0;m.bw=0;m.bt=0;m.gain=0;});
-  calls=8;cost=0.014;$('callNo').textContent=calls;$('costNo').textContent='$'+cost.toFixed(3);
+  calls=0;cost=0;$('callNo').textContent=calls;$('costNo').textContent='$'+cost.toFixed(3);
   unfold();clearHoles();clearBets();clearBubbles();community([]);pot(0);callback(false);
   chatEl.innerHTML='';evo.innerHTML='';tick.innerHTML='';
 }
@@ -680,13 +688,12 @@ function onTrace(msg){
   }
   if(kind==='turn_action'){
     const id=seat(from);if(!id)return;
-    act(id,d.action,d.amount,d.potAfter,d.banter||'',d.banter||'');
+    bumpCall(d.latencyMs||0,d.estCostUsd||0,d.llmCalls||0);
+    act(id,d.action,d.amount,d.potAfter,d.reason||'',d.reason||'');
     return;
   }
   if(kind==='hand_summary'){
     const w=seat(d.winner);
-    Object.entries(d.chipDeltas||{}).forEach(([wid,delta])=>{
-      const id=seat(wid);if(id)chips(id,ROSTER[id].chips+delta);});
     if(w)status(w,`WINS $${d.potSize}`,1);
     clearBets();
     band(`Hand ${d.handId}: ${w?ROSTER[w].nm:d.winner} wins $${d.potSize}`+
@@ -700,7 +707,8 @@ function onTrace(msg){
     const before={},after={};
     Object.entries(K).forEach(([k,s])=>{before[s]=d.before[k];after[s]=d.after[k];});
     evoCard({id,handN:d.handId,before,after,reason:d.reason,
-      evidence:d.evidence||[],st:d.status,lat:d.latencyMs||0,c$:d.costUsd||0});
+      evidence:d.evidence||[],st:d.status,lat:d.latencyMs||0,
+      c$:d.estCostUsd||0,llmCalls:d.llmCalls||1});
     if(d.status==='applied')Object.entries(K).forEach(([k,s])=>{
       if(d.after[k]!==d.before[k])setDial(id,s,d.after[k],true);});
     if(d.banter)say(id,d.banter);
@@ -713,21 +721,68 @@ function onTrace(msg){
    your engine emits them. Names are placeholders; match the server. */
 function onEvent(ev){
   if(ev.type==='trace')return onTrace(ev.message);
+  if(ev.type==='mode')return;
+  if(ev.type==='tournament_start'){
+    calls=0;cost=0;$('callNo').textContent='0';$('costNo').textContent='$0.000';
+    ev.players.forEach(player=>{
+      const id=seat(player.id);if(!id)return;
+      const p=ROSTER[id];p.nm=player.name;p.model=player.model;p.chips=player.chips;
+      document.querySelector('#seat'+id+' .nm').textContent=player.name;
+      $('model'+id).textContent=player.model;
+      chips(id,player.chips);
+      setDial(id,'a',player.strategy.aggression,false);
+      setDial(id,'b',player.strategy.bluffRate,false);
+      setDial(id,'c',player.strategy.callThreshold,false);
+    });
+    sys(`live tournament · seed ${ev.seed} · ${ev.players.length} agents`);
+    return;
+  }
   if(ev.type==='hand_start'){
     hand(ev.handId);unfold();clearHoles();clearBets();clearBubbles();
     if(ev.dealer)dealerBtn(seat(ev.dealer));
-    pot(ev.potSize||0);
-    tickNote(`hand ${ev.handId} · pot $${ev.potSize||0}`);
+    pot(ev.pot||0);
+    community(ev.communityCards||[]);
+    tickNote(`hand ${ev.handId} · pot $${ev.pot||0}`);
+    Object.entries(ev.chips||{}).forEach(([wid,value])=>{
+      const id=seat(wid);if(id)chips(id,value);});
     Object.entries(ev.holeCards||{}).forEach(([wid,cards])=>{
       const id=seat(wid);if(id)hole(id,cards);});
     return;
   }
-  if(ev.type==='board')return community(ev.cards||[]);
-  if(ev.type==='tournament_end')return tickNote('tournament complete');
+  if(ev.type==='hand_end'){
+    Object.entries(ev.chips||{}).forEach(([wid,value])=>{
+      const id=seat(wid);if(id)chips(id,value);});
+    return;
+  }
+  if(ev.type==='metrics'){
+    calls=ev.snapshot.totals.llmCalls;cost=ev.snapshot.totals.estCostUsd;
+    $('callNo').textContent=calls;$('costNo').textContent='$'+cost.toFixed(3);
+    return;
+  }
+  if(ev.type==='action'||ev.type==='evolution')return;
+  if(ev.type==='tournament_end'){
+    const winnerId=seat(ev.standings.winner);
+    const winnerName=winnerId?ROSTER[winnerId].nm:ev.standings.winner;
+    ev.standings.ranking.forEach(row=>{
+      const id=seat(row.playerId);if(id)chips(id,row.chips);});
+    pot(0);
+    if(winnerId)status(winnerId,'TOURNAMENT CHAMPION',1);
+    $('callback').textContent=`${winnerName} wins the tournament`;
+    callback(true);
+    const liveBadge=document.querySelector('.live');
+    liveBadge.classList.add('complete');
+    liveBadge.lastChild.textContent=' COMPLETE';
+    $('btnPlay').textContent='COMPLETE';
+    tickNote(`tournament complete · ${winnerName} wins`);
+    return;
+  }
   console.warn('[wire] unhandled event',ev.type,ev);
 }
 
-const LIVE_URL=new URLSearchParams(location.search).get('live');
+const query=new URLSearchParams(location.search);
+const LIVE_URL=query.has('fixture')?null:
+  query.get('live')||(location.protocol==='http:'||location.protocol==='https:'
+    ?`${location.protocol==='https:'?'wss':'ws'}://${location.host}/ws`:null);
 if(LIVE_URL){
   hardReset();
   sys('connecting to band bus…');

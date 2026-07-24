@@ -108,6 +108,9 @@ export async function runTournament(opts: TournamentOptions): Promise<Tournament
             model: decision.agent?.model,
             reason: decision.agent?.reason,
             status: decision.agent?.status,
+            latencyMs: decision.agent?.latencyMs,
+            estCostUsd: decision.agent?.estCostUsd,
+            llmCalls: decision.agent?.llmCalls,
           }),
       },
     });
@@ -146,6 +149,10 @@ export async function runTournament(opts: TournamentOptions): Promise<Tournament
           after: ev.after,
           reason: ev.reason,
           evidence: ev.evidence,
+          model: ev.modelAfter,
+          latencyMs: ev.latencyMs,
+          estCostUsd: ev.estCostUsd,
+          llmCalls: ev.llmCalls,
         });
       }
     }

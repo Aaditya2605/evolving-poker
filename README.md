@@ -17,8 +17,8 @@ Requires Node 20+ and `PIONEER_API_KEY` in `.env` for a live tournament.
 ```bash
 npm install
 
-npm run demo      # full 6-hand live Pioneer tournament, server stays up on :8787
-npm run web       # spectator UI at http://localhost:5173 (separate terminal)
+npm run demo      # full live tournament + spectator UI at http://localhost:8787
+npm run web       # legacy React UI dev server, only needed for component work
 npm test          # 57 tests
 ```
 
@@ -72,6 +72,7 @@ server/src/evolution/    Pioneer action agent, reflection, model migration, sche
 server/src/comm/         Band router + trace log
 server/src/outputs/      cited.md report, x402 paywall + audit pack
 server/src/index.ts      CLI + Hono server
+spectator/index.html     integrated live poker broadcast served at /
 web/src/                 React spectator UI (useReducer over the same event union)
 ```
 

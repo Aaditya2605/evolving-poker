@@ -6,6 +6,7 @@ import type {
 
 const EVENT_TYPES = new Set([
   "tournament_start",
+  "trace",
   "hand_start",
   "action",
   "hand_end",

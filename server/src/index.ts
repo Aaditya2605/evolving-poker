@@ -118,14 +118,19 @@ function buildApp(broadcaster: () => Broadcaster | null) {
 
   // Built spectator app, when `npm run build` has been run.
   const dist = join(ROOT, "web", "dist");
+  const spectator = join(ROOT, "spectator");
   app.get("*", (c) => {
+    const path = new URL(c.req.url).pathname;
+    if (path === "/" && existsSync(join(spectator, "index.html"))) {
+      const file = safeRead(spectator, "/index.html");
+      if (file) return new Response(file.body, { status: 200, headers: { "Content-Type": file.type } });
+    }
     if (!existsSync(dist)) {
       return c.text(
         "Spectator UI is not built. Run `npm run web` for the dev server, or `npm run build`.",
         200,
       );
     }
-    const path = new URL(c.req.url).pathname;
     const file = safeRead(dist, path === "/" ? "/index.html" : path) ?? safeRead(dist, "/index.html");
     if (!file) return c.notFound();
     return new Response(file.body, { status: 200, headers: { "Content-Type": file.type } });
@@ -179,6 +184,11 @@ async function cmdTournament(flags: Record<string, string | boolean>) {
 
   const recorder = new Recorder();
   const trace = new Trace();
+  trace.onMessage((message) => {
+    const event: TournamentEvent = { type: "trace", message };
+    recorder.capture(event);
+    server?.broadcaster.publish(event);
+  });
   state.trace = trace;
   state.mode = "live";
   state.seed = seed;
