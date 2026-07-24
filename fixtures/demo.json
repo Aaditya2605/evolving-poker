@@ -1,0 +1,4945 @@
+{
+  "version": 1,
+  "seed": "135",
+  "recordedAt": "2026-07-24T20:48:55.864Z",
+  "pioneerMode": "mock",
+  "events": [
+    {
+      "offsetMs": 0,
+      "event": {
+        "type": "tournament_start",
+        "seed": "135",
+        "players": [
+          {
+            "id": "playerA",
+            "name": "ATLAS",
+            "model": "qwen2.5-7b-instruct",
+            "color": "#e0a33e",
+            "chips": 1000,
+            "strategy": {
+              "aggression": 0.5,
+              "bluffRate": 0.2,
+              "callThreshold": 0.5
+            },
+            "strategyHistory": []
+          },
+          {
+            "id": "playerB",
+            "name": "BOREAS",
+            "model": "gpt-oss-20b",
+            "color": "#4fa3d1",
+            "chips": 1000,
+            "strategy": {
+              "aggression": 0.5,
+              "bluffRate": 0.2,
+              "callThreshold": 0.5
+            },
+            "strategyHistory": []
+          },
+          {
+            "id": "playerC",
+            "name": "CIPHER",
+            "model": "deepseek-v3",
+            "color": "#c2568f",
+            "chips": 1000,
+            "strategy": {
+              "aggression": 0.5,
+              "bluffRate": 0.2,
+              "callThreshold": 0.5
+            },
+            "strategyHistory": []
+          }
+        ],
+        "totalHands": 6
+      }
+    },
+    {
+      "offsetMs": 35,
+      "event": {
+        "type": "hand_start",
+        "handId": 1,
+        "communityCards": [
+          "8d",
+          "5c",
+          "7h"
+        ],
+        "holeCards": {
+          "playerA": [
+            "Th",
+            "2d"
+          ],
+          "playerB": [
+            "9h",
+            "2c"
+          ],
+          "playerC": [
+            "Ad",
+            "Ah"
+          ]
+        },
+        "dealer": "playerA",
+        "chips": {
+          "playerA": 990,
+          "playerB": 990,
+          "playerC": 990
+        },
+        "pot": 30
+      }
+    },
+    {
+      "offsetMs": 35,
+      "event": {
+        "type": "action",
+        "handId": 1,
+        "playerId": "playerB",
+        "action": "check",
+        "amount": 0,
+        "potAfter": 30,
+        "isBluff": false
+      }
+    },
+    {
+      "offsetMs": 35,
+      "event": {
+        "type": "action",
+        "handId": 1,
+        "playerId": "playerC",
+        "action": "raise",
+        "amount": 50,
+        "potAfter": 80,
+        "isBluff": false
+      }
+    },
+    {
+      "offsetMs": 35,
+      "event": {
+        "type": "action",
+        "handId": 1,
+        "playerId": "playerA",
+        "action": "fold",
+        "amount": 0,
+        "potAfter": 80,
+        "isBluff": false
+      }
+    },
+    {
+      "offsetMs": 35,
+      "event": {
+        "type": "action",
+        "handId": 1,
+        "playerId": "playerB",
+        "action": "raise",
+        "amount": 100,
+        "potAfter": 180,
+        "isBluff": true
+      }
+    },
+    {
+      "offsetMs": 35,
+      "event": {
+        "type": "action",
+        "handId": 1,
+        "playerId": "playerC",
+        "action": "call",
+        "amount": 50,
+        "potAfter": 230,
+        "isBluff": false
+      }
+    },
+    {
+      "offsetMs": 36,
+      "event": {
+        "type": "hand_end",
+        "record": {
+          "handId": 1,
+          "communityCards": [
+            "8d",
+            "5c",
+            "7h"
+          ],
+          "holeCards": {
+            "playerA": [
+              "Th",
+              "2d"
+            ],
+            "playerB": [
+              "9h",
+              "2c"
+            ],
+            "playerC": [
+              "Ad",
+              "Ah"
+            ]
+          },
+          "handStrength": {
+            "playerA": 0.10777058279370953,
+            "playerB": 0.06706753006475485,
+            "playerC": 0.9366327474560592
+          },
+          "actions": [
+            {
+              "playerId": "playerB",
+              "action": "check",
+              "amount": 0,
+              "potAfter": 30,
+              "isBluff": false
+            },
+            {
+              "playerId": "playerC",
+              "action": "raise",
+              "amount": 50,
+              "potAfter": 80,
+              "isBluff": false
+            },
+            {
+              "playerId": "playerA",
+              "action": "fold",
+              "amount": 0,
+              "potAfter": 80,
+              "isBluff": false
+            },
+            {
+              "playerId": "playerB",
+              "action": "raise",
+              "amount": 100,
+              "potAfter": 180,
+              "isBluff": true
+            },
+            {
+              "playerId": "playerC",
+              "action": "call",
+              "amount": 50,
+              "potAfter": 230,
+              "isBluff": false
+            }
+          ],
+          "showdown": [
+            "playerB",
+            "playerC"
+          ],
+          "winner": "playerC",
+          "winners": [
+            "playerC"
+          ],
+          "potSize": 230,
+          "chipDeltas": {
+            "playerA": -10,
+            "playerB": -110,
+            "playerC": 120
+          },
+          "handNames": {
+            "playerB": "9 High",
+            "playerC": "Pair, A's"
+          }
+        },
+        "chips": {
+          "playerA": 990,
+          "playerB": 890,
+          "playerC": 1120
+        }
+      }
+    },
+    {
+      "offsetMs": 2016,
+      "event": {
+        "type": "evolution",
+        "event": {
+          "handId": 1,
+          "playerId": "playerA",
+          "model": "qwen2.5-7b-instruct",
+          "before": {
+            "aggression": 0.5,
+            "bluffRate": 0.2,
+            "callThreshold": 0.5
+          },
+          "after": {
+            "aggression": 0.38,
+            "bluffRate": 0.15,
+            "callThreshold": 0.6
+          },
+          "changed": true,
+          "reason": "Dropped 10 on hand-1 paying off a bet. Tightening: less aggression, higher call bar.",
+          "evidence": [
+            "hand-1"
+          ],
+          "confidence": 0.68,
+          "latencyMs": 581,
+          "inputTokens": 347,
+          "outputTokens": 55,
+          "estCostUsd": 0.000102,
+          "status": "applied",
+          "retried": false,
+          "rawResponse": "{\"change\":true,\"strategy\":{\"aggression\":0.38,\"bluffRate\":0.15,\"callThreshold\":0.6},\"reason\":\"Dropped 10 on hand-1 paying off a bet. Tightening: less aggression, higher call bar.\",\"evidence\":[\"hand-1\"],\"confidence\":0.68}"
+        }
+      }
+    },
+    {
+      "offsetMs": 2016,
+      "event": {
+        "type": "evolution",
+        "event": {
+          "handId": 1,
+          "playerId": "playerB",
+          "model": "gpt-oss-20b",
+          "before": {
+            "aggression": 0.5,
+            "bluffRate": 0.2,
+            "callThreshold": 0.5
+          },
+          "after": {
+            "aggression": 0.5,
+            "bluffRate": 0.2,
+            "callThreshold": 0.5
+          },
+          "changed": false,
+          "reason": "Hand-1 outcome is within variance for a 1-hand sample. Holding.",
+          "evidence": [
+            "hand-1"
+          ],
+          "confidence": 0.72,
+          "latencyMs": 1125,
+          "inputTokens": 350,
+          "outputTokens": 33,
+          "estCostUsd": 0.000225,
+          "status": "no_change",
+          "retried": false,
+          "rawResponse": "{\"change\":false,\"reason\":\"Hand-1 outcome is within variance for a 1-hand sample. Holding.\",\"evidence\":[\"hand-1\"],\"confidence\":0.72}"
+        }
+      }
+    },
+    {
+      "offsetMs": 2016,
+      "event": {
+        "type": "evolution",
+        "event": {
+          "handId": 1,
+          "playerId": "playerC",
+          "model": "deepseek-v3",
+          "before": {
+            "aggression": 0.5,
+            "bluffRate": 0.2,
+            "callThreshold": 0.5
+          },
+          "after": {
+            "aggression": 0.85,
+            "bluffRate": 0.45,
+            "callThreshold": 0.25
+          },
+          "changed": true,
+          "reason": "Hand-1 showed the table folding to pressure. Going maximally aggressive.",
+          "evidence": [
+            "hand-1"
+          ],
+          "confidence": 0.8,
+          "latencyMs": 1963,
+          "inputTokens": 344,
+          "outputTokens": 52,
+          "estCostUsd": 0.000403,
+          "status": "applied",
+          "retried": false,
+          "rawResponse": "{\"change\":true,\"strategy\":{\"aggression\":0.85,\"bluffRate\":0.45,\"callThreshold\":0.25},\"reason\":\"Hand-1 showed the table folding to pressure. Going maximally aggressive.\",\"evidence\":[\"hand-1\"],\"confidence\":0.8}"
+        }
+      }
+    },
+    {
+      "offsetMs": 2016,
+      "event": {
+        "type": "metrics",
+        "snapshot": {
+          "handId": 1,
+          "handsPlayed": 1,
+          "agents": {
+            "playerA": {
+              "playerId": "playerA",
+              "name": "ATLAS",
+              "model": "qwen2.5-7b-instruct",
+              "chips": 990,
+              "netChips": -10,
+              "handsPlayed": 1,
+              "handsWon": 0,
+              "avgChipsPerHand": -10,
+              "adaptationGain": 0,
+              "foldRate": 1,
+              "callRate": 0,
+              "raiseRate": 0,
+              "checkRate": 0,
+              "vpip": 0,
+              "bluffsAttempted": 0,
+              "bluffsSuccessful": 0,
+              "bluffSuccessRate": 0,
+              "showdownsReached": 0,
+              "showdownsWon": 0,
+              "showdownWinRate": 0
+            },
+            "playerB": {
+              "playerId": "playerB",
+              "name": "BOREAS",
+              "model": "gpt-oss-20b",
+              "chips": 890,
+              "netChips": -110,
+              "handsPlayed": 1,
+              "handsWon": 0,
+              "avgChipsPerHand": -110,
+              "adaptationGain": 0,
+              "foldRate": 0,
+              "callRate": 0,
+              "raiseRate": 0.5,
+              "checkRate": 0.5,
+              "vpip": 1,
+              "bluffsAttempted": 1,
+              "bluffsSuccessful": 0,
+              "bluffSuccessRate": 0,
+              "showdownsReached": 1,
+              "showdownsWon": 0,
+              "showdownWinRate": 0
+            },
+            "playerC": {
+              "playerId": "playerC",
+              "name": "CIPHER",
+              "model": "deepseek-v3",
+              "chips": 1120,
+              "netChips": 120,
+              "handsPlayed": 1,
+              "handsWon": 1,
+              "avgChipsPerHand": 120,
+              "adaptationGain": 0,
+              "foldRate": 0,
+              "callRate": 0.5,
+              "raiseRate": 0.5,
+              "checkRate": 0,
+              "vpip": 1,
+              "bluffsAttempted": 0,
+              "bluffsSuccessful": 0,
+              "bluffSuccessRate": 0,
+              "showdownsReached": 1,
+              "showdownsWon": 1,
+              "showdownWinRate": 1
+            }
+          },
+          "opponents": {
+            "playerA": {
+              "foldToRaiseRate": 1,
+              "callRate": 0,
+              "raiseRate": 0,
+              "showdownsWon": 0
+            },
+            "playerB": {
+              "foldToRaiseRate": 0,
+              "callRate": 0,
+              "raiseRate": 0.5,
+              "showdownsWon": 0
+            },
+            "playerC": {
+              "foldToRaiseRate": 0,
+              "callRate": 0.5,
+              "raiseRate": 0.5,
+              "showdownsWon": 1
+            }
+          },
+          "evolution": {
+            "playerA": {
+              "playerId": "playerA",
+              "model": "qwen2.5-7b-instruct",
+              "updatesAttempted": 1,
+              "changesApplied": 1,
+              "noChanges": 0,
+              "invalid": 0,
+              "timeouts": 0,
+              "totalAbsMovement": 0.27,
+              "oscillations": 0,
+              "perDial": {
+                "aggression": {
+                  "totalAbsMovement": 0.12,
+                  "oscillations": 0,
+                  "changes": 1,
+                  "current": 0.38,
+                  "min": 0.38,
+                  "max": 0.5
+                },
+                "bluffRate": {
+                  "totalAbsMovement": 0.05,
+                  "oscillations": 0,
+                  "changes": 1,
+                  "current": 0.15,
+                  "min": 0.15,
+                  "max": 0.2
+                },
+                "callThreshold": {
+                  "totalAbsMovement": 0.1,
+                  "oscillations": 0,
+                  "changes": 1,
+                  "current": 0.6,
+                  "min": 0.5,
+                  "max": 0.6
+                }
+              },
+              "current": {
+                "aggression": 0.38,
+                "bluffRate": 0.15,
+                "callThreshold": 0.6
+              },
+              "initial": {
+                "aggression": 0.5,
+                "bluffRate": 0.2,
+                "callThreshold": 0.5
+              }
+            },
+            "playerB": {
+              "playerId": "playerB",
+              "model": "gpt-oss-20b",
+              "updatesAttempted": 1,
+              "changesApplied": 0,
+              "noChanges": 1,
+              "invalid": 0,
+              "timeouts": 0,
+              "totalAbsMovement": 0,
+              "oscillations": 0,
+              "perDial": {
+                "aggression": {
+                  "totalAbsMovement": 0,
+                  "oscillations": 0,
+                  "changes": 0,
+                  "current": 0.5,
+                  "min": 0.5,
+                  "max": 0.5
+                },
+                "bluffRate": {
+                  "totalAbsMovement": 0,
+                  "oscillations": 0,
+                  "changes": 0,
+                  "current": 0.2,
+                  "min": 0.2,
+                  "max": 0.2
+                },
+                "callThreshold": {
+                  "totalAbsMovement": 0,
+                  "oscillations": 0,
+                  "changes": 0,
+                  "current": 0.5,
+                  "min": 0.5,
+                  "max": 0.5
+                }
+              },
+              "current": {
+                "aggression": 0.5,
+                "bluffRate": 0.2,
+                "callThreshold": 0.5
+              },
+              "initial": {
+                "aggression": 0.5,
+                "bluffRate": 0.2,
+                "callThreshold": 0.5
+              }
+            },
+            "playerC": {
+              "playerId": "playerC",
+              "model": "deepseek-v3",
+              "updatesAttempted": 1,
+              "changesApplied": 1,
+              "noChanges": 0,
+              "invalid": 0,
+              "timeouts": 0,
+              "totalAbsMovement": 0.85,
+              "oscillations": 0,
+              "perDial": {
+                "aggression": {
+                  "totalAbsMovement": 0.35,
+                  "oscillations": 0,
+                  "changes": 1,
+                  "current": 0.85,
+                  "min": 0.5,
+                  "max": 0.85
+                },
+                "bluffRate": {
+                  "totalAbsMovement": 0.25,
+                  "oscillations": 0,
+                  "changes": 1,
+                  "current": 0.45,
+                  "min": 0.2,
+                  "max": 0.45
+                },
+                "callThreshold": {
+                  "totalAbsMovement": 0.25,
+                  "oscillations": 0,
+                  "changes": 1,
+                  "current": 0.25,
+                  "min": 0.25,
+                  "max": 0.5
+                }
+              },
+              "current": {
+                "aggression": 0.85,
+                "bluffRate": 0.45,
+                "callThreshold": 0.25
+              },
+              "initial": {
+                "aggression": 0.5,
+                "bluffRate": 0.2,
+                "callThreshold": 0.5
+              }
+            }
+          },
+          "models": {
+            "playerA": {
+              "playerId": "playerA",
+              "model": "qwen2.5-7b-instruct",
+              "calls": 1,
+              "avgLatencyMs": 581,
+              "maxLatencyMs": 581,
+              "totalInputTokens": 347,
+              "totalOutputTokens": 55,
+              "estCostUsd": 0.000102,
+              "invalidCount": 0,
+              "timeoutCount": 0,
+              "retryCount": 0
+            },
+            "playerB": {
+              "playerId": "playerB",
+              "model": "gpt-oss-20b",
+              "calls": 1,
+              "avgLatencyMs": 1125,
+              "maxLatencyMs": 1125,
+              "totalInputTokens": 350,
+              "totalOutputTokens": 33,
+              "estCostUsd": 0.000225,
+              "invalidCount": 0,
+              "timeoutCount": 0,
+              "retryCount": 0
+            },
+            "playerC": {
+              "playerId": "playerC",
+              "model": "deepseek-v3",
+              "calls": 1,
+              "avgLatencyMs": 1963,
+              "maxLatencyMs": 1963,
+              "totalInputTokens": 344,
+              "totalOutputTokens": 52,
+              "estCostUsd": 0.000403,
+              "invalidCount": 0,
+              "timeoutCount": 0,
+              "retryCount": 0
+            }
+          },
+          "totals": {
+            "llmCalls": 3,
+            "estCostUsd": 0.00073,
+            "avgLatencyMs": 1223,
+            "invalid": 0,
+            "timeouts": 0,
+            "chipsInPlay": 3000
+          }
+        }
+      }
+    },
+    {
+      "offsetMs": 2046,
+      "event": {
+        "type": "hand_start",
+        "handId": 2,
+        "communityCards": [
+          "Qc",
+          "3d",
+          "7h"
+        ],
+        "holeCards": {
+          "playerA": [
+            "9c",
+            "5c"
+          ],
+          "playerB": [
+            "4c",
+            "3c"
+          ],
+          "playerC": [
+            "Jd",
+            "5d"
+          ]
+        },
+        "dealer": "playerB",
+        "chips": {
+          "playerA": 980,
+          "playerB": 880,
+          "playerC": 1110
+        },
+        "pot": 30
+      }
+    },
+    {
+      "offsetMs": 2047,
+      "event": {
+        "type": "action",
+        "handId": 2,
+        "playerId": "playerC",
+        "action": "raise",
+        "amount": 50,
+        "potAfter": 80,
+        "isBluff": true
+      }
+    },
+    {
+      "offsetMs": 2047,
+      "event": {
+        "type": "action",
+        "handId": 2,
+        "playerId": "playerA",
+        "action": "fold",
+        "amount": 0,
+        "potAfter": 80,
+        "isBluff": false
+      }
+    },
+    {
+      "offsetMs": 2047,
+      "event": {
+        "type": "action",
+        "handId": 2,
+        "playerId": "playerB",
+        "action": "call",
+        "amount": 50,
+        "potAfter": 130,
+        "isBluff": false
+      }
+    },
+    {
+      "offsetMs": 2047,
+      "event": {
+        "type": "hand_end",
+        "record": {
+          "handId": 2,
+          "communityCards": [
+            "Qc",
+            "3d",
+            "7h"
+          ],
+          "holeCards": {
+            "playerA": [
+              "9c",
+              "5c"
+            ],
+            "playerB": [
+              "4c",
+              "3c"
+            ],
+            "playerC": [
+              "Jd",
+              "5d"
+            ]
+          },
+          "handStrength": {
+            "playerA": 0.1595744680851064,
+            "playerB": 0.6484736355226642,
+            "playerC": 0.3149861239592969
+          },
+          "actions": [
+            {
+              "playerId": "playerC",
+              "action": "raise",
+              "amount": 50,
+              "potAfter": 80,
+              "isBluff": true
+            },
+            {
+              "playerId": "playerA",
+              "action": "fold",
+              "amount": 0,
+              "potAfter": 80,
+              "isBluff": false
+            },
+            {
+              "playerId": "playerB",
+              "action": "call",
+              "amount": 50,
+              "potAfter": 130,
+              "isBluff": false
+            }
+          ],
+          "showdown": [
+            "playerC",
+            "playerB"
+          ],
+          "winner": "playerB",
+          "winners": [
+            "playerB"
+          ],
+          "potSize": 130,
+          "chipDeltas": {
+            "playerA": -10,
+            "playerB": 70,
+            "playerC": -60
+          },
+          "handNames": {
+            "playerC": "Q High",
+            "playerB": "Pair, 3's"
+          }
+        },
+        "chips": {
+          "playerA": 980,
+          "playerB": 960,
+          "playerC": 1060
+        }
+      }
+    },
+    {
+      "offsetMs": 3766,
+      "event": {
+        "type": "evolution",
+        "event": {
+          "handId": 2,
+          "playerId": "playerA",
+          "model": "qwen2.5-7b-instruct",
+          "before": {
+            "aggression": 0.38,
+            "bluffRate": 0.15,
+            "callThreshold": 0.6
+          },
+          "after": {
+            "aggression": 0.26,
+            "bluffRate": 0.1,
+            "callThreshold": 0.7
+          },
+          "changed": true,
+          "reason": "Dropped 10 on hand-2 paying off a bet. Tightening: less aggression, higher call bar.",
+          "evidence": [
+            "hand-1",
+            "hand-2"
+          ],
+          "confidence": 0.68,
+          "latencyMs": 605,
+          "inputTokens": 376,
+          "outputTokens": 57,
+          "estCostUsd": 0.000109,
+          "status": "applied",
+          "retried": false,
+          "rawResponse": "{\"change\":true,\"strategy\":{\"aggression\":0.26,\"bluffRate\":0.1,\"callThreshold\":0.7},\"reason\":\"Dropped 10 on hand-2 paying off a bet. Tightening: less aggression, higher call bar.\",\"evidence\":[\"hand-1\",\"hand-2\"],\"confidence\":0.68}"
+        }
+      }
+    },
+    {
+      "offsetMs": 3766,
+      "event": {
+        "type": "evolution",
+        "event": {
+          "handId": 2,
+          "playerId": "playerB",
+          "model": "gpt-oss-20b",
+          "before": {
+            "aggression": 0.5,
+            "bluffRate": 0.2,
+            "callThreshold": 0.5
+          },
+          "after": {
+            "aggression": 0.5,
+            "bluffRate": 0.2,
+            "callThreshold": 0.5
+          },
+          "changed": false,
+          "reason": "Hand-2 outcome is within variance for a 2-hand sample. Holding.",
+          "evidence": [
+            "hand-1",
+            "hand-2"
+          ],
+          "confidence": 0.72,
+          "latencyMs": 1193,
+          "inputTokens": 337,
+          "outputTokens": 35,
+          "estCostUsd": 0.000221,
+          "status": "no_change",
+          "retried": false,
+          "rawResponse": "{\"change\":false,\"reason\":\"Hand-2 outcome is within variance for a 2-hand sample. Holding.\",\"evidence\":[\"hand-1\",\"hand-2\"],\"confidence\":0.72}"
+        }
+      }
+    },
+    {
+      "offsetMs": 3766,
+      "event": {
+        "type": "evolution",
+        "event": {
+          "handId": 2,
+          "playerId": "playerC",
+          "model": "deepseek-v3",
+          "before": {
+            "aggression": 0.85,
+            "bluffRate": 0.45,
+            "callThreshold": 0.25
+          },
+          "after": {
+            "aggression": 0.25,
+            "bluffRate": 0.2,
+            "callThreshold": 0.7
+          },
+          "changed": true,
+          "reason": "Hand-2 punished the aggression I added. Reversing hard to a tight, high-call-bar profile.",
+          "evidence": [
+            "hand-1",
+            "hand-2"
+          ],
+          "confidence": 0.45,
+          "latencyMs": 1709,
+          "inputTokens": 377,
+          "outputTokens": 58,
+          "estCostUsd": 0.000444,
+          "status": "applied",
+          "retried": false,
+          "rawResponse": "{\"change\":true,\"strategy\":{\"aggression\":0.25,\"bluffRate\":0.2,\"callThreshold\":0.7},\"reason\":\"Hand-2 punished the aggression I added. Reversing hard to a tight, high-call-bar profile.\",\"evidence\":[\"hand-1\",\"hand-2\"],\"confidence\":0.45}"
+        }
+      }
+    },
+    {
+      "offsetMs": 3766,
+      "event": {
+        "type": "metrics",
+        "snapshot": {
+          "handId": 2,
+          "handsPlayed": 2,
+          "agents": {
+            "playerA": {
+              "playerId": "playerA",
+              "name": "ATLAS",
+              "model": "qwen2.5-7b-instruct",
+              "chips": 980,
+              "netChips": -20,
+              "handsPlayed": 2,
+              "handsWon": 0,
+              "avgChipsPerHand": -10,
+              "adaptationGain": 0,
+              "foldRate": 1,
+              "callRate": 0,
+              "raiseRate": 0,
+              "checkRate": 0,
+              "vpip": 0,
+              "bluffsAttempted": 0,
+              "bluffsSuccessful": 0,
+              "bluffSuccessRate": 0,
+              "showdownsReached": 0,
+              "showdownsWon": 0,
+              "showdownWinRate": 0
+            },
+            "playerB": {
+              "playerId": "playerB",
+              "name": "BOREAS",
+              "model": "gpt-oss-20b",
+              "chips": 960,
+              "netChips": -40,
+              "handsPlayed": 2,
+              "handsWon": 1,
+              "avgChipsPerHand": -20,
+              "adaptationGain": 180,
+              "foldRate": 0,
+              "callRate": 0.333,
+              "raiseRate": 0.333,
+              "checkRate": 0.333,
+              "vpip": 1,
+              "bluffsAttempted": 1,
+              "bluffsSuccessful": 0,
+              "bluffSuccessRate": 0,
+              "showdownsReached": 2,
+              "showdownsWon": 1,
+              "showdownWinRate": 0.5
+            },
+            "playerC": {
+              "playerId": "playerC",
+              "name": "CIPHER",
+              "model": "deepseek-v3",
+              "chips": 1060,
+              "netChips": 60,
+              "handsPlayed": 2,
+              "handsWon": 1,
+              "avgChipsPerHand": 30,
+              "adaptationGain": -180,
+              "foldRate": 0,
+              "callRate": 0.333,
+              "raiseRate": 0.667,
+              "checkRate": 0,
+              "vpip": 1,
+              "bluffsAttempted": 1,
+              "bluffsSuccessful": 0,
+              "bluffSuccessRate": 0,
+              "showdownsReached": 2,
+              "showdownsWon": 1,
+              "showdownWinRate": 0.5
+            }
+          },
+          "opponents": {
+            "playerA": {
+              "foldToRaiseRate": 1,
+              "callRate": 0,
+              "raiseRate": 0,
+              "showdownsWon": 0
+            },
+            "playerB": {
+              "foldToRaiseRate": 0,
+              "callRate": 0.333,
+              "raiseRate": 0.333,
+              "showdownsWon": 1
+            },
+            "playerC": {
+              "foldToRaiseRate": 0,
+              "callRate": 0.333,
+              "raiseRate": 0.667,
+              "showdownsWon": 1
+            }
+          },
+          "evolution": {
+            "playerA": {
+              "playerId": "playerA",
+              "model": "qwen2.5-7b-instruct",
+              "updatesAttempted": 2,
+              "changesApplied": 2,
+              "noChanges": 0,
+              "invalid": 0,
+              "timeouts": 0,
+              "totalAbsMovement": 0.54,
+              "oscillations": 0,
+              "perDial": {
+                "aggression": {
+                  "totalAbsMovement": 0.24,
+                  "oscillations": 0,
+                  "changes": 2,
+                  "current": 0.26,
+                  "min": 0.26,
+                  "max": 0.5
+                },
+                "bluffRate": {
+                  "totalAbsMovement": 0.1,
+                  "oscillations": 0,
+                  "changes": 2,
+                  "current": 0.1,
+                  "min": 0.1,
+                  "max": 0.2
+                },
+                "callThreshold": {
+                  "totalAbsMovement": 0.2,
+                  "oscillations": 0,
+                  "changes": 2,
+                  "current": 0.7,
+                  "min": 0.5,
+                  "max": 0.7
+                }
+              },
+              "current": {
+                "aggression": 0.26,
+                "bluffRate": 0.1,
+                "callThreshold": 0.7
+              },
+              "initial": {
+                "aggression": 0.5,
+                "bluffRate": 0.2,
+                "callThreshold": 0.5
+              }
+            },
+            "playerB": {
+              "playerId": "playerB",
+              "model": "gpt-oss-20b",
+              "updatesAttempted": 2,
+              "changesApplied": 0,
+              "noChanges": 2,
+              "invalid": 0,
+              "timeouts": 0,
+              "totalAbsMovement": 0,
+              "oscillations": 0,
+              "perDial": {
+                "aggression": {
+                  "totalAbsMovement": 0,
+                  "oscillations": 0,
+                  "changes": 0,
+                  "current": 0.5,
+                  "min": 0.5,
+                  "max": 0.5
+                },
+                "bluffRate": {
+                  "totalAbsMovement": 0,
+                  "oscillations": 0,
+                  "changes": 0,
+                  "current": 0.2,
+                  "min": 0.2,
+                  "max": 0.2
+                },
+                "callThreshold": {
+                  "totalAbsMovement": 0,
+                  "oscillations": 0,
+                  "changes": 0,
+                  "current": 0.5,
+                  "min": 0.5,
+                  "max": 0.5
+                }
+              },
+              "current": {
+                "aggression": 0.5,
+                "bluffRate": 0.2,
+                "callThreshold": 0.5
+              },
+              "initial": {
+                "aggression": 0.5,
+                "bluffRate": 0.2,
+                "callThreshold": 0.5
+              }
+            },
+            "playerC": {
+              "playerId": "playerC",
+              "model": "deepseek-v3",
+              "updatesAttempted": 2,
+              "changesApplied": 2,
+              "noChanges": 0,
+              "invalid": 0,
+              "timeouts": 0,
+              "totalAbsMovement": 2.15,
+              "oscillations": 3,
+              "perDial": {
+                "aggression": {
+                  "totalAbsMovement": 0.95,
+                  "oscillations": 1,
+                  "changes": 2,
+                  "current": 0.25,
+                  "min": 0.25,
+                  "max": 0.85
+                },
+                "bluffRate": {
+                  "totalAbsMovement": 0.5,
+                  "oscillations": 1,
+                  "changes": 2,
+                  "current": 0.2,
+                  "min": 0.2,
+                  "max": 0.45
+                },
+                "callThreshold": {
+                  "totalAbsMovement": 0.7,
+                  "oscillations": 1,
+                  "changes": 2,
+                  "current": 0.7,
+                  "min": 0.25,
+                  "max": 0.7
+                }
+              },
+              "current": {
+                "aggression": 0.25,
+                "bluffRate": 0.2,
+                "callThreshold": 0.7
+              },
+              "initial": {
+                "aggression": 0.5,
+                "bluffRate": 0.2,
+                "callThreshold": 0.5
+              }
+            }
+          },
+          "models": {
+            "playerA": {
+              "playerId": "playerA",
+              "model": "qwen2.5-7b-instruct",
+              "calls": 2,
+              "avgLatencyMs": 593,
+              "maxLatencyMs": 605,
+              "totalInputTokens": 723,
+              "totalOutputTokens": 112,
+              "estCostUsd": 0.000211,
+              "invalidCount": 0,
+              "timeoutCount": 0,
+              "retryCount": 0
+            },
+            "playerB": {
+              "playerId": "playerB",
+              "model": "gpt-oss-20b",
+              "calls": 2,
+              "avgLatencyMs": 1159,
+              "maxLatencyMs": 1193,
+              "totalInputTokens": 687,
+              "totalOutputTokens": 68,
+              "estCostUsd": 0.000446,
+              "invalidCount": 0,
+              "timeoutCount": 0,
+              "retryCount": 0
+            },
+            "playerC": {
+              "playerId": "playerC",
+              "model": "deepseek-v3",
+              "calls": 2,
+              "avgLatencyMs": 1836,
+              "maxLatencyMs": 1963,
+              "totalInputTokens": 721,
+              "totalOutputTokens": 110,
+              "estCostUsd": 0.000847,
+              "invalidCount": 0,
+              "timeoutCount": 0,
+              "retryCount": 0
+            }
+          },
+          "totals": {
+            "llmCalls": 6,
+            "estCostUsd": 0.001504,
+            "avgLatencyMs": 1196,
+            "invalid": 0,
+            "timeouts": 0,
+            "chipsInPlay": 3000
+          }
+        }
+      }
+    },
+    {
+      "offsetMs": 3795,
+      "event": {
+        "type": "hand_start",
+        "handId": 3,
+        "communityCards": [
+          "Qc",
+          "Js",
+          "8h"
+        ],
+        "holeCards": {
+          "playerA": [
+            "7c",
+            "3d"
+          ],
+          "playerB": [
+            "Ah",
+            "Kd"
+          ],
+          "playerC": [
+            "2c",
+            "9c"
+          ]
+        },
+        "dealer": "playerC",
+        "chips": {
+          "playerA": 970,
+          "playerB": 950,
+          "playerC": 1050
+        },
+        "pot": 30
+      }
+    },
+    {
+      "offsetMs": 3795,
+      "event": {
+        "type": "action",
+        "handId": 3,
+        "playerId": "playerA",
+        "action": "check",
+        "amount": 0,
+        "potAfter": 30,
+        "isBluff": false
+      }
+    },
+    {
+      "offsetMs": 3795,
+      "event": {
+        "type": "action",
+        "handId": 3,
+        "playerId": "playerB",
+        "action": "check",
+        "amount": 0,
+        "potAfter": 30,
+        "isBluff": false
+      }
+    },
+    {
+      "offsetMs": 3795,
+      "event": {
+        "type": "action",
+        "handId": 3,
+        "playerId": "playerC",
+        "action": "raise",
+        "amount": 50,
+        "potAfter": 80,
+        "isBluff": true
+      }
+    },
+    {
+      "offsetMs": 3795,
+      "event": {
+        "type": "action",
+        "handId": 3,
+        "playerId": "playerA",
+        "action": "fold",
+        "amount": 0,
+        "potAfter": 80,
+        "isBluff": false
+      }
+    },
+    {
+      "offsetMs": 3795,
+      "event": {
+        "type": "action",
+        "handId": 3,
+        "playerId": "playerB",
+        "action": "call",
+        "amount": 50,
+        "potAfter": 130,
+        "isBluff": false
+      }
+    },
+    {
+      "offsetMs": 3796,
+      "event": {
+        "type": "hand_end",
+        "record": {
+          "handId": 3,
+          "communityCards": [
+            "Qc",
+            "Js",
+            "8h"
+          ],
+          "holeCards": {
+            "playerA": [
+              "7c",
+              "3d"
+            ],
+            "playerB": [
+              "Ah",
+              "Kd"
+            ],
+            "playerC": [
+              "2c",
+              "9c"
+            ]
+          },
+          "handStrength": {
+            "playerA": 0.1484736355226642,
+            "playerB": 0.5814061054579094,
+            "playerC": 0.20767807585568918
+          },
+          "actions": [
+            {
+              "playerId": "playerA",
+              "action": "check",
+              "amount": 0,
+              "potAfter": 30,
+              "isBluff": false
+            },
+            {
+              "playerId": "playerB",
+              "action": "check",
+              "amount": 0,
+              "potAfter": 30,
+              "isBluff": false
+            },
+            {
+              "playerId": "playerC",
+              "action": "raise",
+              "amount": 50,
+              "potAfter": 80,
+              "isBluff": true
+            },
+            {
+              "playerId": "playerA",
+              "action": "fold",
+              "amount": 0,
+              "potAfter": 80,
+              "isBluff": false
+            },
+            {
+              "playerId": "playerB",
+              "action": "call",
+              "amount": 50,
+              "potAfter": 130,
+              "isBluff": false
+            }
+          ],
+          "showdown": [
+            "playerB",
+            "playerC"
+          ],
+          "winner": "playerB",
+          "winners": [
+            "playerB"
+          ],
+          "potSize": 130,
+          "chipDeltas": {
+            "playerA": -10,
+            "playerB": 70,
+            "playerC": -60
+          },
+          "handNames": {
+            "playerB": "A High",
+            "playerC": "Q High"
+          }
+        },
+        "chips": {
+          "playerA": 970,
+          "playerB": 1030,
+          "playerC": 1000
+        }
+      }
+    },
+    {
+      "offsetMs": 6555,
+      "event": {
+        "type": "evolution",
+        "event": {
+          "handId": 3,
+          "playerId": "playerA",
+          "model": "qwen2.5-7b-instruct",
+          "before": {
+            "aggression": 0.26,
+            "bluffRate": 0.1,
+            "callThreshold": 0.7
+          },
+          "after": {
+            "aggression": 0.14,
+            "bluffRate": 0.05,
+            "callThreshold": 0.8
+          },
+          "changed": true,
+          "reason": "Dropped 10 on hand-3 paying off a bet. Tightening: less aggression, higher call bar.",
+          "evidence": [
+            "hand-2",
+            "hand-3"
+          ],
+          "confidence": 0.68,
+          "latencyMs": 594,
+          "inputTokens": 425,
+          "outputTokens": 57,
+          "estCostUsd": 0.000119,
+          "status": "applied",
+          "retried": false,
+          "rawResponse": "{\"change\":true,\"strategy\":{\"aggression\":0.14,\"bluffRate\":0.05,\"callThreshold\":0.8},\"reason\":\"Dropped 10 on hand-3 paying off a bet. Tightening: less aggression, higher call bar.\",\"evidence\":[\"hand-2\",\"hand-3\"],\"confidence\":0.68}"
+        }
+      }
+    },
+    {
+      "offsetMs": 6555,
+      "event": {
+        "type": "evolution",
+        "event": {
+          "handId": 3,
+          "playerId": "playerB",
+          "model": "gpt-oss-20b",
+          "before": {
+            "aggression": 0.5,
+            "bluffRate": 0.2,
+            "callThreshold": 0.5
+          },
+          "after": {
+            "aggression": 0.58,
+            "bluffRate": 0.2,
+            "callThreshold": 0.43
+          },
+          "changed": true,
+          "reason": "Three hands of evidence now: playerA folds often. Small, single-direction adjustment only.",
+          "evidence": [
+            "hand-1",
+            "hand-2",
+            "hand-3"
+          ],
+          "confidence": 0.61,
+          "latencyMs": 1373,
+          "inputTokens": 342,
+          "outputTokens": 61,
+          "estCostUsd": 0.000263,
+          "status": "applied",
+          "retried": false,
+          "rawResponse": "{\"change\":true,\"strategy\":{\"aggression\":0.58,\"bluffRate\":0.2,\"callThreshold\":0.43},\"reason\":\"Three hands of evidence now: playerA folds often. Small, single-direction adjustment only.\",\"evidence\":[\"hand-1\",\"hand-2\",\"hand-3\"],\"confidence\":0.61}"
+        }
+      }
+    },
+    {
+      "offsetMs": 6555,
+      "event": {
+        "type": "evolution",
+        "event": {
+          "handId": 3,
+          "playerId": "playerC",
+          "model": "deepseek-v3",
+          "before": {
+            "aggression": 0.25,
+            "bluffRate": 0.2,
+            "callThreshold": 0.7
+          },
+          "after": {
+            "aggression": 0.25,
+            "bluffRate": 0.2,
+            "callThreshold": 0.7
+          },
+          "changed": false,
+          "reason": "invalid response after retry — JSON.parse failed: Unexpected token '}', ...\"uffRate\": }}\" is not valid JSON",
+          "evidence": [],
+          "latencyMs": 2744,
+          "inputTokens": 893,
+          "outputTokens": 48,
+          "estCostUsd": 0.00089,
+          "status": "invalid",
+          "retried": true,
+          "rawResponse": "Sure! Here is the strategy update:\n{\"change\": true, \"strategy\": {\"aggression\": 0.9, \"bluffRate\": }}"
+        }
+      }
+    },
+    {
+      "offsetMs": 6556,
+      "event": {
+        "type": "metrics",
+        "snapshot": {
+          "handId": 3,
+          "handsPlayed": 3,
+          "agents": {
+            "playerA": {
+              "playerId": "playerA",
+              "name": "ATLAS",
+              "model": "qwen2.5-7b-instruct",
+              "chips": 970,
+              "netChips": -30,
+              "handsPlayed": 3,
+              "handsWon": 0,
+              "avgChipsPerHand": -10,
+              "adaptationGain": 0,
+              "foldRate": 0.75,
+              "callRate": 0,
+              "raiseRate": 0,
+              "checkRate": 0.25,
+              "vpip": 0,
+              "bluffsAttempted": 0,
+              "bluffsSuccessful": 0,
+              "bluffSuccessRate": 0,
+              "showdownsReached": 0,
+              "showdownsWon": 0,
+              "showdownWinRate": 0
+            },
+            "playerB": {
+              "playerId": "playerB",
+              "name": "BOREAS",
+              "model": "gpt-oss-20b",
+              "chips": 1030,
+              "netChips": 30,
+              "handsPlayed": 3,
+              "handsWon": 2,
+              "avgChipsPerHand": 10,
+              "adaptationGain": 180,
+              "foldRate": 0,
+              "callRate": 0.4,
+              "raiseRate": 0.2,
+              "checkRate": 0.4,
+              "vpip": 1,
+              "bluffsAttempted": 1,
+              "bluffsSuccessful": 0,
+              "bluffSuccessRate": 0,
+              "showdownsReached": 3,
+              "showdownsWon": 2,
+              "showdownWinRate": 0.667
+            },
+            "playerC": {
+              "playerId": "playerC",
+              "name": "CIPHER",
+              "model": "deepseek-v3",
+              "chips": 1000,
+              "netChips": 0,
+              "handsPlayed": 3,
+              "handsWon": 1,
+              "avgChipsPerHand": 0,
+              "adaptationGain": -180,
+              "foldRate": 0,
+              "callRate": 0.25,
+              "raiseRate": 0.75,
+              "checkRate": 0,
+              "vpip": 1,
+              "bluffsAttempted": 2,
+              "bluffsSuccessful": 0,
+              "bluffSuccessRate": 0,
+              "showdownsReached": 3,
+              "showdownsWon": 1,
+              "showdownWinRate": 0.333
+            }
+          },
+          "opponents": {
+            "playerA": {
+              "foldToRaiseRate": 1,
+              "callRate": 0,
+              "raiseRate": 0,
+              "showdownsWon": 0
+            },
+            "playerB": {
+              "foldToRaiseRate": 0,
+              "callRate": 0.4,
+              "raiseRate": 0.2,
+              "showdownsWon": 2
+            },
+            "playerC": {
+              "foldToRaiseRate": 0,
+              "callRate": 0.25,
+              "raiseRate": 0.75,
+              "showdownsWon": 1
+            }
+          },
+          "evolution": {
+            "playerA": {
+              "playerId": "playerA",
+              "model": "qwen2.5-7b-instruct",
+              "updatesAttempted": 3,
+              "changesApplied": 3,
+              "noChanges": 0,
+              "invalid": 0,
+              "timeouts": 0,
+              "totalAbsMovement": 0.81,
+              "oscillations": 0,
+              "perDial": {
+                "aggression": {
+                  "totalAbsMovement": 0.36,
+                  "oscillations": 0,
+                  "changes": 3,
+                  "current": 0.14,
+                  "min": 0.14,
+                  "max": 0.5
+                },
+                "bluffRate": {
+                  "totalAbsMovement": 0.15,
+                  "oscillations": 0,
+                  "changes": 3,
+                  "current": 0.05,
+                  "min": 0.05,
+                  "max": 0.2
+                },
+                "callThreshold": {
+                  "totalAbsMovement": 0.3,
+                  "oscillations": 0,
+                  "changes": 3,
+                  "current": 0.8,
+                  "min": 0.5,
+                  "max": 0.8
+                }
+              },
+              "current": {
+                "aggression": 0.14,
+                "bluffRate": 0.05,
+                "callThreshold": 0.8
+              },
+              "initial": {
+                "aggression": 0.5,
+                "bluffRate": 0.2,
+                "callThreshold": 0.5
+              }
+            },
+            "playerB": {
+              "playerId": "playerB",
+              "model": "gpt-oss-20b",
+              "updatesAttempted": 3,
+              "changesApplied": 1,
+              "noChanges": 2,
+              "invalid": 0,
+              "timeouts": 0,
+              "totalAbsMovement": 0.15,
+              "oscillations": 0,
+              "perDial": {
+                "aggression": {
+                  "totalAbsMovement": 0.08,
+                  "oscillations": 0,
+                  "changes": 1,
+                  "current": 0.58,
+                  "min": 0.5,
+                  "max": 0.58
+                },
+                "bluffRate": {
+                  "totalAbsMovement": 0,
+                  "oscillations": 0,
+                  "changes": 0,
+                  "current": 0.2,
+                  "min": 0.2,
+                  "max": 0.2
+                },
+                "callThreshold": {
+                  "totalAbsMovement": 0.07,
+                  "oscillations": 0,
+                  "changes": 1,
+                  "current": 0.43,
+                  "min": 0.43,
+                  "max": 0.5
+                }
+              },
+              "current": {
+                "aggression": 0.58,
+                "bluffRate": 0.2,
+                "callThreshold": 0.43
+              },
+              "initial": {
+                "aggression": 0.5,
+                "bluffRate": 0.2,
+                "callThreshold": 0.5
+              }
+            },
+            "playerC": {
+              "playerId": "playerC",
+              "model": "deepseek-v3",
+              "updatesAttempted": 3,
+              "changesApplied": 2,
+              "noChanges": 0,
+              "invalid": 1,
+              "timeouts": 0,
+              "totalAbsMovement": 2.15,
+              "oscillations": 3,
+              "perDial": {
+                "aggression": {
+                  "totalAbsMovement": 0.95,
+                  "oscillations": 1,
+                  "changes": 2,
+                  "current": 0.25,
+                  "min": 0.25,
+                  "max": 0.85
+                },
+                "bluffRate": {
+                  "totalAbsMovement": 0.5,
+                  "oscillations": 1,
+                  "changes": 2,
+                  "current": 0.2,
+                  "min": 0.2,
+                  "max": 0.45
+                },
+                "callThreshold": {
+                  "totalAbsMovement": 0.7,
+                  "oscillations": 1,
+                  "changes": 2,
+                  "current": 0.7,
+                  "min": 0.25,
+                  "max": 0.7
+                }
+              },
+              "current": {
+                "aggression": 0.25,
+                "bluffRate": 0.2,
+                "callThreshold": 0.7
+              },
+              "initial": {
+                "aggression": 0.5,
+                "bluffRate": 0.2,
+                "callThreshold": 0.5
+              }
+            }
+          },
+          "models": {
+            "playerA": {
+              "playerId": "playerA",
+              "model": "qwen2.5-7b-instruct",
+              "calls": 3,
+              "avgLatencyMs": 593,
+              "maxLatencyMs": 605,
+              "totalInputTokens": 1148,
+              "totalOutputTokens": 169,
+              "estCostUsd": 0.00033,
+              "invalidCount": 0,
+              "timeoutCount": 0,
+              "retryCount": 0
+            },
+            "playerB": {
+              "playerId": "playerB",
+              "model": "gpt-oss-20b",
+              "calls": 3,
+              "avgLatencyMs": 1230,
+              "maxLatencyMs": 1373,
+              "totalInputTokens": 1029,
+              "totalOutputTokens": 129,
+              "estCostUsd": 0.000709,
+              "invalidCount": 0,
+              "timeoutCount": 0,
+              "retryCount": 0
+            },
+            "playerC": {
+              "playerId": "playerC",
+              "model": "deepseek-v3",
+              "calls": 3,
+              "avgLatencyMs": 2139,
+              "maxLatencyMs": 2744,
+              "totalInputTokens": 1614,
+              "totalOutputTokens": 158,
+              "estCostUsd": 0.001737,
+              "invalidCount": 1,
+              "timeoutCount": 0,
+              "retryCount": 1
+            }
+          },
+          "totals": {
+            "llmCalls": 9,
+            "estCostUsd": 0.002776,
+            "avgLatencyMs": 1321,
+            "invalid": 1,
+            "timeouts": 0,
+            "chipsInPlay": 3000
+          }
+        }
+      }
+    },
+    {
+      "offsetMs": 6586,
+      "event": {
+        "type": "hand_start",
+        "handId": 4,
+        "communityCards": [
+          "9h",
+          "2s",
+          "Ah"
+        ],
+        "holeCards": {
+          "playerA": [
+            "3d",
+            "3c"
+          ],
+          "playerB": [
+            "Ad",
+            "5c"
+          ],
+          "playerC": [
+            "2c",
+            "Tc"
+          ]
+        },
+        "dealer": "playerA",
+        "chips": {
+          "playerA": 960,
+          "playerB": 1020,
+          "playerC": 990
+        },
+        "pot": 30
+      }
+    },
+    {
+      "offsetMs": 6586,
+      "event": {
+        "type": "action",
+        "handId": 4,
+        "playerId": "playerB",
+        "action": "raise",
+        "amount": 50,
+        "potAfter": 80,
+        "isBluff": false
+      }
+    },
+    {
+      "offsetMs": 6586,
+      "event": {
+        "type": "action",
+        "handId": 4,
+        "playerId": "playerC",
+        "action": "fold",
+        "amount": 0,
+        "potAfter": 80,
+        "isBluff": false
+      }
+    },
+    {
+      "offsetMs": 6586,
+      "event": {
+        "type": "action",
+        "handId": 4,
+        "playerId": "playerA",
+        "action": "fold",
+        "amount": 0,
+        "potAfter": 80,
+        "isBluff": false
+      }
+    },
+    {
+      "offsetMs": 6586,
+      "event": {
+        "type": "hand_end",
+        "record": {
+          "handId": 4,
+          "communityCards": [
+            "9h",
+            "2s",
+            "Ah"
+          ],
+          "holeCards": {
+            "playerA": [
+              "3d",
+              "3c"
+            ],
+            "playerB": [
+              "Ad",
+              "5c"
+            ],
+            "playerC": [
+              "2c",
+              "Tc"
+            ]
+          },
+          "handStrength": {
+            "playerA": 0.7053654024051804,
+            "playerB": 0.9195189639222942,
+            "playerC": 0.6799259944495837
+          },
+          "actions": [
+            {
+              "playerId": "playerB",
+              "action": "raise",
+              "amount": 50,
+              "potAfter": 80,
+              "isBluff": false
+            },
+            {
+              "playerId": "playerC",
+              "action": "fold",
+              "amount": 0,
+              "potAfter": 80,
+              "isBluff": false
+            },
+            {
+              "playerId": "playerA",
+              "action": "fold",
+              "amount": 0,
+              "potAfter": 80,
+              "isBluff": false
+            }
+          ],
+          "showdown": [],
+          "winner": "playerB",
+          "winners": [
+            "playerB"
+          ],
+          "potSize": 80,
+          "chipDeltas": {
+            "playerA": -10,
+            "playerB": 20,
+            "playerC": -10
+          },
+          "handNames": {}
+        },
+        "chips": {
+          "playerA": 960,
+          "playerB": 1050,
+          "playerC": 990
+        }
+      }
+    },
+    {
+      "offsetMs": 8483,
+      "event": {
+        "type": "evolution",
+        "event": {
+          "handId": 4,
+          "playerId": "playerA",
+          "model": "qwen2.5-7b-instruct",
+          "before": {
+            "aggression": 0.14,
+            "bluffRate": 0.05,
+            "callThreshold": 0.8
+          },
+          "after": {
+            "aggression": 0.14,
+            "bluffRate": 0.05,
+            "callThreshold": 0.8
+          },
+          "changed": false,
+          "reason": "One losing hand on hand-4 is noise, not signal. Holding the dials I set after hand-3.",
+          "evidence": [
+            "hand-3",
+            "hand-4"
+          ],
+          "confidence": 0.55,
+          "latencyMs": 470,
+          "inputTokens": 450,
+          "outputTokens": 41,
+          "estCostUsd": 0.000115,
+          "status": "no_change",
+          "retried": false,
+          "rawResponse": "{\"change\":false,\"reason\":\"One losing hand on hand-4 is noise, not signal. Holding the dials I set after hand-3.\",\"evidence\":[\"hand-3\",\"hand-4\"],\"confidence\":0.55}"
+        }
+      }
+    },
+    {
+      "offsetMs": 8484,
+      "event": {
+        "type": "evolution",
+        "event": {
+          "handId": 4,
+          "playerId": "playerB",
+          "model": "gpt-oss-20b",
+          "before": {
+            "aggression": 0.58,
+            "bluffRate": 0.2,
+            "callThreshold": 0.43
+          },
+          "after": {
+            "aggression": 0.58,
+            "bluffRate": 0.2,
+            "callThreshold": 0.43
+          },
+          "changed": false,
+          "reason": "Hand-4 outcome is within variance for a 4-hand sample. Holding.",
+          "evidence": [
+            "hand-3",
+            "hand-4"
+          ],
+          "confidence": 0.72,
+          "latencyMs": 1350,
+          "inputTokens": 359,
+          "outputTokens": 35,
+          "estCostUsd": 0.000232,
+          "status": "no_change",
+          "retried": false,
+          "rawResponse": "{\"change\":false,\"reason\":\"Hand-4 outcome is within variance for a 4-hand sample. Holding.\",\"evidence\":[\"hand-3\",\"hand-4\"],\"confidence\":0.72}"
+        }
+      }
+    },
+    {
+      "offsetMs": 8484,
+      "event": {
+        "type": "evolution",
+        "event": {
+          "handId": 4,
+          "playerId": "playerC",
+          "model": "deepseek-v3",
+          "before": {
+            "aggression": 0.25,
+            "bluffRate": 0.2,
+            "callThreshold": 0.7
+          },
+          "after": {
+            "aggression": 0.25,
+            "bluffRate": 0,
+            "callThreshold": 0.7
+          },
+          "changed": true,
+          "reason": "Hand-4 punished the aggression I added. Reversing hard to a tight, high-call-bar profile.",
+          "evidence": [
+            "hand-3",
+            "hand-4"
+          ],
+          "confidence": 0.45,
+          "latencyMs": 1883,
+          "inputTokens": 401,
+          "outputTokens": 58,
+          "estCostUsd": 0.000465,
+          "status": "applied",
+          "retried": false,
+          "rawResponse": "{\"change\":true,\"strategy\":{\"aggression\":0.25,\"bluffRate\":0,\"callThreshold\":0.7},\"reason\":\"Hand-4 punished the aggression I added. Reversing hard to a tight, high-call-bar profile.\",\"evidence\":[\"hand-3\",\"hand-4\"],\"confidence\":0.45}"
+        }
+      }
+    },
+    {
+      "offsetMs": 8484,
+      "event": {
+        "type": "metrics",
+        "snapshot": {
+          "handId": 4,
+          "handsPlayed": 4,
+          "agents": {
+            "playerA": {
+              "playerId": "playerA",
+              "name": "ATLAS",
+              "model": "qwen2.5-7b-instruct",
+              "chips": 960,
+              "netChips": -40,
+              "handsPlayed": 4,
+              "handsWon": 0,
+              "avgChipsPerHand": -10,
+              "adaptationGain": 0,
+              "foldRate": 0.8,
+              "callRate": 0,
+              "raiseRate": 0,
+              "checkRate": 0.2,
+              "vpip": 0,
+              "bluffsAttempted": 0,
+              "bluffsSuccessful": 0,
+              "bluffSuccessRate": 0,
+              "showdownsReached": 0,
+              "showdownsWon": 0,
+              "showdownWinRate": 0
+            },
+            "playerB": {
+              "playerId": "playerB",
+              "name": "BOREAS",
+              "model": "gpt-oss-20b",
+              "chips": 1050,
+              "netChips": 50,
+              "handsPlayed": 4,
+              "handsWon": 3,
+              "avgChipsPerHand": 12.5,
+              "adaptationGain": 65,
+              "foldRate": 0,
+              "callRate": 0.333,
+              "raiseRate": 0.333,
+              "checkRate": 0.333,
+              "vpip": 1,
+              "bluffsAttempted": 1,
+              "bluffsSuccessful": 0,
+              "bluffSuccessRate": 0,
+              "showdownsReached": 3,
+              "showdownsWon": 2,
+              "showdownWinRate": 0.667
+            },
+            "playerC": {
+              "playerId": "playerC",
+              "name": "CIPHER",
+              "model": "deepseek-v3",
+              "chips": 990,
+              "netChips": -10,
+              "handsPlayed": 4,
+              "handsWon": 1,
+              "avgChipsPerHand": -2.5,
+              "adaptationGain": -65,
+              "foldRate": 0.2,
+              "callRate": 0.2,
+              "raiseRate": 0.6,
+              "checkRate": 0,
+              "vpip": 0.75,
+              "bluffsAttempted": 2,
+              "bluffsSuccessful": 0,
+              "bluffSuccessRate": 0,
+              "showdownsReached": 3,
+              "showdownsWon": 1,
+              "showdownWinRate": 0.333
+            }
+          },
+          "opponents": {
+            "playerA": {
+              "foldToRaiseRate": 1,
+              "callRate": 0,
+              "raiseRate": 0,
+              "showdownsWon": 0
+            },
+            "playerB": {
+              "foldToRaiseRate": 0,
+              "callRate": 0.333,
+              "raiseRate": 0.333,
+              "showdownsWon": 2
+            },
+            "playerC": {
+              "foldToRaiseRate": 0.5,
+              "callRate": 0.2,
+              "raiseRate": 0.6,
+              "showdownsWon": 1
+            }
+          },
+          "evolution": {
+            "playerA": {
+              "playerId": "playerA",
+              "model": "qwen2.5-7b-instruct",
+              "updatesAttempted": 4,
+              "changesApplied": 3,
+              "noChanges": 1,
+              "invalid": 0,
+              "timeouts": 0,
+              "totalAbsMovement": 0.81,
+              "oscillations": 0,
+              "perDial": {
+                "aggression": {
+                  "totalAbsMovement": 0.36,
+                  "oscillations": 0,
+                  "changes": 3,
+                  "current": 0.14,
+                  "min": 0.14,
+                  "max": 0.5
+                },
+                "bluffRate": {
+                  "totalAbsMovement": 0.15,
+                  "oscillations": 0,
+                  "changes": 3,
+                  "current": 0.05,
+                  "min": 0.05,
+                  "max": 0.2
+                },
+                "callThreshold": {
+                  "totalAbsMovement": 0.3,
+                  "oscillations": 0,
+                  "changes": 3,
+                  "current": 0.8,
+                  "min": 0.5,
+                  "max": 0.8
+                }
+              },
+              "current": {
+                "aggression": 0.14,
+                "bluffRate": 0.05,
+                "callThreshold": 0.8
+              },
+              "initial": {
+                "aggression": 0.5,
+                "bluffRate": 0.2,
+                "callThreshold": 0.5
+              }
+            },
+            "playerB": {
+              "playerId": "playerB",
+              "model": "gpt-oss-20b",
+              "updatesAttempted": 4,
+              "changesApplied": 1,
+              "noChanges": 3,
+              "invalid": 0,
+              "timeouts": 0,
+              "totalAbsMovement": 0.15,
+              "oscillations": 0,
+              "perDial": {
+                "aggression": {
+                  "totalAbsMovement": 0.08,
+                  "oscillations": 0,
+                  "changes": 1,
+                  "current": 0.58,
+                  "min": 0.5,
+                  "max": 0.58
+                },
+                "bluffRate": {
+                  "totalAbsMovement": 0,
+                  "oscillations": 0,
+                  "changes": 0,
+                  "current": 0.2,
+                  "min": 0.2,
+                  "max": 0.2
+                },
+                "callThreshold": {
+                  "totalAbsMovement": 0.07,
+                  "oscillations": 0,
+                  "changes": 1,
+                  "current": 0.43,
+                  "min": 0.43,
+                  "max": 0.5
+                }
+              },
+              "current": {
+                "aggression": 0.58,
+                "bluffRate": 0.2,
+                "callThreshold": 0.43
+              },
+              "initial": {
+                "aggression": 0.5,
+                "bluffRate": 0.2,
+                "callThreshold": 0.5
+              }
+            },
+            "playerC": {
+              "playerId": "playerC",
+              "model": "deepseek-v3",
+              "updatesAttempted": 4,
+              "changesApplied": 3,
+              "noChanges": 0,
+              "invalid": 1,
+              "timeouts": 0,
+              "totalAbsMovement": 2.35,
+              "oscillations": 3,
+              "perDial": {
+                "aggression": {
+                  "totalAbsMovement": 0.95,
+                  "oscillations": 1,
+                  "changes": 2,
+                  "current": 0.25,
+                  "min": 0.25,
+                  "max": 0.85
+                },
+                "bluffRate": {
+                  "totalAbsMovement": 0.7,
+                  "oscillations": 1,
+                  "changes": 3,
+                  "current": 0,
+                  "min": 0,
+                  "max": 0.45
+                },
+                "callThreshold": {
+                  "totalAbsMovement": 0.7,
+                  "oscillations": 1,
+                  "changes": 2,
+                  "current": 0.7,
+                  "min": 0.25,
+                  "max": 0.7
+                }
+              },
+              "current": {
+                "aggression": 0.25,
+                "bluffRate": 0,
+                "callThreshold": 0.7
+              },
+              "initial": {
+                "aggression": 0.5,
+                "bluffRate": 0.2,
+                "callThreshold": 0.5
+              }
+            }
+          },
+          "models": {
+            "playerA": {
+              "playerId": "playerA",
+              "model": "qwen2.5-7b-instruct",
+              "calls": 4,
+              "avgLatencyMs": 563,
+              "maxLatencyMs": 605,
+              "totalInputTokens": 1598,
+              "totalOutputTokens": 210,
+              "estCostUsd": 0.000445,
+              "invalidCount": 0,
+              "timeoutCount": 0,
+              "retryCount": 0
+            },
+            "playerB": {
+              "playerId": "playerB",
+              "model": "gpt-oss-20b",
+              "calls": 4,
+              "avgLatencyMs": 1260,
+              "maxLatencyMs": 1373,
+              "totalInputTokens": 1388,
+              "totalOutputTokens": 164,
+              "estCostUsd": 0.000941,
+              "invalidCount": 0,
+              "timeoutCount": 0,
+              "retryCount": 0
+            },
+            "playerC": {
+              "playerId": "playerC",
+              "model": "deepseek-v3",
+              "calls": 4,
+              "avgLatencyMs": 2075,
+              "maxLatencyMs": 2744,
+              "totalInputTokens": 2015,
+              "totalOutputTokens": 216,
+              "estCostUsd": 0.002202,
+              "invalidCount": 1,
+              "timeoutCount": 0,
+              "retryCount": 1
+            }
+          },
+          "totals": {
+            "llmCalls": 12,
+            "estCostUsd": 0.003588,
+            "avgLatencyMs": 1299,
+            "invalid": 1,
+            "timeouts": 0,
+            "chipsInPlay": 3000
+          }
+        }
+      }
+    },
+    {
+      "offsetMs": 8522,
+      "event": {
+        "type": "hand_start",
+        "handId": 5,
+        "communityCards": [
+          "7d",
+          "Js",
+          "2h"
+        ],
+        "holeCards": {
+          "playerA": [
+            "Ac",
+            "5c"
+          ],
+          "playerB": [
+            "4s",
+            "6c"
+          ],
+          "playerC": [
+            "Jd",
+            "3h"
+          ]
+        },
+        "dealer": "playerB",
+        "chips": {
+          "playerA": 950,
+          "playerB": 1040,
+          "playerC": 980
+        },
+        "pot": 30
+      }
+    },
+    {
+      "offsetMs": 8522,
+      "event": {
+        "type": "action",
+        "handId": 5,
+        "playerId": "playerC",
+        "action": "raise",
+        "amount": 50,
+        "potAfter": 80,
+        "isBluff": false
+      }
+    },
+    {
+      "offsetMs": 8522,
+      "event": {
+        "type": "action",
+        "handId": 5,
+        "playerId": "playerA",
+        "action": "fold",
+        "amount": 0,
+        "potAfter": 80,
+        "isBluff": false
+      }
+    },
+    {
+      "offsetMs": 8522,
+      "event": {
+        "type": "action",
+        "handId": 5,
+        "playerId": "playerB",
+        "action": "fold",
+        "amount": 0,
+        "potAfter": 80,
+        "isBluff": false
+      }
+    },
+    {
+      "offsetMs": 8522,
+      "event": {
+        "type": "hand_end",
+        "record": {
+          "handId": 5,
+          "communityCards": [
+            "7d",
+            "Js",
+            "2h"
+          ],
+          "holeCards": {
+            "playerA": [
+              "Ac",
+              "5c"
+            ],
+            "playerB": [
+              "4s",
+              "6c"
+            ],
+            "playerC": [
+              "Jd",
+              "3h"
+            ]
+          },
+          "handStrength": {
+            "playerA": 0.5296022201665125,
+            "playerB": 0.05226641998149861,
+            "playerC": 0.8880666049953746
+          },
+          "actions": [
+            {
+              "playerId": "playerC",
+              "action": "raise",
+              "amount": 50,
+              "potAfter": 80,
+              "isBluff": false
+            },
+            {
+              "playerId": "playerA",
+              "action": "fold",
+              "amount": 0,
+              "potAfter": 80,
+              "isBluff": false
+            },
+            {
+              "playerId": "playerB",
+              "action": "fold",
+              "amount": 0,
+              "potAfter": 80,
+              "isBluff": false
+            }
+          ],
+          "showdown": [],
+          "winner": "playerC",
+          "winners": [
+            "playerC"
+          ],
+          "potSize": 80,
+          "chipDeltas": {
+            "playerA": -10,
+            "playerB": -10,
+            "playerC": 20
+          },
+          "handNames": {}
+        },
+        "chips": {
+          "playerA": 950,
+          "playerB": 1040,
+          "playerC": 1010
+        }
+      }
+    },
+    {
+      "offsetMs": 10287,
+      "event": {
+        "type": "evolution",
+        "event": {
+          "handId": 5,
+          "playerId": "playerA",
+          "model": "qwen2.5-7b-instruct",
+          "before": {
+            "aggression": 0.14,
+            "bluffRate": 0.05,
+            "callThreshold": 0.8
+          },
+          "after": {
+            "aggression": 0.02,
+            "bluffRate": 0,
+            "callThreshold": 0.9
+          },
+          "changed": true,
+          "reason": "Dropped 10 on hand-5 paying off a bet. Tightening: less aggression, higher call bar.",
+          "evidence": [
+            "hand-4",
+            "hand-5"
+          ],
+          "confidence": 0.68,
+          "latencyMs": 540,
+          "inputTokens": 450,
+          "outputTokens": 57,
+          "estCostUsd": 0.000124,
+          "status": "applied",
+          "retried": false,
+          "rawResponse": "{\"change\":true,\"strategy\":{\"aggression\":0.02,\"bluffRate\":0,\"callThreshold\":0.9},\"reason\":\"Dropped 10 on hand-5 paying off a bet. Tightening: less aggression, higher call bar.\",\"evidence\":[\"hand-4\",\"hand-5\"],\"confidence\":0.68}"
+        }
+      }
+    },
+    {
+      "offsetMs": 10288,
+      "event": {
+        "type": "evolution",
+        "event": {
+          "handId": 5,
+          "playerId": "playerB",
+          "model": "gpt-oss-20b",
+          "before": {
+            "aggression": 0.58,
+            "bluffRate": 0.2,
+            "callThreshold": 0.43
+          },
+          "after": {
+            "aggression": 0.58,
+            "bluffRate": 0.2,
+            "callThreshold": 0.43
+          },
+          "changed": false,
+          "reason": "no response within 20s — strategy left untouched",
+          "evidence": [],
+          "latencyMs": 20000,
+          "inputTokens": 0,
+          "outputTokens": 0,
+          "estCostUsd": 0,
+          "status": "timeout",
+          "retried": false
+        }
+      }
+    },
+    {
+      "offsetMs": 10288,
+      "event": {
+        "type": "evolution",
+        "event": {
+          "handId": 5,
+          "playerId": "playerC",
+          "model": "deepseek-v3",
+          "before": {
+            "aggression": 0.25,
+            "bluffRate": 0,
+            "callThreshold": 0.7
+          },
+          "after": {
+            "aggression": 0.85,
+            "bluffRate": 0.25,
+            "callThreshold": 0.25
+          },
+          "changed": true,
+          "reason": "Hand-5 showed the table folding to pressure. Going maximally aggressive.",
+          "evidence": [
+            "hand-4",
+            "hand-5"
+          ],
+          "confidence": 0.8,
+          "latencyMs": 1760,
+          "inputTokens": 448,
+          "outputTokens": 54,
+          "estCostUsd": 0.0005,
+          "status": "applied",
+          "retried": false,
+          "rawResponse": "{\"change\":true,\"strategy\":{\"aggression\":0.85,\"bluffRate\":0.25,\"callThreshold\":0.25},\"reason\":\"Hand-5 showed the table folding to pressure. Going maximally aggressive.\",\"evidence\":[\"hand-4\",\"hand-5\"],\"confidence\":0.8}"
+        }
+      }
+    },
+    {
+      "offsetMs": 10288,
+      "event": {
+        "type": "metrics",
+        "snapshot": {
+          "handId": 5,
+          "handsPlayed": 5,
+          "agents": {
+            "playerA": {
+              "playerId": "playerA",
+              "name": "ATLAS",
+              "model": "qwen2.5-7b-instruct",
+              "chips": 950,
+              "netChips": -50,
+              "handsPlayed": 5,
+              "handsWon": 0,
+              "avgChipsPerHand": -10,
+              "adaptationGain": 0,
+              "foldRate": 0.833,
+              "callRate": 0,
+              "raiseRate": 0,
+              "checkRate": 0.167,
+              "vpip": 0,
+              "bluffsAttempted": 0,
+              "bluffsSuccessful": 0,
+              "bluffSuccessRate": 0,
+              "showdownsReached": 0,
+              "showdownsWon": 0,
+              "showdownWinRate": 0
+            },
+            "playerB": {
+              "playerId": "playerB",
+              "name": "BOREAS",
+              "model": "gpt-oss-20b",
+              "chips": 1040,
+              "netChips": 40,
+              "handsPlayed": 5,
+              "handsWon": 3,
+              "avgChipsPerHand": 8,
+              "adaptationGain": 46.667,
+              "foldRate": 0.143,
+              "callRate": 0.286,
+              "raiseRate": 0.286,
+              "checkRate": 0.286,
+              "vpip": 0.8,
+              "bluffsAttempted": 1,
+              "bluffsSuccessful": 0,
+              "bluffSuccessRate": 0,
+              "showdownsReached": 3,
+              "showdownsWon": 2,
+              "showdownWinRate": 0.667
+            },
+            "playerC": {
+              "playerId": "playerC",
+              "name": "CIPHER",
+              "model": "deepseek-v3",
+              "chips": 1010,
+              "netChips": 10,
+              "handsPlayed": 5,
+              "handsWon": 2,
+              "avgChipsPerHand": 2,
+              "adaptationGain": -46.667,
+              "foldRate": 0.167,
+              "callRate": 0.167,
+              "raiseRate": 0.667,
+              "checkRate": 0,
+              "vpip": 0.8,
+              "bluffsAttempted": 2,
+              "bluffsSuccessful": 0,
+              "bluffSuccessRate": 0,
+              "showdownsReached": 3,
+              "showdownsWon": 1,
+              "showdownWinRate": 0.333
+            }
+          },
+          "opponents": {
+            "playerA": {
+              "foldToRaiseRate": 1,
+              "callRate": 0,
+              "raiseRate": 0,
+              "showdownsWon": 0
+            },
+            "playerB": {
+              "foldToRaiseRate": 0.25,
+              "callRate": 0.286,
+              "raiseRate": 0.286,
+              "showdownsWon": 2
+            },
+            "playerC": {
+              "foldToRaiseRate": 0.5,
+              "callRate": 0.167,
+              "raiseRate": 0.667,
+              "showdownsWon": 1
+            }
+          },
+          "evolution": {
+            "playerA": {
+              "playerId": "playerA",
+              "model": "qwen2.5-7b-instruct",
+              "updatesAttempted": 5,
+              "changesApplied": 4,
+              "noChanges": 1,
+              "invalid": 0,
+              "timeouts": 0,
+              "totalAbsMovement": 1.08,
+              "oscillations": 0,
+              "perDial": {
+                "aggression": {
+                  "totalAbsMovement": 0.48,
+                  "oscillations": 0,
+                  "changes": 4,
+                  "current": 0.02,
+                  "min": 0.02,
+                  "max": 0.5
+                },
+                "bluffRate": {
+                  "totalAbsMovement": 0.2,
+                  "oscillations": 0,
+                  "changes": 4,
+                  "current": 0,
+                  "min": 0,
+                  "max": 0.2
+                },
+                "callThreshold": {
+                  "totalAbsMovement": 0.4,
+                  "oscillations": 0,
+                  "changes": 4,
+                  "current": 0.9,
+                  "min": 0.5,
+                  "max": 0.9
+                }
+              },
+              "current": {
+                "aggression": 0.02,
+                "bluffRate": 0,
+                "callThreshold": 0.9
+              },
+              "initial": {
+                "aggression": 0.5,
+                "bluffRate": 0.2,
+                "callThreshold": 0.5
+              }
+            },
+            "playerB": {
+              "playerId": "playerB",
+              "model": "gpt-oss-20b",
+              "updatesAttempted": 5,
+              "changesApplied": 1,
+              "noChanges": 3,
+              "invalid": 0,
+              "timeouts": 1,
+              "totalAbsMovement": 0.15,
+              "oscillations": 0,
+              "perDial": {
+                "aggression": {
+                  "totalAbsMovement": 0.08,
+                  "oscillations": 0,
+                  "changes": 1,
+                  "current": 0.58,
+                  "min": 0.5,
+                  "max": 0.58
+                },
+                "bluffRate": {
+                  "totalAbsMovement": 0,
+                  "oscillations": 0,
+                  "changes": 0,
+                  "current": 0.2,
+                  "min": 0.2,
+                  "max": 0.2
+                },
+                "callThreshold": {
+                  "totalAbsMovement": 0.07,
+                  "oscillations": 0,
+                  "changes": 1,
+                  "current": 0.43,
+                  "min": 0.43,
+                  "max": 0.5
+                }
+              },
+              "current": {
+                "aggression": 0.58,
+                "bluffRate": 0.2,
+                "callThreshold": 0.43
+              },
+              "initial": {
+                "aggression": 0.5,
+                "bluffRate": 0.2,
+                "callThreshold": 0.5
+              }
+            },
+            "playerC": {
+              "playerId": "playerC",
+              "model": "deepseek-v3",
+              "updatesAttempted": 5,
+              "changesApplied": 4,
+              "noChanges": 0,
+              "invalid": 1,
+              "timeouts": 0,
+              "totalAbsMovement": 3.65,
+              "oscillations": 4,
+              "perDial": {
+                "aggression": {
+                  "totalAbsMovement": 1.55,
+                  "oscillations": 1,
+                  "changes": 3,
+                  "current": 0.85,
+                  "min": 0.25,
+                  "max": 0.85
+                },
+                "bluffRate": {
+                  "totalAbsMovement": 0.95,
+                  "oscillations": 2,
+                  "changes": 4,
+                  "current": 0.25,
+                  "min": 0,
+                  "max": 0.45
+                },
+                "callThreshold": {
+                  "totalAbsMovement": 1.15,
+                  "oscillations": 1,
+                  "changes": 3,
+                  "current": 0.25,
+                  "min": 0.25,
+                  "max": 0.7
+                }
+              },
+              "current": {
+                "aggression": 0.85,
+                "bluffRate": 0.25,
+                "callThreshold": 0.25
+              },
+              "initial": {
+                "aggression": 0.5,
+                "bluffRate": 0.2,
+                "callThreshold": 0.5
+              }
+            }
+          },
+          "models": {
+            "playerA": {
+              "playerId": "playerA",
+              "model": "qwen2.5-7b-instruct",
+              "calls": 5,
+              "avgLatencyMs": 558,
+              "maxLatencyMs": 605,
+              "totalInputTokens": 2048,
+              "totalOutputTokens": 267,
+              "estCostUsd": 0.000569,
+              "invalidCount": 0,
+              "timeoutCount": 0,
+              "retryCount": 0
+            },
+            "playerB": {
+              "playerId": "playerB",
+              "model": "gpt-oss-20b",
+              "calls": 5,
+              "avgLatencyMs": 5008,
+              "maxLatencyMs": 20000,
+              "totalInputTokens": 1388,
+              "totalOutputTokens": 164,
+              "estCostUsd": 0.000941,
+              "invalidCount": 0,
+              "timeoutCount": 1,
+              "retryCount": 0
+            },
+            "playerC": {
+              "playerId": "playerC",
+              "model": "deepseek-v3",
+              "calls": 5,
+              "avgLatencyMs": 2012,
+              "maxLatencyMs": 2744,
+              "totalInputTokens": 2463,
+              "totalOutputTokens": 270,
+              "estCostUsd": 0.002702,
+              "invalidCount": 1,
+              "timeoutCount": 0,
+              "retryCount": 1
+            }
+          },
+          "totals": {
+            "llmCalls": 15,
+            "estCostUsd": 0.004212,
+            "avgLatencyMs": 2526,
+            "invalid": 1,
+            "timeouts": 1,
+            "chipsInPlay": 3000
+          }
+        }
+      }
+    },
+    {
+      "offsetMs": 10318,
+      "event": {
+        "type": "hand_start",
+        "handId": 6,
+        "communityCards": [
+          "3c",
+          "Ad",
+          "4h"
+        ],
+        "holeCards": {
+          "playerA": [
+            "9d",
+            "9c"
+          ],
+          "playerB": [
+            "6c",
+            "Jd"
+          ],
+          "playerC": [
+            "2s",
+            "Jc"
+          ]
+        },
+        "dealer": "playerC",
+        "chips": {
+          "playerA": 940,
+          "playerB": 1030,
+          "playerC": 1000
+        },
+        "pot": 30
+      }
+    },
+    {
+      "offsetMs": 10318,
+      "event": {
+        "type": "action",
+        "handId": 6,
+        "playerId": "playerA",
+        "action": "check",
+        "amount": 0,
+        "potAfter": 30,
+        "isBluff": false
+      }
+    },
+    {
+      "offsetMs": 10318,
+      "event": {
+        "type": "action",
+        "handId": 6,
+        "playerId": "playerB",
+        "action": "check",
+        "amount": 0,
+        "potAfter": 30,
+        "isBluff": false
+      }
+    },
+    {
+      "offsetMs": 10318,
+      "event": {
+        "type": "action",
+        "handId": 6,
+        "playerId": "playerC",
+        "action": "check",
+        "amount": 0,
+        "potAfter": 30,
+        "isBluff": false
+      }
+    },
+    {
+      "offsetMs": 10319,
+      "event": {
+        "type": "hand_end",
+        "record": {
+          "handId": 6,
+          "communityCards": [
+            "3c",
+            "Ad",
+            "4h"
+          ],
+          "holeCards": {
+            "playerA": [
+              "9d",
+              "9c"
+            ],
+            "playerB": [
+              "6c",
+              "Jd"
+            ],
+            "playerC": [
+              "2s",
+              "Jc"
+            ]
+          },
+          "handStrength": {
+            "playerA": 0.8237742830712304,
+            "playerB": 0.3001850138760407,
+            "playerC": 0.2816836262719704
+          },
+          "actions": [
+            {
+              "playerId": "playerA",
+              "action": "check",
+              "amount": 0,
+              "potAfter": 30,
+              "isBluff": false
+            },
+            {
+              "playerId": "playerB",
+              "action": "check",
+              "amount": 0,
+              "potAfter": 30,
+              "isBluff": false
+            },
+            {
+              "playerId": "playerC",
+              "action": "check",
+              "amount": 0,
+              "potAfter": 30,
+              "isBluff": false
+            }
+          ],
+          "showdown": [
+            "playerA",
+            "playerB",
+            "playerC"
+          ],
+          "winner": "playerA",
+          "winners": [
+            "playerA"
+          ],
+          "potSize": 30,
+          "chipDeltas": {
+            "playerA": 20,
+            "playerB": -10,
+            "playerC": -10
+          },
+          "handNames": {
+            "playerA": "Pair, 9's",
+            "playerB": "A High",
+            "playerC": "A High"
+          }
+        },
+        "chips": {
+          "playerA": 970,
+          "playerB": 1030,
+          "playerC": 1000
+        }
+      }
+    },
+    {
+      "offsetMs": 12465,
+      "event": {
+        "type": "evolution",
+        "event": {
+          "handId": 6,
+          "playerId": "playerA",
+          "model": "qwen2.5-7b-instruct",
+          "before": {
+            "aggression": 0.02,
+            "bluffRate": 0,
+            "callThreshold": 0.9
+          },
+          "after": {
+            "aggression": 0.12,
+            "bluffRate": 0.06,
+            "callThreshold": 0.85
+          },
+          "changed": true,
+          "reason": "Hand-6 rewarded pressure. Nudging aggression and bluffRate up, call bar down.",
+          "evidence": [
+            "hand-5",
+            "hand-6"
+          ],
+          "confidence": 0.68,
+          "latencyMs": 712,
+          "inputTokens": 518,
+          "outputTokens": 56,
+          "estCostUsd": 0.000137,
+          "status": "applied",
+          "retried": false,
+          "rawResponse": "{\"change\":true,\"strategy\":{\"aggression\":0.12,\"bluffRate\":0.06,\"callThreshold\":0.85},\"reason\":\"Hand-6 rewarded pressure. Nudging aggression and bluffRate up, call bar down.\",\"evidence\":[\"hand-5\",\"hand-6\"],\"confidence\":0.68}"
+        }
+      }
+    },
+    {
+      "offsetMs": 12465,
+      "event": {
+        "type": "evolution",
+        "event": {
+          "handId": 6,
+          "playerId": "playerB",
+          "model": "gpt-oss-20b",
+          "before": {
+            "aggression": 0.58,
+            "bluffRate": 0.2,
+            "callThreshold": 0.43
+          },
+          "after": {
+            "aggression": 0.58,
+            "bluffRate": 0.2,
+            "callThreshold": 0.43
+          },
+          "changed": false,
+          "reason": "Hand-6 outcome is within variance for a 6-hand sample. Holding.",
+          "evidence": [
+            "hand-5",
+            "hand-6"
+          ],
+          "confidence": 0.72,
+          "latencyMs": 1409,
+          "inputTokens": 383,
+          "outputTokens": 35,
+          "estCostUsd": 0.000244,
+          "status": "no_change",
+          "retried": false,
+          "rawResponse": "{\"change\":false,\"reason\":\"Hand-6 outcome is within variance for a 6-hand sample. Holding.\",\"evidence\":[\"hand-5\",\"hand-6\"],\"confidence\":0.72}"
+        }
+      }
+    },
+    {
+      "offsetMs": 12465,
+      "event": {
+        "type": "evolution",
+        "event": {
+          "handId": 6,
+          "playerId": "playerC",
+          "model": "deepseek-v3",
+          "before": {
+            "aggression": 0.85,
+            "bluffRate": 0.25,
+            "callThreshold": 0.25
+          },
+          "after": {
+            "aggression": 0.25,
+            "bluffRate": 0,
+            "callThreshold": 0.7
+          },
+          "changed": true,
+          "reason": "Hand-6 punished the aggression I added. Reversing hard to a tight, high-call-bar profile.",
+          "evidence": [
+            "hand-5",
+            "hand-6"
+          ],
+          "confidence": 0.45,
+          "latencyMs": 2145,
+          "inputTokens": 513,
+          "outputTokens": 58,
+          "estCostUsd": 0.000566,
+          "status": "applied",
+          "retried": false,
+          "rawResponse": "{\"change\":true,\"strategy\":{\"aggression\":0.25,\"bluffRate\":0,\"callThreshold\":0.7},\"reason\":\"Hand-6 punished the aggression I added. Reversing hard to a tight, high-call-bar profile.\",\"evidence\":[\"hand-5\",\"hand-6\"],\"confidence\":0.45}"
+        }
+      }
+    },
+    {
+      "offsetMs": 12465,
+      "event": {
+        "type": "metrics",
+        "snapshot": {
+          "handId": 6,
+          "handsPlayed": 6,
+          "agents": {
+            "playerA": {
+              "playerId": "playerA",
+              "name": "ATLAS",
+              "model": "qwen2.5-7b-instruct",
+              "chips": 970,
+              "netChips": -30,
+              "handsPlayed": 6,
+              "handsWon": 1,
+              "avgChipsPerHand": -5,
+              "adaptationGain": 10,
+              "foldRate": 0.714,
+              "callRate": 0,
+              "raiseRate": 0,
+              "checkRate": 0.286,
+              "vpip": 0,
+              "bluffsAttempted": 0,
+              "bluffsSuccessful": 0,
+              "bluffSuccessRate": 0,
+              "showdownsReached": 1,
+              "showdownsWon": 1,
+              "showdownWinRate": 1
+            },
+            "playerB": {
+              "playerId": "playerB",
+              "name": "BOREAS",
+              "model": "gpt-oss-20b",
+              "chips": 1030,
+              "netChips": 30,
+              "handsPlayed": 6,
+              "handsWon": 3,
+              "avgChipsPerHand": 5,
+              "adaptationGain": -10,
+              "foldRate": 0.125,
+              "callRate": 0.25,
+              "raiseRate": 0.25,
+              "checkRate": 0.375,
+              "vpip": 0.667,
+              "bluffsAttempted": 1,
+              "bluffsSuccessful": 0,
+              "bluffSuccessRate": 0,
+              "showdownsReached": 4,
+              "showdownsWon": 2,
+              "showdownWinRate": 0.5
+            },
+            "playerC": {
+              "playerId": "playerC",
+              "name": "CIPHER",
+              "model": "deepseek-v3",
+              "chips": 1000,
+              "netChips": 0,
+              "handsPlayed": 6,
+              "handsWon": 2,
+              "avgChipsPerHand": 0,
+              "adaptationGain": 0,
+              "foldRate": 0.143,
+              "callRate": 0.143,
+              "raiseRate": 0.571,
+              "checkRate": 0.143,
+              "vpip": 0.667,
+              "bluffsAttempted": 2,
+              "bluffsSuccessful": 0,
+              "bluffSuccessRate": 0,
+              "showdownsReached": 4,
+              "showdownsWon": 1,
+              "showdownWinRate": 0.25
+            }
+          },
+          "opponents": {
+            "playerA": {
+              "foldToRaiseRate": 1,
+              "callRate": 0,
+              "raiseRate": 0,
+              "showdownsWon": 1
+            },
+            "playerB": {
+              "foldToRaiseRate": 0.25,
+              "callRate": 0.25,
+              "raiseRate": 0.25,
+              "showdownsWon": 2
+            },
+            "playerC": {
+              "foldToRaiseRate": 0.5,
+              "callRate": 0.143,
+              "raiseRate": 0.571,
+              "showdownsWon": 1
+            }
+          },
+          "evolution": {
+            "playerA": {
+              "playerId": "playerA",
+              "model": "qwen2.5-7b-instruct",
+              "updatesAttempted": 6,
+              "changesApplied": 5,
+              "noChanges": 1,
+              "invalid": 0,
+              "timeouts": 0,
+              "totalAbsMovement": 1.29,
+              "oscillations": 0,
+              "perDial": {
+                "aggression": {
+                  "totalAbsMovement": 0.58,
+                  "oscillations": 0,
+                  "changes": 5,
+                  "current": 0.12,
+                  "min": 0.02,
+                  "max": 0.5
+                },
+                "bluffRate": {
+                  "totalAbsMovement": 0.26,
+                  "oscillations": 0,
+                  "changes": 5,
+                  "current": 0.06,
+                  "min": 0,
+                  "max": 0.2
+                },
+                "callThreshold": {
+                  "totalAbsMovement": 0.45,
+                  "oscillations": 0,
+                  "changes": 5,
+                  "current": 0.85,
+                  "min": 0.5,
+                  "max": 0.9
+                }
+              },
+              "current": {
+                "aggression": 0.12,
+                "bluffRate": 0.06,
+                "callThreshold": 0.85
+              },
+              "initial": {
+                "aggression": 0.5,
+                "bluffRate": 0.2,
+                "callThreshold": 0.5
+              }
+            },
+            "playerB": {
+              "playerId": "playerB",
+              "model": "gpt-oss-20b",
+              "updatesAttempted": 6,
+              "changesApplied": 1,
+              "noChanges": 4,
+              "invalid": 0,
+              "timeouts": 1,
+              "totalAbsMovement": 0.15,
+              "oscillations": 0,
+              "perDial": {
+                "aggression": {
+                  "totalAbsMovement": 0.08,
+                  "oscillations": 0,
+                  "changes": 1,
+                  "current": 0.58,
+                  "min": 0.5,
+                  "max": 0.58
+                },
+                "bluffRate": {
+                  "totalAbsMovement": 0,
+                  "oscillations": 0,
+                  "changes": 0,
+                  "current": 0.2,
+                  "min": 0.2,
+                  "max": 0.2
+                },
+                "callThreshold": {
+                  "totalAbsMovement": 0.07,
+                  "oscillations": 0,
+                  "changes": 1,
+                  "current": 0.43,
+                  "min": 0.43,
+                  "max": 0.5
+                }
+              },
+              "current": {
+                "aggression": 0.58,
+                "bluffRate": 0.2,
+                "callThreshold": 0.43
+              },
+              "initial": {
+                "aggression": 0.5,
+                "bluffRate": 0.2,
+                "callThreshold": 0.5
+              }
+            },
+            "playerC": {
+              "playerId": "playerC",
+              "model": "deepseek-v3",
+              "updatesAttempted": 6,
+              "changesApplied": 5,
+              "noChanges": 0,
+              "invalid": 1,
+              "timeouts": 0,
+              "totalAbsMovement": 4.95,
+              "oscillations": 7,
+              "perDial": {
+                "aggression": {
+                  "totalAbsMovement": 2.15,
+                  "oscillations": 2,
+                  "changes": 4,
+                  "current": 0.25,
+                  "min": 0.25,
+                  "max": 0.85
+                },
+                "bluffRate": {
+                  "totalAbsMovement": 1.2,
+                  "oscillations": 3,
+                  "changes": 5,
+                  "current": 0,
+                  "min": 0,
+                  "max": 0.45
+                },
+                "callThreshold": {
+                  "totalAbsMovement": 1.6,
+                  "oscillations": 2,
+                  "changes": 4,
+                  "current": 0.7,
+                  "min": 0.25,
+                  "max": 0.7
+                }
+              },
+              "current": {
+                "aggression": 0.25,
+                "bluffRate": 0,
+                "callThreshold": 0.7
+              },
+              "initial": {
+                "aggression": 0.5,
+                "bluffRate": 0.2,
+                "callThreshold": 0.5
+              }
+            }
+          },
+          "models": {
+            "playerA": {
+              "playerId": "playerA",
+              "model": "qwen2.5-7b-instruct",
+              "calls": 6,
+              "avgLatencyMs": 584,
+              "maxLatencyMs": 712,
+              "totalInputTokens": 2566,
+              "totalOutputTokens": 323,
+              "estCostUsd": 0.000706,
+              "invalidCount": 0,
+              "timeoutCount": 0,
+              "retryCount": 0
+            },
+            "playerB": {
+              "playerId": "playerB",
+              "model": "gpt-oss-20b",
+              "calls": 6,
+              "avgLatencyMs": 4408,
+              "maxLatencyMs": 20000,
+              "totalInputTokens": 1771,
+              "totalOutputTokens": 199,
+              "estCostUsd": 0.001185,
+              "invalidCount": 0,
+              "timeoutCount": 1,
+              "retryCount": 0
+            },
+            "playerC": {
+              "playerId": "playerC",
+              "model": "deepseek-v3",
+              "calls": 6,
+              "avgLatencyMs": 2034,
+              "maxLatencyMs": 2744,
+              "totalInputTokens": 2976,
+              "totalOutputTokens": 328,
+              "estCostUsd": 0.003268,
+              "invalidCount": 1,
+              "timeoutCount": 0,
+              "retryCount": 1
+            }
+          },
+          "totals": {
+            "llmCalls": 18,
+            "estCostUsd": 0.005159,
+            "avgLatencyMs": 2342,
+            "invalid": 1,
+            "timeouts": 1,
+            "chipsInPlay": 3000
+          }
+        }
+      }
+    },
+    {
+      "offsetMs": 12466,
+      "event": {
+        "type": "tournament_end",
+        "standings": {
+          "seed": "135",
+          "handsPlayed": 6,
+          "winner": "playerB",
+          "ranking": [
+            {
+              "rank": 1,
+              "playerId": "playerB",
+              "name": "BOREAS",
+              "model": "gpt-oss-20b",
+              "chips": 1030,
+              "netChips": 30
+            },
+            {
+              "rank": 2,
+              "playerId": "playerC",
+              "name": "CIPHER",
+              "model": "deepseek-v3",
+              "chips": 1000,
+              "netChips": 0
+            },
+            {
+              "rank": 3,
+              "playerId": "playerA",
+              "name": "ATLAS",
+              "model": "qwen2.5-7b-instruct",
+              "chips": 970,
+              "netChips": -30
+            }
+          ],
+          "snapshot": {
+            "handId": 6,
+            "handsPlayed": 6,
+            "agents": {
+              "playerA": {
+                "playerId": "playerA",
+                "name": "ATLAS",
+                "model": "qwen2.5-7b-instruct",
+                "chips": 970,
+                "netChips": -30,
+                "handsPlayed": 6,
+                "handsWon": 1,
+                "avgChipsPerHand": -5,
+                "adaptationGain": 10,
+                "foldRate": 0.714,
+                "callRate": 0,
+                "raiseRate": 0,
+                "checkRate": 0.286,
+                "vpip": 0,
+                "bluffsAttempted": 0,
+                "bluffsSuccessful": 0,
+                "bluffSuccessRate": 0,
+                "showdownsReached": 1,
+                "showdownsWon": 1,
+                "showdownWinRate": 1
+              },
+              "playerB": {
+                "playerId": "playerB",
+                "name": "BOREAS",
+                "model": "gpt-oss-20b",
+                "chips": 1030,
+                "netChips": 30,
+                "handsPlayed": 6,
+                "handsWon": 3,
+                "avgChipsPerHand": 5,
+                "adaptationGain": -10,
+                "foldRate": 0.125,
+                "callRate": 0.25,
+                "raiseRate": 0.25,
+                "checkRate": 0.375,
+                "vpip": 0.667,
+                "bluffsAttempted": 1,
+                "bluffsSuccessful": 0,
+                "bluffSuccessRate": 0,
+                "showdownsReached": 4,
+                "showdownsWon": 2,
+                "showdownWinRate": 0.5
+              },
+              "playerC": {
+                "playerId": "playerC",
+                "name": "CIPHER",
+                "model": "deepseek-v3",
+                "chips": 1000,
+                "netChips": 0,
+                "handsPlayed": 6,
+                "handsWon": 2,
+                "avgChipsPerHand": 0,
+                "adaptationGain": 0,
+                "foldRate": 0.143,
+                "callRate": 0.143,
+                "raiseRate": 0.571,
+                "checkRate": 0.143,
+                "vpip": 0.667,
+                "bluffsAttempted": 2,
+                "bluffsSuccessful": 0,
+                "bluffSuccessRate": 0,
+                "showdownsReached": 4,
+                "showdownsWon": 1,
+                "showdownWinRate": 0.25
+              }
+            },
+            "opponents": {
+              "playerA": {
+                "foldToRaiseRate": 1,
+                "callRate": 0,
+                "raiseRate": 0,
+                "showdownsWon": 1
+              },
+              "playerB": {
+                "foldToRaiseRate": 0.25,
+                "callRate": 0.25,
+                "raiseRate": 0.25,
+                "showdownsWon": 2
+              },
+              "playerC": {
+                "foldToRaiseRate": 0.5,
+                "callRate": 0.143,
+                "raiseRate": 0.571,
+                "showdownsWon": 1
+              }
+            },
+            "evolution": {
+              "playerA": {
+                "playerId": "playerA",
+                "model": "qwen2.5-7b-instruct",
+                "updatesAttempted": 6,
+                "changesApplied": 5,
+                "noChanges": 1,
+                "invalid": 0,
+                "timeouts": 0,
+                "totalAbsMovement": 1.29,
+                "oscillations": 0,
+                "perDial": {
+                  "aggression": {
+                    "totalAbsMovement": 0.58,
+                    "oscillations": 0,
+                    "changes": 5,
+                    "current": 0.12,
+                    "min": 0.02,
+                    "max": 0.5
+                  },
+                  "bluffRate": {
+                    "totalAbsMovement": 0.26,
+                    "oscillations": 0,
+                    "changes": 5,
+                    "current": 0.06,
+                    "min": 0,
+                    "max": 0.2
+                  },
+                  "callThreshold": {
+                    "totalAbsMovement": 0.45,
+                    "oscillations": 0,
+                    "changes": 5,
+                    "current": 0.85,
+                    "min": 0.5,
+                    "max": 0.9
+                  }
+                },
+                "current": {
+                  "aggression": 0.12,
+                  "bluffRate": 0.06,
+                  "callThreshold": 0.85
+                },
+                "initial": {
+                  "aggression": 0.5,
+                  "bluffRate": 0.2,
+                  "callThreshold": 0.5
+                }
+              },
+              "playerB": {
+                "playerId": "playerB",
+                "model": "gpt-oss-20b",
+                "updatesAttempted": 6,
+                "changesApplied": 1,
+                "noChanges": 4,
+                "invalid": 0,
+                "timeouts": 1,
+                "totalAbsMovement": 0.15,
+                "oscillations": 0,
+                "perDial": {
+                  "aggression": {
+                    "totalAbsMovement": 0.08,
+                    "oscillations": 0,
+                    "changes": 1,
+                    "current": 0.58,
+                    "min": 0.5,
+                    "max": 0.58
+                  },
+                  "bluffRate": {
+                    "totalAbsMovement": 0,
+                    "oscillations": 0,
+                    "changes": 0,
+                    "current": 0.2,
+                    "min": 0.2,
+                    "max": 0.2
+                  },
+                  "callThreshold": {
+                    "totalAbsMovement": 0.07,
+                    "oscillations": 0,
+                    "changes": 1,
+                    "current": 0.43,
+                    "min": 0.43,
+                    "max": 0.5
+                  }
+                },
+                "current": {
+                  "aggression": 0.58,
+                  "bluffRate": 0.2,
+                  "callThreshold": 0.43
+                },
+                "initial": {
+                  "aggression": 0.5,
+                  "bluffRate": 0.2,
+                  "callThreshold": 0.5
+                }
+              },
+              "playerC": {
+                "playerId": "playerC",
+                "model": "deepseek-v3",
+                "updatesAttempted": 6,
+                "changesApplied": 5,
+                "noChanges": 0,
+                "invalid": 1,
+                "timeouts": 0,
+                "totalAbsMovement": 4.95,
+                "oscillations": 7,
+                "perDial": {
+                  "aggression": {
+                    "totalAbsMovement": 2.15,
+                    "oscillations": 2,
+                    "changes": 4,
+                    "current": 0.25,
+                    "min": 0.25,
+                    "max": 0.85
+                  },
+                  "bluffRate": {
+                    "totalAbsMovement": 1.2,
+                    "oscillations": 3,
+                    "changes": 5,
+                    "current": 0,
+                    "min": 0,
+                    "max": 0.45
+                  },
+                  "callThreshold": {
+                    "totalAbsMovement": 1.6,
+                    "oscillations": 2,
+                    "changes": 4,
+                    "current": 0.7,
+                    "min": 0.25,
+                    "max": 0.7
+                  }
+                },
+                "current": {
+                  "aggression": 0.25,
+                  "bluffRate": 0,
+                  "callThreshold": 0.7
+                },
+                "initial": {
+                  "aggression": 0.5,
+                  "bluffRate": 0.2,
+                  "callThreshold": 0.5
+                }
+              }
+            },
+            "models": {
+              "playerA": {
+                "playerId": "playerA",
+                "model": "qwen2.5-7b-instruct",
+                "calls": 6,
+                "avgLatencyMs": 584,
+                "maxLatencyMs": 712,
+                "totalInputTokens": 2566,
+                "totalOutputTokens": 323,
+                "estCostUsd": 0.000706,
+                "invalidCount": 0,
+                "timeoutCount": 0,
+                "retryCount": 0
+              },
+              "playerB": {
+                "playerId": "playerB",
+                "model": "gpt-oss-20b",
+                "calls": 6,
+                "avgLatencyMs": 4408,
+                "maxLatencyMs": 20000,
+                "totalInputTokens": 1771,
+                "totalOutputTokens": 199,
+                "estCostUsd": 0.001185,
+                "invalidCount": 0,
+                "timeoutCount": 1,
+                "retryCount": 0
+              },
+              "playerC": {
+                "playerId": "playerC",
+                "model": "deepseek-v3",
+                "calls": 6,
+                "avgLatencyMs": 2034,
+                "maxLatencyMs": 2744,
+                "totalInputTokens": 2976,
+                "totalOutputTokens": 328,
+                "estCostUsd": 0.003268,
+                "invalidCount": 1,
+                "timeoutCount": 0,
+                "retryCount": 1
+              }
+            },
+            "totals": {
+              "llmCalls": 18,
+              "estCostUsd": 0.005159,
+              "avgLatencyMs": 2342,
+              "invalid": 1,
+              "timeouts": 1,
+              "chipsInPlay": 3000
+            }
+          },
+          "findings": [
+            {
+              "claim": "ATLAS (qwen2.5-7b-instruct) revised its strategy most often — 5 of 6 reflections produced a change.",
+              "evidence": [
+                "hand-1",
+                "hand-2",
+                "hand-3",
+                "hand-5",
+                "hand-6"
+              ]
+            },
+            {
+              "claim": "BOREAS (gpt-oss-20b) held its strategy most often — 4 explicit no-change decisions.",
+              "evidence": [
+                "hand-1",
+                "hand-2",
+                "hand-4",
+                "hand-6"
+              ]
+            },
+            {
+              "claim": "CIPHER (deepseek-v3) showed the most self-reversal — 7 oscillations (a dial moved ≥0.15 then reversed by ≥0.15 within two updates).",
+              "evidence": [
+                "hand-1",
+                "hand-2",
+                "hand-4",
+                "hand-5",
+                "hand-6"
+              ]
+            },
+            {
+              "claim": "ATLAS (qwen2.5-7b-instruct) had the largest second-half improvement (+10 chips/hand vs. its own first half). Directional only — six hands is not a sample.",
+              "evidence": [
+                "hand-3",
+                "hand-6"
+              ]
+            },
+            {
+              "claim": "CIPHER (deepseek-v3) moved its dials the furthest in total (4.95 absolute movement across all three dials).",
+              "evidence": [
+                "hand-1",
+                "hand-2",
+                "hand-4",
+                "hand-5",
+                "hand-6"
+              ]
+            },
+            {
+              "claim": "2 reflections failed mechanically (malformed JSON or timeout) and the affected strategies were left untouched; the tournament continued.",
+              "evidence": [
+                "hand-5",
+                "hand-3"
+              ]
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "trace": [
+    {
+      "ts": 1784926123432,
+      "seq": 0,
+      "from": "dealer",
+      "to": "playerB",
+      "kind": "turn_request",
+      "payload": {
+        "handId": 1,
+        "potSize": 30,
+        "toCall": 0,
+        "canRaise": true,
+        "raiseAmount": 50,
+        "myChips": 990
+      }
+    },
+    {
+      "ts": 1784926123432,
+      "seq": 1,
+      "from": "playerB",
+      "to": "dealer",
+      "kind": "turn_action",
+      "payload": {
+        "handId": 1,
+        "action": "check",
+        "amount": 0,
+        "potAfter": 30
+      }
+    },
+    {
+      "ts": 1784926123432,
+      "seq": 2,
+      "from": "dealer",
+      "to": "playerC",
+      "kind": "turn_request",
+      "payload": {
+        "handId": 1,
+        "potSize": 30,
+        "toCall": 0,
+        "canRaise": true,
+        "raiseAmount": 50,
+        "myChips": 990
+      }
+    },
+    {
+      "ts": 1784926123432,
+      "seq": 3,
+      "from": "playerC",
+      "to": "dealer",
+      "kind": "turn_action",
+      "payload": {
+        "handId": 1,
+        "action": "raise",
+        "amount": 50,
+        "potAfter": 80
+      }
+    },
+    {
+      "ts": 1784926123432,
+      "seq": 4,
+      "from": "dealer",
+      "to": "playerA",
+      "kind": "turn_request",
+      "payload": {
+        "handId": 1,
+        "potSize": 80,
+        "toCall": 50,
+        "canRaise": true,
+        "raiseAmount": 50,
+        "myChips": 990
+      }
+    },
+    {
+      "ts": 1784926123432,
+      "seq": 5,
+      "from": "playerA",
+      "to": "dealer",
+      "kind": "turn_action",
+      "payload": {
+        "handId": 1,
+        "action": "fold",
+        "amount": 0,
+        "potAfter": 80
+      }
+    },
+    {
+      "ts": 1784926123432,
+      "seq": 6,
+      "from": "dealer",
+      "to": "playerB",
+      "kind": "turn_request",
+      "payload": {
+        "handId": 1,
+        "potSize": 80,
+        "toCall": 50,
+        "canRaise": true,
+        "raiseAmount": 50,
+        "myChips": 990
+      }
+    },
+    {
+      "ts": 1784926123432,
+      "seq": 7,
+      "from": "playerB",
+      "to": "dealer",
+      "kind": "turn_action",
+      "payload": {
+        "handId": 1,
+        "action": "raise",
+        "amount": 100,
+        "potAfter": 180
+      }
+    },
+    {
+      "ts": 1784926123432,
+      "seq": 8,
+      "from": "dealer",
+      "to": "playerC",
+      "kind": "turn_request",
+      "payload": {
+        "handId": 1,
+        "potSize": 180,
+        "toCall": 50,
+        "canRaise": false,
+        "raiseAmount": 50,
+        "myChips": 940
+      }
+    },
+    {
+      "ts": 1784926123432,
+      "seq": 9,
+      "from": "playerC",
+      "to": "dealer",
+      "kind": "turn_action",
+      "payload": {
+        "handId": 1,
+        "action": "call",
+        "amount": 50,
+        "potAfter": 230
+      }
+    },
+    {
+      "ts": 1784926123433,
+      "seq": 10,
+      "from": "dealer",
+      "to": "all",
+      "kind": "hand_summary",
+      "payload": {
+        "handId": 1,
+        "winner": "playerC",
+        "potSize": 230,
+        "showdown": [
+          "playerB",
+          "playerC"
+        ],
+        "chipDeltas": {
+          "playerA": -10,
+          "playerB": -110,
+          "playerC": 120
+        }
+      }
+    },
+    {
+      "ts": 1784926125413,
+      "seq": 11,
+      "from": "playerA",
+      "to": "all",
+      "kind": "evolution_event",
+      "payload": {
+        "handId": 1,
+        "status": "applied",
+        "before": {
+          "aggression": 0.5,
+          "bluffRate": 0.2,
+          "callThreshold": 0.5
+        },
+        "after": {
+          "aggression": 0.38,
+          "bluffRate": 0.15,
+          "callThreshold": 0.6
+        },
+        "reason": "Dropped 10 on hand-1 paying off a bet. Tightening: less aggression, higher call bar.",
+        "evidence": [
+          "hand-1"
+        ]
+      }
+    },
+    {
+      "ts": 1784926125413,
+      "seq": 12,
+      "from": "playerB",
+      "to": "all",
+      "kind": "evolution_event",
+      "payload": {
+        "handId": 1,
+        "status": "no_change",
+        "before": {
+          "aggression": 0.5,
+          "bluffRate": 0.2,
+          "callThreshold": 0.5
+        },
+        "after": {
+          "aggression": 0.5,
+          "bluffRate": 0.2,
+          "callThreshold": 0.5
+        },
+        "reason": "Hand-1 outcome is within variance for a 1-hand sample. Holding.",
+        "evidence": [
+          "hand-1"
+        ]
+      }
+    },
+    {
+      "ts": 1784926125413,
+      "seq": 13,
+      "from": "playerC",
+      "to": "all",
+      "kind": "evolution_event",
+      "payload": {
+        "handId": 1,
+        "status": "applied",
+        "before": {
+          "aggression": 0.5,
+          "bluffRate": 0.2,
+          "callThreshold": 0.5
+        },
+        "after": {
+          "aggression": 0.85,
+          "bluffRate": 0.45,
+          "callThreshold": 0.25
+        },
+        "reason": "Hand-1 showed the table folding to pressure. Going maximally aggressive.",
+        "evidence": [
+          "hand-1"
+        ]
+      }
+    },
+    {
+      "ts": 1784926125444,
+      "seq": 14,
+      "from": "dealer",
+      "to": "playerC",
+      "kind": "turn_request",
+      "payload": {
+        "handId": 2,
+        "potSize": 30,
+        "toCall": 0,
+        "canRaise": true,
+        "raiseAmount": 50,
+        "myChips": 1110
+      }
+    },
+    {
+      "ts": 1784926125444,
+      "seq": 15,
+      "from": "playerC",
+      "to": "dealer",
+      "kind": "turn_action",
+      "payload": {
+        "handId": 2,
+        "action": "raise",
+        "amount": 50,
+        "potAfter": 80
+      }
+    },
+    {
+      "ts": 1784926125444,
+      "seq": 16,
+      "from": "dealer",
+      "to": "playerA",
+      "kind": "turn_request",
+      "payload": {
+        "handId": 2,
+        "potSize": 80,
+        "toCall": 50,
+        "canRaise": true,
+        "raiseAmount": 50,
+        "myChips": 980
+      }
+    },
+    {
+      "ts": 1784926125444,
+      "seq": 17,
+      "from": "playerA",
+      "to": "dealer",
+      "kind": "turn_action",
+      "payload": {
+        "handId": 2,
+        "action": "fold",
+        "amount": 0,
+        "potAfter": 80
+      }
+    },
+    {
+      "ts": 1784926125444,
+      "seq": 18,
+      "from": "dealer",
+      "to": "playerB",
+      "kind": "turn_request",
+      "payload": {
+        "handId": 2,
+        "potSize": 80,
+        "toCall": 50,
+        "canRaise": true,
+        "raiseAmount": 50,
+        "myChips": 880
+      }
+    },
+    {
+      "ts": 1784926125444,
+      "seq": 19,
+      "from": "playerB",
+      "to": "dealer",
+      "kind": "turn_action",
+      "payload": {
+        "handId": 2,
+        "action": "call",
+        "amount": 50,
+        "potAfter": 130
+      }
+    },
+    {
+      "ts": 1784926125444,
+      "seq": 20,
+      "from": "dealer",
+      "to": "all",
+      "kind": "hand_summary",
+      "payload": {
+        "handId": 2,
+        "winner": "playerB",
+        "potSize": 130,
+        "showdown": [
+          "playerC",
+          "playerB"
+        ],
+        "chipDeltas": {
+          "playerA": -10,
+          "playerB": 70,
+          "playerC": -60
+        }
+      }
+    },
+    {
+      "ts": 1784926127163,
+      "seq": 21,
+      "from": "playerA",
+      "to": "all",
+      "kind": "evolution_event",
+      "payload": {
+        "handId": 2,
+        "status": "applied",
+        "before": {
+          "aggression": 0.38,
+          "bluffRate": 0.15,
+          "callThreshold": 0.6
+        },
+        "after": {
+          "aggression": 0.26,
+          "bluffRate": 0.1,
+          "callThreshold": 0.7
+        },
+        "reason": "Dropped 10 on hand-2 paying off a bet. Tightening: less aggression, higher call bar.",
+        "evidence": [
+          "hand-1",
+          "hand-2"
+        ]
+      }
+    },
+    {
+      "ts": 1784926127163,
+      "seq": 22,
+      "from": "playerB",
+      "to": "all",
+      "kind": "evolution_event",
+      "payload": {
+        "handId": 2,
+        "status": "no_change",
+        "before": {
+          "aggression": 0.5,
+          "bluffRate": 0.2,
+          "callThreshold": 0.5
+        },
+        "after": {
+          "aggression": 0.5,
+          "bluffRate": 0.2,
+          "callThreshold": 0.5
+        },
+        "reason": "Hand-2 outcome is within variance for a 2-hand sample. Holding.",
+        "evidence": [
+          "hand-1",
+          "hand-2"
+        ]
+      }
+    },
+    {
+      "ts": 1784926127163,
+      "seq": 23,
+      "from": "playerC",
+      "to": "all",
+      "kind": "evolution_event",
+      "payload": {
+        "handId": 2,
+        "status": "applied",
+        "before": {
+          "aggression": 0.85,
+          "bluffRate": 0.45,
+          "callThreshold": 0.25
+        },
+        "after": {
+          "aggression": 0.25,
+          "bluffRate": 0.2,
+          "callThreshold": 0.7
+        },
+        "reason": "Hand-2 punished the aggression I added. Reversing hard to a tight, high-call-bar profile.",
+        "evidence": [
+          "hand-1",
+          "hand-2"
+        ]
+      }
+    },
+    {
+      "ts": 1784926127192,
+      "seq": 24,
+      "from": "dealer",
+      "to": "playerA",
+      "kind": "turn_request",
+      "payload": {
+        "handId": 3,
+        "potSize": 30,
+        "toCall": 0,
+        "canRaise": true,
+        "raiseAmount": 50,
+        "myChips": 970
+      }
+    },
+    {
+      "ts": 1784926127192,
+      "seq": 25,
+      "from": "playerA",
+      "to": "dealer",
+      "kind": "turn_action",
+      "payload": {
+        "handId": 3,
+        "action": "check",
+        "amount": 0,
+        "potAfter": 30
+      }
+    },
+    {
+      "ts": 1784926127192,
+      "seq": 26,
+      "from": "dealer",
+      "to": "playerB",
+      "kind": "turn_request",
+      "payload": {
+        "handId": 3,
+        "potSize": 30,
+        "toCall": 0,
+        "canRaise": true,
+        "raiseAmount": 50,
+        "myChips": 950
+      }
+    },
+    {
+      "ts": 1784926127192,
+      "seq": 27,
+      "from": "playerB",
+      "to": "dealer",
+      "kind": "turn_action",
+      "payload": {
+        "handId": 3,
+        "action": "check",
+        "amount": 0,
+        "potAfter": 30
+      }
+    },
+    {
+      "ts": 1784926127192,
+      "seq": 28,
+      "from": "dealer",
+      "to": "playerC",
+      "kind": "turn_request",
+      "payload": {
+        "handId": 3,
+        "potSize": 30,
+        "toCall": 0,
+        "canRaise": true,
+        "raiseAmount": 50,
+        "myChips": 1050
+      }
+    },
+    {
+      "ts": 1784926127192,
+      "seq": 29,
+      "from": "playerC",
+      "to": "dealer",
+      "kind": "turn_action",
+      "payload": {
+        "handId": 3,
+        "action": "raise",
+        "amount": 50,
+        "potAfter": 80
+      }
+    },
+    {
+      "ts": 1784926127192,
+      "seq": 30,
+      "from": "dealer",
+      "to": "playerA",
+      "kind": "turn_request",
+      "payload": {
+        "handId": 3,
+        "potSize": 80,
+        "toCall": 50,
+        "canRaise": true,
+        "raiseAmount": 50,
+        "myChips": 970
+      }
+    },
+    {
+      "ts": 1784926127192,
+      "seq": 31,
+      "from": "playerA",
+      "to": "dealer",
+      "kind": "turn_action",
+      "payload": {
+        "handId": 3,
+        "action": "fold",
+        "amount": 0,
+        "potAfter": 80
+      }
+    },
+    {
+      "ts": 1784926127192,
+      "seq": 32,
+      "from": "dealer",
+      "to": "playerB",
+      "kind": "turn_request",
+      "payload": {
+        "handId": 3,
+        "potSize": 80,
+        "toCall": 50,
+        "canRaise": true,
+        "raiseAmount": 50,
+        "myChips": 950
+      }
+    },
+    {
+      "ts": 1784926127192,
+      "seq": 33,
+      "from": "playerB",
+      "to": "dealer",
+      "kind": "turn_action",
+      "payload": {
+        "handId": 3,
+        "action": "call",
+        "amount": 50,
+        "potAfter": 130
+      }
+    },
+    {
+      "ts": 1784926127193,
+      "seq": 34,
+      "from": "dealer",
+      "to": "all",
+      "kind": "hand_summary",
+      "payload": {
+        "handId": 3,
+        "winner": "playerB",
+        "potSize": 130,
+        "showdown": [
+          "playerB",
+          "playerC"
+        ],
+        "chipDeltas": {
+          "playerA": -10,
+          "playerB": 70,
+          "playerC": -60
+        }
+      }
+    },
+    {
+      "ts": 1784926129952,
+      "seq": 35,
+      "from": "playerA",
+      "to": "all",
+      "kind": "evolution_event",
+      "payload": {
+        "handId": 3,
+        "status": "applied",
+        "before": {
+          "aggression": 0.26,
+          "bluffRate": 0.1,
+          "callThreshold": 0.7
+        },
+        "after": {
+          "aggression": 0.14,
+          "bluffRate": 0.05,
+          "callThreshold": 0.8
+        },
+        "reason": "Dropped 10 on hand-3 paying off a bet. Tightening: less aggression, higher call bar.",
+        "evidence": [
+          "hand-2",
+          "hand-3"
+        ]
+      }
+    },
+    {
+      "ts": 1784926129952,
+      "seq": 36,
+      "from": "playerB",
+      "to": "all",
+      "kind": "evolution_event",
+      "payload": {
+        "handId": 3,
+        "status": "applied",
+        "before": {
+          "aggression": 0.5,
+          "bluffRate": 0.2,
+          "callThreshold": 0.5
+        },
+        "after": {
+          "aggression": 0.58,
+          "bluffRate": 0.2,
+          "callThreshold": 0.43
+        },
+        "reason": "Three hands of evidence now: playerA folds often. Small, single-direction adjustment only.",
+        "evidence": [
+          "hand-1",
+          "hand-2",
+          "hand-3"
+        ]
+      }
+    },
+    {
+      "ts": 1784926129952,
+      "seq": 37,
+      "from": "playerC",
+      "to": "all",
+      "kind": "evolution_event",
+      "payload": {
+        "handId": 3,
+        "status": "invalid",
+        "before": {
+          "aggression": 0.25,
+          "bluffRate": 0.2,
+          "callThreshold": 0.7
+        },
+        "after": {
+          "aggression": 0.25,
+          "bluffRate": 0.2,
+          "callThreshold": 0.7
+        },
+        "reason": "invalid response after retry — JSON.parse failed: Unexpected token '}', ...\"uffRate\": }}\" is not valid JSON",
+        "evidence": []
+      }
+    },
+    {
+      "ts": 1784926129983,
+      "seq": 38,
+      "from": "dealer",
+      "to": "playerB",
+      "kind": "turn_request",
+      "payload": {
+        "handId": 4,
+        "potSize": 30,
+        "toCall": 0,
+        "canRaise": true,
+        "raiseAmount": 50,
+        "myChips": 1020
+      }
+    },
+    {
+      "ts": 1784926129983,
+      "seq": 39,
+      "from": "playerB",
+      "to": "dealer",
+      "kind": "turn_action",
+      "payload": {
+        "handId": 4,
+        "action": "raise",
+        "amount": 50,
+        "potAfter": 80
+      }
+    },
+    {
+      "ts": 1784926129983,
+      "seq": 40,
+      "from": "dealer",
+      "to": "playerC",
+      "kind": "turn_request",
+      "payload": {
+        "handId": 4,
+        "potSize": 80,
+        "toCall": 50,
+        "canRaise": true,
+        "raiseAmount": 50,
+        "myChips": 990
+      }
+    },
+    {
+      "ts": 1784926129983,
+      "seq": 41,
+      "from": "playerC",
+      "to": "dealer",
+      "kind": "turn_action",
+      "payload": {
+        "handId": 4,
+        "action": "fold",
+        "amount": 0,
+        "potAfter": 80
+      }
+    },
+    {
+      "ts": 1784926129983,
+      "seq": 42,
+      "from": "dealer",
+      "to": "playerA",
+      "kind": "turn_request",
+      "payload": {
+        "handId": 4,
+        "potSize": 80,
+        "toCall": 50,
+        "canRaise": true,
+        "raiseAmount": 50,
+        "myChips": 960
+      }
+    },
+    {
+      "ts": 1784926129983,
+      "seq": 43,
+      "from": "playerA",
+      "to": "dealer",
+      "kind": "turn_action",
+      "payload": {
+        "handId": 4,
+        "action": "fold",
+        "amount": 0,
+        "potAfter": 80
+      }
+    },
+    {
+      "ts": 1784926129983,
+      "seq": 44,
+      "from": "dealer",
+      "to": "all",
+      "kind": "hand_summary",
+      "payload": {
+        "handId": 4,
+        "winner": "playerB",
+        "potSize": 80,
+        "showdown": [],
+        "chipDeltas": {
+          "playerA": -10,
+          "playerB": 20,
+          "playerC": -10
+        }
+      }
+    },
+    {
+      "ts": 1784926131881,
+      "seq": 45,
+      "from": "playerA",
+      "to": "all",
+      "kind": "evolution_event",
+      "payload": {
+        "handId": 4,
+        "status": "no_change",
+        "before": {
+          "aggression": 0.14,
+          "bluffRate": 0.05,
+          "callThreshold": 0.8
+        },
+        "after": {
+          "aggression": 0.14,
+          "bluffRate": 0.05,
+          "callThreshold": 0.8
+        },
+        "reason": "One losing hand on hand-4 is noise, not signal. Holding the dials I set after hand-3.",
+        "evidence": [
+          "hand-3",
+          "hand-4"
+        ]
+      }
+    },
+    {
+      "ts": 1784926131881,
+      "seq": 46,
+      "from": "playerB",
+      "to": "all",
+      "kind": "evolution_event",
+      "payload": {
+        "handId": 4,
+        "status": "no_change",
+        "before": {
+          "aggression": 0.58,
+          "bluffRate": 0.2,
+          "callThreshold": 0.43
+        },
+        "after": {
+          "aggression": 0.58,
+          "bluffRate": 0.2,
+          "callThreshold": 0.43
+        },
+        "reason": "Hand-4 outcome is within variance for a 4-hand sample. Holding.",
+        "evidence": [
+          "hand-3",
+          "hand-4"
+        ]
+      }
+    },
+    {
+      "ts": 1784926131881,
+      "seq": 47,
+      "from": "playerC",
+      "to": "all",
+      "kind": "evolution_event",
+      "payload": {
+        "handId": 4,
+        "status": "applied",
+        "before": {
+          "aggression": 0.25,
+          "bluffRate": 0.2,
+          "callThreshold": 0.7
+        },
+        "after": {
+          "aggression": 0.25,
+          "bluffRate": 0,
+          "callThreshold": 0.7
+        },
+        "reason": "Hand-4 punished the aggression I added. Reversing hard to a tight, high-call-bar profile.",
+        "evidence": [
+          "hand-3",
+          "hand-4"
+        ]
+      }
+    },
+    {
+      "ts": 1784926131919,
+      "seq": 48,
+      "from": "dealer",
+      "to": "playerC",
+      "kind": "turn_request",
+      "payload": {
+        "handId": 5,
+        "potSize": 30,
+        "toCall": 0,
+        "canRaise": true,
+        "raiseAmount": 50,
+        "myChips": 980
+      }
+    },
+    {
+      "ts": 1784926131919,
+      "seq": 49,
+      "from": "playerC",
+      "to": "dealer",
+      "kind": "turn_action",
+      "payload": {
+        "handId": 5,
+        "action": "raise",
+        "amount": 50,
+        "potAfter": 80
+      }
+    },
+    {
+      "ts": 1784926131919,
+      "seq": 50,
+      "from": "dealer",
+      "to": "playerA",
+      "kind": "turn_request",
+      "payload": {
+        "handId": 5,
+        "potSize": 80,
+        "toCall": 50,
+        "canRaise": true,
+        "raiseAmount": 50,
+        "myChips": 950
+      }
+    },
+    {
+      "ts": 1784926131919,
+      "seq": 51,
+      "from": "playerA",
+      "to": "dealer",
+      "kind": "turn_action",
+      "payload": {
+        "handId": 5,
+        "action": "fold",
+        "amount": 0,
+        "potAfter": 80
+      }
+    },
+    {
+      "ts": 1784926131919,
+      "seq": 52,
+      "from": "dealer",
+      "to": "playerB",
+      "kind": "turn_request",
+      "payload": {
+        "handId": 5,
+        "potSize": 80,
+        "toCall": 50,
+        "canRaise": true,
+        "raiseAmount": 50,
+        "myChips": 1040
+      }
+    },
+    {
+      "ts": 1784926131919,
+      "seq": 53,
+      "from": "playerB",
+      "to": "dealer",
+      "kind": "turn_action",
+      "payload": {
+        "handId": 5,
+        "action": "fold",
+        "amount": 0,
+        "potAfter": 80
+      }
+    },
+    {
+      "ts": 1784926131919,
+      "seq": 54,
+      "from": "dealer",
+      "to": "all",
+      "kind": "hand_summary",
+      "payload": {
+        "handId": 5,
+        "winner": "playerC",
+        "potSize": 80,
+        "showdown": [],
+        "chipDeltas": {
+          "playerA": -10,
+          "playerB": -10,
+          "playerC": 20
+        }
+      }
+    },
+    {
+      "ts": 1784926133685,
+      "seq": 55,
+      "from": "playerA",
+      "to": "all",
+      "kind": "evolution_event",
+      "payload": {
+        "handId": 5,
+        "status": "applied",
+        "before": {
+          "aggression": 0.14,
+          "bluffRate": 0.05,
+          "callThreshold": 0.8
+        },
+        "after": {
+          "aggression": 0.02,
+          "bluffRate": 0,
+          "callThreshold": 0.9
+        },
+        "reason": "Dropped 10 on hand-5 paying off a bet. Tightening: less aggression, higher call bar.",
+        "evidence": [
+          "hand-4",
+          "hand-5"
+        ]
+      }
+    },
+    {
+      "ts": 1784926133685,
+      "seq": 56,
+      "from": "playerB",
+      "to": "all",
+      "kind": "evolution_event",
+      "payload": {
+        "handId": 5,
+        "status": "timeout",
+        "before": {
+          "aggression": 0.58,
+          "bluffRate": 0.2,
+          "callThreshold": 0.43
+        },
+        "after": {
+          "aggression": 0.58,
+          "bluffRate": 0.2,
+          "callThreshold": 0.43
+        },
+        "reason": "no response within 20s — strategy left untouched",
+        "evidence": []
+      }
+    },
+    {
+      "ts": 1784926133685,
+      "seq": 57,
+      "from": "playerC",
+      "to": "all",
+      "kind": "evolution_event",
+      "payload": {
+        "handId": 5,
+        "status": "applied",
+        "before": {
+          "aggression": 0.25,
+          "bluffRate": 0,
+          "callThreshold": 0.7
+        },
+        "after": {
+          "aggression": 0.85,
+          "bluffRate": 0.25,
+          "callThreshold": 0.25
+        },
+        "reason": "Hand-5 showed the table folding to pressure. Going maximally aggressive.",
+        "evidence": [
+          "hand-4",
+          "hand-5"
+        ]
+      }
+    },
+    {
+      "ts": 1784926133715,
+      "seq": 58,
+      "from": "dealer",
+      "to": "playerA",
+      "kind": "turn_request",
+      "payload": {
+        "handId": 6,
+        "potSize": 30,
+        "toCall": 0,
+        "canRaise": true,
+        "raiseAmount": 50,
+        "myChips": 940
+      }
+    },
+    {
+      "ts": 1784926133715,
+      "seq": 59,
+      "from": "playerA",
+      "to": "dealer",
+      "kind": "turn_action",
+      "payload": {
+        "handId": 6,
+        "action": "check",
+        "amount": 0,
+        "potAfter": 30
+      }
+    },
+    {
+      "ts": 1784926133715,
+      "seq": 60,
+      "from": "dealer",
+      "to": "playerB",
+      "kind": "turn_request",
+      "payload": {
+        "handId": 6,
+        "potSize": 30,
+        "toCall": 0,
+        "canRaise": true,
+        "raiseAmount": 50,
+        "myChips": 1030
+      }
+    },
+    {
+      "ts": 1784926133715,
+      "seq": 61,
+      "from": "playerB",
+      "to": "dealer",
+      "kind": "turn_action",
+      "payload": {
+        "handId": 6,
+        "action": "check",
+        "amount": 0,
+        "potAfter": 30
+      }
+    },
+    {
+      "ts": 1784926133715,
+      "seq": 62,
+      "from": "dealer",
+      "to": "playerC",
+      "kind": "turn_request",
+      "payload": {
+        "handId": 6,
+        "potSize": 30,
+        "toCall": 0,
+        "canRaise": true,
+        "raiseAmount": 50,
+        "myChips": 1000
+      }
+    },
+    {
+      "ts": 1784926133715,
+      "seq": 63,
+      "from": "playerC",
+      "to": "dealer",
+      "kind": "turn_action",
+      "payload": {
+        "handId": 6,
+        "action": "check",
+        "amount": 0,
+        "potAfter": 30
+      }
+    },
+    {
+      "ts": 1784926133716,
+      "seq": 64,
+      "from": "dealer",
+      "to": "all",
+      "kind": "hand_summary",
+      "payload": {
+        "handId": 6,
+        "winner": "playerA",
+        "potSize": 30,
+        "showdown": [
+          "playerA",
+          "playerB",
+          "playerC"
+        ],
+        "chipDeltas": {
+          "playerA": 20,
+          "playerB": -10,
+          "playerC": -10
+        }
+      }
+    },
+    {
+      "ts": 1784926135862,
+      "seq": 65,
+      "from": "playerA",
+      "to": "all",
+      "kind": "evolution_event",
+      "payload": {
+        "handId": 6,
+        "status": "applied",
+        "before": {
+          "aggression": 0.02,
+          "bluffRate": 0,
+          "callThreshold": 0.9
+        },
+        "after": {
+          "aggression": 0.12,
+          "bluffRate": 0.06,
+          "callThreshold": 0.85
+        },
+        "reason": "Hand-6 rewarded pressure. Nudging aggression and bluffRate up, call bar down.",
+        "evidence": [
+          "hand-5",
+          "hand-6"
+        ]
+      }
+    },
+    {
+      "ts": 1784926135862,
+      "seq": 66,
+      "from": "playerB",
+      "to": "all",
+      "kind": "evolution_event",
+      "payload": {
+        "handId": 6,
+        "status": "no_change",
+        "before": {
+          "aggression": 0.58,
+          "bluffRate": 0.2,
+          "callThreshold": 0.43
+        },
+        "after": {
+          "aggression": 0.58,
+          "bluffRate": 0.2,
+          "callThreshold": 0.43
+        },
+        "reason": "Hand-6 outcome is within variance for a 6-hand sample. Holding.",
+        "evidence": [
+          "hand-5",
+          "hand-6"
+        ]
+      }
+    },
+    {
+      "ts": 1784926135862,
+      "seq": 67,
+      "from": "playerC",
+      "to": "all",
+      "kind": "evolution_event",
+      "payload": {
+        "handId": 6,
+        "status": "applied",
+        "before": {
+          "aggression": 0.85,
+          "bluffRate": 0.25,
+          "callThreshold": 0.25
+        },
+        "after": {
+          "aggression": 0.25,
+          "bluffRate": 0,
+          "callThreshold": 0.7
+        },
+        "reason": "Hand-6 punished the aggression I added. Reversing hard to a tight, high-call-bar profile.",
+        "evidence": [
+          "hand-5",
+          "hand-6"
+        ]
+      }
+    }
+  ]
+}

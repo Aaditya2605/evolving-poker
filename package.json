@@ -1,0 +1,27 @@
+{
+  "name": "evolving-poker",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Three LLMs play poker and rewrite their own strategy after every hand.",
+  "type": "module",
+  "workspaces": [
+    "server",
+    "web"
+  ],
+  "scripts": {
+    "tournament": "npm run tournament --workspace server --",
+    "serve": "npm run serve --workspace server --",
+    "find-seed": "npm run find-seed --workspace server --",
+    "test": "npm run test --workspace server",
+    "web": "npm run dev --workspace web",
+    "build": "npm run build --workspace web",
+    "demo": "npm run tournament -- --seed 135",
+    "record": "npm run tournament -- --seed 135 --record fixtures/demo.json --no-serve"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.3"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
