@@ -64,6 +64,7 @@ body.resizing{cursor:col-resize;user-select:none}
 .panel.collapsed .ph .sub{display:none}
 .panel.collapsed .pcollapse{order:-1}
 .panel.collapsed .feed{display:none}
+.panel.collapsed .adapt{display:none}
 .panel{border:1px solid var(--line);border-radius:6px;
   background:linear-gradient(180deg,var(--panel-a) 0%,var(--panel-b) 100%);
   display:flex;flex-direction:column;min-width:0;min-height:0;height:100%;position:relative;overflow:hidden}
@@ -160,42 +161,21 @@ body.resizing{cursor:col-resize;user-select:none}
   scrollbar-width:thin;scrollbar-color:var(--line) transparent}
 .feed::-webkit-scrollbar{width:5px}.feed::-webkit-scrollbar-thumb{background:var(--line);border-radius:3px}
 
-.evo{border:1px solid var(--line);border-left:3px solid var(--ac);border-radius:4px;
-  background:rgba(0,0,0,.28);padding:10px 12px;animation:rise .4s ease;flex:0 0 auto}
 @keyframes rise{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
-.evo .top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:7px;gap:6px}
-.evo .top .a{font-weight:700;font-size:11px;letter-spacing:.1em;color:var(--ac)}
-.evo .top .a small{color:var(--muted);font-weight:400;letter-spacing:.14em;margin-left:6px;font-size:8.5px;text-transform:uppercase}
-.evo .top .h{font-size:8.5px;letter-spacing:.16em;color:var(--muted);text-transform:uppercase;white-space:nowrap}
-.evo .drow{display:grid;grid-template-columns:34px 1fr;gap:8px;font-size:11.5px;line-height:1.6}
-.evo .drow .lbl{color:var(--muted);font-size:9px;letter-spacing:.1em;text-transform:uppercase;padding-top:2px}
-.evo .drow .chg{color:var(--cream)}
-.evo .drow .chg b.from{color:var(--minus);font-weight:400}
-.evo .drow .chg b.to{color:var(--plus);font-weight:700}
-.evo .drow .chg.same{color:#5c6b60}
-.evo .reason{margin-top:6px;font-size:11px;line-height:1.5;color:#d8dcd2;font-style:italic}
-.evo .foot{display:flex;justify-content:space-between;margin-top:7px;font-size:8.5px;letter-spacing:.12em;color:var(--muted);text-transform:uppercase;gap:6px}
-.evo .ev{display:flex;gap:5px;flex-wrap:wrap}
-.evo .ev span{border:1px solid var(--line);border-radius:2px;padding:1px 6px}
-.evo.nochange{border-left-color:#4a5a50}
-.evo.nochange .badge{color:var(--warn);font-size:9px;letter-spacing:.18em;text-transform:uppercase}
-.evo.invalid{border-left-color:#444;opacity:.62}
-.evo.invalid .badge{color:var(--minus);font-size:9px;letter-spacing:.18em;text-transform:uppercase}
-.evo.gold{border-left-color:var(--brass);background:rgba(201,162,39,.07)}
 
 /* ================= ADAPTATION MONITOR ================= */
-.adapt{flex:0 0 auto;padding:10px 12px;border-bottom:1px solid var(--line);background:rgba(0,0,0,.16)}
+.adapt{flex:1 1 auto;min-height:0;padding:10px 12px;background:rgba(0,0,0,.16);overflow-y:auto}
 .adapt-head{display:flex;justify-content:space-between;gap:8px;align-items:baseline;margin-bottom:8px}
 .adapt-head b{font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--brass)}
 .adapt-head span{font-size:7.5px;letter-spacing:.08em;color:var(--muted);text-align:right}
-.adapt-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.adapt-grid{display:grid;grid-template-columns:1fr;gap:8px}
 .trail{border:1px solid var(--line);border-left:2px solid var(--ac);border-radius:3px;
   background:rgba(0,0,0,.24);padding:7px;min-width:0}
 .trail-top{display:flex;justify-content:space-between;gap:5px;align-items:baseline}
 .trail-name{font-size:9px;letter-spacing:.12em;font-weight:700;color:var(--ac)}
 .trail-state{font-size:7px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);text-align:right}
 .trail-state.up{color:var(--plus)}.trail-state.down{color:var(--minus)}
-.trail svg{display:block;width:100%;height:42px;margin:5px 0 3px;overflow:visible}
+.trail svg{display:block;width:100%;height:62px;margin:5px 0 3px;overflow:visible}
 .trail .gridline{stroke:#2b3b30;stroke-width:1}.trail .baseline{stroke:#6b735f;stroke-width:1;stroke-dasharray:3 3}
 .trail .trend{fill:none;stroke:var(--ac);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .trail .point{fill:var(--panel-a);stroke:var(--ac);stroke-width:1.5}
@@ -352,15 +332,14 @@ footer b{color:var(--cream)}
 
   <div class="gutter" id="g2" role="separator" aria-orientation="vertical" title="Drag to resize"></div>
 
-  <!-- EVOLUTION LOG -->
+  <!-- ADAPTATION -->
   <section class="panel stream" id="pEvo">
-    <div class="ph"><h2>Adaptation</h2><div class="sub">outcomes above<br>reflections below</div>
+    <div class="ph"><h2>Adaptation</h2><div class="sub">four outcome trails<br>details in audit</div>
       <button class="pcollapse" data-p="evo" title="Collapse panel">›</button></div>
     <div class="adapt" id="adapt">
       <div class="adapt-head"><b>Outcome trend</b><span>Directional and luck-influenced · ◆ strategy update</span></div>
       <div class="adapt-grid" id="adaptGrid"></div>
     </div>
-    <div class="feed" id="evo" aria-live="polite"></div>
   </section>
 </div>
 
@@ -474,7 +453,7 @@ function bet(id,amount){const b=$('bet'+id);
 function clearBets(){P.forEach(p=>bet(p.id,0));}
 
 /* ================= HELPERS ================= */
-const evo=$('evo'), board=$('board'), chatEl=$('chat'), tick=$('tick');
+const board=$('board'), chatEl=$('chat'), tick=$('tick');
 let calls=0, cost=0, reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
 const fmt$=n=>'$'+n.toLocaleString();
 function chips(id,v){const p=ROSTER[id];p.chips=v;$('ch'+id).textContent=fmt$(v);}
@@ -606,29 +585,9 @@ function typing(id){
 function say(id,text){const t=$('typ'+id);if(t)t.remove();chat(id,text);}
 const band=t=>chat('X',t);
 
-/* ================= EVOLUTION CARDS ================= */
+/* ================= EVOLUTION EVENTS ================= */
 const DL={a:'aggr',b:'bluff',c:'call'};
-function evoCard({id,handN,before,after,reason,evidence,st,lat,c$,llmCalls=1}){
-  const p=ROSTER[id];
-  const cls = st==='no_change'?'nochange': st==='applied'?'':'invalid';
-  const gold = st==='applied' && Math.abs((after.b??0)-(before.b??0))>=0.15 ? ' gold':'';
-  const rows=['a','b','c'].map(d=>{
-    const f=before[d].toFixed(2),t=(after[d]??before[d]).toFixed(2);
-    const changed=st==='applied'&&f!==t;
-    return `<div class="drow"><span class="lbl">${{a:'AGG',b:'BLF',c:'CAL'}[d]}</span>
-      <span class="chg ${changed?'':'same'}">${changed?`<b class="from">${f}</b> → <b class="to">${t}</b>`:`${f} —`}</span></div>`;
-  }).join('');
-  const badge= st==='no_change'?`<div class="badge">HELD STRATEGY — evidence insufficient</div>`
-             : st==='applied'?'':`<div class="badge">${st==='timeout'?'TIMEOUT':'INVALID JSON'} — strategy unchanged</div>`;
-  const card=document.createElement('div');
-  card.className='evo '+cls+gold;card.style.setProperty('--ac',p.ac);
-  card.innerHTML=`
-    <div class="top"><span class="a">${esc(p.nm)}<small>${esc(p.model)}</small></span><span class="h">AFTER HAND ${handN}</span></div>
-    ${badge}${st==='invalid'||st==='timeout'?'':rows}
-    <div class="reason">"${esc(reason)}"</div>
-    <div class="foot"><span class="ev">${evidence.map(e=>`<span>${esc(e)}</span>`).join('')}</span>
-      <span>${lat}ms · $${c$.toFixed(4)}</span></div>`;
-  evo.appendChild(card);evo.scrollTop=evo.scrollHeight;
+function evoCard({id,before,after,st,lat,c$,llmCalls=1}){
   $('seat'+id).classList.add('reflecting');setTimeout(()=>$('seat'+id).classList.remove('reflecting'),2200);
   bumpCall(lat,c$,llmCalls);
   const s=M[id];s.lat=s.lat?Math.round((s.lat+lat)/2):lat;s.cost=+(s.cost+c$).toFixed(4);
@@ -640,7 +599,6 @@ function evoCard({id,handN,before,after,reason,evidence,st,lat,c$,llmCalls=1}){
     tickEvo(id,'rewrote '+ch);
   } else if(st==='no_change'){ tickEvo(id,'held strategy'); }
   else { tickEvo(id, st==='timeout'?'timed out — unchanged':'invalid reply — unchanged'); }
-  while(evo.children.length>10)evo.removeChild(evo.firstChild);
 }
 function osc(id){M[id].osc++;}
 function bluffStat(id,w,t){M[id].bw=w;M[id].bt=t;}
@@ -701,7 +659,7 @@ function resetUi(){
   Object.values(M).forEach(m=>{m.vol=0;m.noch=0;m.osc=0;m.lat=0;m.cost=0;m.bw=0;m.bt=0;m.gain=0;});
   calls=0;cost=0;$('callNo').textContent=calls;$('costNo').textContent='$'+cost.toFixed(3);
   unfold();clearHoles();clearBets();clearBubbles();community([]);pot(0);callback(false);
-  chatEl.innerHTML='';evo.innerHTML='';tick.innerHTML='';
+  chatEl.innerHTML='';tick.innerHTML='';
   P.forEach(p=>trails[p.id]={chips:[p.chips],changes:new Set(),metrics:null});
   renderTrails();
 }

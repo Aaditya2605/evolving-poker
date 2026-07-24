@@ -39,7 +39,7 @@ npm run serve -- --fixture fixtures/demo.json
 | Header | Hand progress, pot, Pioneer call count, running cost |
 | The Table | 4 seats, hole cards face up, community cards, denominated chip stacks, per-seat bet chips, live strategy dials, decision bubbles |
 | Agent Wire | Real Pioneer decision reasons and reflections; player events delivered through Band |
-| Adaptation | Chip trajectory, strategy-change markers, directional second-half gain, and the reflection audit log |
+| Adaptation | Four vertically stacked chip trajectories, strategy-change markers, and directional second-half gain |
 | Ticker | Play-by-play commentary strip |
 
 Drag the gutters between panels to resize. Use the `‹` / `›` buttons in the
@@ -49,6 +49,7 @@ the space to the table.
 The adaptation monitor deliberately does not claim “accuracy”: poker has no
 labeled correct action. It reports observed chip outcomes, strategy changes,
 oscillation, and the existing second-half-versus-first-half directional gain.
+Detailed reflection evidence remains available in `cited.md` and `/audit`.
 
 ---
 
