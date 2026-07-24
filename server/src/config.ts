@@ -28,16 +28,17 @@ export const config = {
   /** Band addresses rooms by uuid; create one with POST /chats. */
   bandChatId: env("BAND_CHAT_ID"),
   /**
-   * One Band user per player: 1=playerA, 2=playerB, 3=playerC. The dealer is
-   * not among them — it is the in-process engine and holds no Band identity.
-   * An agent cannot @mention itself, so a message is published by one player
-   * and addressed to the other two; there is no neutral broadcaster.
+   * One Band user per player, in seat order. The dealer is not among them — it
+   * is the in-process engine and holds no Band identity.
+   *
+   * Four are configured but the engine seats three (PLAYER_IDS); slot 4 is
+   * provisioned ahead of a fourth seat, so index past `PLAYER_IDS.length` only
+   * once the engine actually deals to it.
+   *
+   * An agent cannot @mention itself, so a message published by a player is
+   * never delivered to that player — there is no self-addressed broadcast.
    */
-  bandUsers: {
-    playerA: bandUser(1),
-    playerB: bandUser(2),
-    playerC: bandUser(3),
-  } as Record<PlayerId, BandUser>,
+  bandUsers: [1, 2, 3, 4].map(bandUser) as BandUser[],
   x402Mode: env("X402_MODE", "test") as "test" | "real",
   x402PriceUsd: Number(env("X402_PRICE_USD", "0.05")),
   x402PayTo: env("X402_PAY_TO"),
