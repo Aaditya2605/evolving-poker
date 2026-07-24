@@ -30,22 +30,13 @@ export class LlmTimeoutError extends Error {
 // --- pricing ---------------------------------------------------------------
 
 const DEFAULT_PRICING: Record<string, { in: number; out: number }> = {
-  "qwen2.5-7b-instruct": { in: 0.0002, out: 0.0006 },
-  "gpt-oss-20b": { in: 0.0005, out: 0.0015 },
-  "deepseek-v3": { in: 0.0009, out: 0.0018 },
+  "Qwen/Qwen3-4B-Instruct-2507": { in: 0.0002, out: 0.0006 },
+  "openai/gpt-oss-20b": { in: 0.0005, out: 0.0015 },
+  "deepseek-ai/DeepSeek-V3": { in: 0.0009, out: 0.0018 },
 };
 
-function pricingTable(): Record<string, { in: number; out: number }> {
-  const table = { ...DEFAULT_PRICING };
-  for (const entry of config.pricingRaw.split(",").filter(Boolean)) {
-    const [model, i, o] = entry.split(":");
-    if (model && i && o) table[model.trim()] = { in: Number(i), out: Number(o) };
-  }
-  return table;
-}
-
 export function estimateCost(model: string, inputTokens: number, outputTokens: number): number {
-  const p = pricingTable()[model] ?? { in: 0.0005, out: 0.0015 };
+  const p = DEFAULT_PRICING[model] ?? { in: 0.0005, out: 0.0015 };
   return Number(((inputTokens / 1000) * p.in + (outputTokens / 1000) * p.out).toFixed(6));
 }
 
@@ -206,11 +197,11 @@ export class PioneerAdapter implements LlmAdapter {
     const model = config.models[playerId];
     const started = Date.now();
 
-    const res = await fetch(`${config.pioneerBaseUrl.replace(/\/$/, "")}/chat/completions`, {
+    const res = await fetch("https://api.pioneer.ai/v1/chat/completions", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${config.pioneerApiKey}`,
+        "X-API-Key": config.pioneerApiKey,
       },
       body: JSON.stringify({
         model,
@@ -246,9 +237,6 @@ export class PioneerAdapter implements LlmAdapter {
 
 export function createAdapter(latencyScale = 1): LlmAdapter {
   if (config.pioneerMode === "real") {
-    if (!config.pioneerBaseUrl || !config.pioneerApiKey) {
-      throw new Error("PIONEER_MODE=real requires PIONEER_BASE_URL and PIONEER_API_KEY");
-    }
     return new PioneerAdapter();
   }
   return new MockAdapter(latencyScale);

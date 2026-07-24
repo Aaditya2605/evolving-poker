@@ -200,14 +200,4 @@ export function writeCited(markdown: string, path = "cited.md"): string {
   return full;
 }
 
-/**
- * TODO(event): publish cited.md through whatever the event actually requires
- * (Replay account, IPFS pin, gist, sponsor endpoint). Everything upstream of
- * this function already works; this is the only unplugged wire.
- */
-export async function publishCited(_markdown: string): Promise<{ url: string | null }> {
-  console.warn("[cited] publishCited() is a stub — wire the event's publishing mechanism here.");
-  return { url: null };
-}
-
 export type { PlayerId };

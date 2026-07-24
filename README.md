@@ -56,8 +56,8 @@ winners, and a 1030 / 1000 / 970 finish.
 
 ## Demo disaster kit
 
-- **Network dies / API down.** Nothing here needs the network. `PIONEER_MODE=mock`
-  is the default and the mock adapter is scripted, not random.
+- **Network dies / API down.** Remove `PIONEER_API_KEY` to use the scripted,
+  deterministic mock.
 - **Everything dies.** `npm run serve -- --fixture fixtures/demo.json` replays a
   committed recording with original pacing. The UI cannot tell the difference — it
   gets the same events on the same socket, and the header just says `REPLAY`.
@@ -113,51 +113,40 @@ the give-up, and the "strategy unchanged" card in the UI.
 
 ## Sponsor integrations
 
-Everything below runs in mock/local/test mode by default and is a thin swap-in behind
-an interface. Copy `.env.example` to `.env` to change modes — every variable is
-optional.
+Copy `.env.example` to `.env`. The server loads it automatically; keys enable their
+integration, so there are no mode switches or configurable production URLs.
 
 ### Pioneer (three different models, one per player)
 
-- **Now:** `PIONEER_MODE=mock` — scripted personas, zero network.
-- **At the event:** set `PIONEER_MODE=real`, `PIONEER_API_KEY`, `PIONEER_BASE_URL`, and
-  `MODEL_A` / `MODEL_B` / `MODEL_C` in `.env`.
-- **File to touch:** `server/src/evolution/pioneer.ts` — `PioneerAdapter` already speaks
-  the OpenAI-compatible shape. Confirm the base URL and the header name; that is the
-  whole change. `createAdapter()` at the bottom of the file picks mock vs real.
-- Cost per call is estimated in `estimateCost()` in the same file. Set
-  `PIONEER_PRICING` in `.env` (`model:inPer1k:outPer1k,...`) to make the on-screen
-  number true.
+- Add `PIONEER_API_KEY`. Its presence selects real inference; without it the scripted
+  mock runs with zero network calls.
+- The adapter uses Pioneer's fixed OpenAI-compatible endpoint,
+  `https://api.pioneer.ai/v1/chat/completions`, with `X-API-Key` authentication.
+- The three default model IDs were verified against Pioneer's live decoder catalog.
+  `MODEL_A`, `MODEL_B`, and `MODEL_C` remain optional shell overrides.
 
 ### Band (agent-to-agent messaging)
 
-- **Now:** `BAND_MODE=local` — `server/src/comm/trace.ts` writes a Band-shaped message
-  log in-process.
-- **At the event:** set `BAND_MODE=real`, `BAND_API_KEY`, `BAND_ROOM`. The trace is
-  written identically in both modes, so every consumer (UI drawer, audit pack,
-  `/api/trace`) is unaffected by the swap.
-- **File to touch:** `server/src/comm/band.ts` — `BandRouter_Real.connect()` currently
-  dynamic-imports a placeholder `band-sdk`. Replace that import and the `publish()`
-  call with the real SDK surface; nothing outside the class changes. If the SDK fails
-  to load it warns and degrades to local routing rather than dying.
+- **Now:** local trace only. The previous `band-sdk` npm import was removed because
+  Band documents a Python SDK, not a JavaScript package.
+- Real three-player routing needs `BAND_ROOM_ID` plus one registered remote-agent key
+  per player. A single shared key would only mirror an audit log as one identity.
+- The TypeScript implementation must use Band's REST API plus its Phoenix-channel
+  WebSocket. Until that transport exists, configured credentials warn and fall back
+  to the local trace.
 
-### x402 (paywalled audit pack)
+### Replay QA
 
-- **Now:** `X402_MODE=test` — `GET /audit` returns 402 with payment terms, then 200 with
-  the pack once a payment header is present.
-- **At the event:** set `X402_MODE=real`, `X402_PRICE_USD`, `X402_PAY_TO`.
-- **File to touch:** `server/src/outputs/x402.ts` — swap the stub header check for real
-  settlement verification. The route in `server/src/index.ts` does not change.
+- Replay is external QA, not a report publisher or runtime SDK.
+- Deploy or run the React spectator app at a reachable URL, then submit that URL at
+  `https://qa.replay.io/`.
+- No application key, package, or environment variable is needed for the stand-alone
+  or GitHub workflows.
 
-### Replay / cited.md
+### Local audit outputs
 
-- **Now:** `cited.md` is generated into the repo root at the end of every tournament and
-  served at `/api/cited`. It is gitignored — it is an artifact, not source.
-- **At the event:** publish it to the Replay account. Nothing in the app depends on
-  publication succeeding.
-- **File to touch:** `server/src/outputs/report.ts` — `publishCited()` is a stub that
-  warns and returns. Wire the event's publishing mechanism there. `generateCited()` in
-  the same file owns the content.
+- `cited.md` is generated into the repo root and served at `/api/cited`.
+- `GET /audit` is a test-only 402 demo endpoint; it is not a sponsor integration.
 
 ---
 
@@ -168,6 +157,7 @@ optional.
 - [ ] `npm run web` shows the tournament streaming live
 - [ ] `curl localhost:8787/audit` returns 402
 - [ ] `npm run serve -- --fixture fixtures/demo.json` replays cleanly
-- [ ] Pioneer keys + three model IDs in `.env` (see above)
-- [ ] Band SDK swapped in `trace.ts`, trace still populated
-- [ ] `cited.md` published to Replay
+- [ ] Pioneer key in `.env`; one real reflection request succeeds
+- [ ] Three Band remote agents and one shared room created
+- [ ] Band REST/WebSocket transport implemented; local trace still populated
+- [ ] Deployed spectator URL passes Replay QA
