@@ -12,13 +12,38 @@ const pioneerMode = env(
   "PIONEER_MODE",
   process.env.NODE_ENV === "test" ? "mock" : "real",
 ) as "mock" | "real";
-const bandAgentKeys = {
-  playerA: env("BAND_AGENT_A_API_KEY"),
-  playerB: env("BAND_AGENT_B_API_KEY"),
-  playerC: env("BAND_AGENT_C_API_KEY"),
-} as Record<PlayerId, string>;
+/**
+ * A registered Band agent. All three fields are needed to publish: the key
+ * authenticates the sender, and the id + handle identify a recipient inside the
+ * mandatory `mentions` array. Empty strings when Band is not configured.
+ */
+export interface BandAgent {
+  id: string;
+  handle: string;
+  key: string;
+}
+
+/** Handles are stored bare; the API returns them without the leading `@`. */
+const bandAgent = (slot: string): BandAgent => ({
+  id: env(`BAND_AGENT_${slot}_ID`),
+  handle: env(`BAND_AGENT_${slot}_HANDLE`).replace(/^@/, ""),
+  key: env(`BAND_AGENT_${slot}_API_KEY`),
+});
+
+const bandAgents = {
+  playerA: bandAgent("A"),
+  playerB: bandAgent("B"),
+  playerC: bandAgent("C"),
+} as Record<PlayerId, BandAgent>;
+/**
+ * A fourth player, provisioned ahead of the engine — PLAYER_IDS seats three.
+ * Deliberately outside `bandAgents` so a Record<PlayerId, _> stays exhaustive
+ * and nothing iterates it into a seat that does not exist.
+ */
+const bandFourthSeat = bandAgent("D");
 const bandRoomId = env("BAND_ROOM_ID");
-const bandConfigured = !!bandRoomId && Object.values(bandAgentKeys).every(Boolean);
+const bandConfigured =
+  !!bandRoomId && Object.values(bandAgents).every((a) => a.id && a.handle && a.key);
 const configuredModels = {
   playerA: env("MODEL_A", "Qwen/Qwen3-4B-Instruct-2507"),
   playerB: env("MODEL_B", "openai/gpt-oss-20b"),
@@ -30,8 +55,12 @@ export const config = {
   pioneerApiKey,
   bandMode: bandConfigured ? "unwired" : "local",
   bandConfigured,
-  bandAgentKeys,
+  bandAgents,
+  bandFourthSeat,
   bandRoomId,
+  /** Verified live. Auth is `X-API-Key`, not a bearer token. */
+  bandBaseUrl: env("BAND_BASE_URL", "https://app.band.ai/api/v1/agent"),
+  bandWsUrl: env("BAND_WS_URL", "wss://app.band.ai/api/v1/socket/websocket"),
   x402Mode: env("X402_MODE", "test") as "test" | "real",
   x402PriceUsd: Number(env("X402_PRICE_USD", "0.05")),
   x402PayTo: env("X402_PAY_TO"),
