@@ -15,6 +15,7 @@ npm run tournament -- --seed 135 --hands 6        # arbitrary seed / hand count;
 npm run serve -- --fixture fixtures/demo.json     # replay a recording (--speed N, --loop)
 npm run record                                    # re-record fixtures/demo.json
 npm run find-seed -- --limit 500                  # score seeds 1..N for demo-worthiness
+npm run tune -- --seeds 1..20                     # per-model self-modification profile
 npm run build                                     # production web bundle into web/dist
 ```
 
@@ -48,6 +49,8 @@ web/src/               React spectator UI, useReducer over the same event union
 1. **The poker loop is pure.** `decide()` (`server/src/engine/decide.ts`) maps `(DecisionContext, Strategy) → Decision` and nothing else. It deliberately does not see opponent statistics — if stats fed decisions, behavior would drift without a strategy change and the auditability claim ("a changed action traces back to a changed dial") would be false. Opponent stats reach the *models* during reflection only. Do not widen `DecisionContext` with opponent data.
 2. **Models are never babysat.** `server/src/evolution/schema.ts` validates shape and range only — no step-size cap, no one-dial-at-a-time rule, no anti-reversal rule. A model may swing a dial 0.1 → 0.9 → 0.1. Oscillation is *measured* (`countOscillations` in `metrics.ts`, `OSCILLATION_DELTA`/`OSCILLATION_WINDOW` in `shared/types.ts`), never prevented.
 
+The parser repairs **transport, never judgement**: a dial arriving as `"0.45"` is coerced to `0.45`, a bare evidence string is wrapped, an over-long reason is truncated — but an out-of-range dial is still rejected. Every repair is recorded on `EvolutionEvent.repairs` and rolled up per model, because which model needed which repair is itself a result. Keep new repairs on the transport side of that line.
+
 ### Determinism
 
 A seed fully determines a frozen-strategy run. Every random draw routes through `seededRand(key)` in `server/src/engine/deck.ts` (FNV-1a hash → mulberry32), keyed by strings like `${seed}:${handId}:${playerId}:${actionIndex}`. `handStrength()` is exact by default (enumerates all C(47,2)=1081 opponent holdings) and only Monte-Carlos when `samples` is passed, which `find-seed` does for speed. Tests assert byte-identical event logs across two runs with `reflections: false`. Changing the constants in `decide.ts` or the RNG key format invalidates the committed fixture and the chosen seed.
@@ -61,6 +64,10 @@ A seed fully determines a frozen-strategy run. Every random draw routes through 
 ### Tournament flow
 
 `runTournament` (`engine/tournament.ts`) loops hands: `playHand()` → `MetricsTracker.recordHand()` → `reflectAll()` → metrics snapshot. `reflectAll` runs all three players' reflections concurrently via `Promise.allSettled` and **never throws and never stalls** — every player gets an `EvolutionEvent` every hand, with `status` of `applied | no_change | invalid | timeout`, and `after === before` on any failure. `reflectOne` retries once with a hint appended (`withRetryHint`) before giving up. Failure is rendered, not swallowed.
+
+Two counts, deliberately separate: **reflections** are `hands × players` (18 on the demo), exactly one per player per hand; **`llmCalls`** are adapter calls actually spent, which is higher whenever a retry fires (19 on the demo seed). `EvolutionEvent.llmCalls` is 1 or 2; `MetricsSnapshot.totals` carries both numbers. Don't collapse them back into one.
+
+`ReflectionInput.evolutionHistory` includes **failed** reflections — rejected, timed out and explicit no-change entries, each tagged with `status` and capped at the last six. A model that cannot see its hand-3 response was rejected emits the same broken shape on hand 4, so don't filter this back down to applied-only.
 
 `coerceLegal()` in `engine/hand.ts` is the last line of defense on illegal actions (raise when `!canRaise`, check facing a bet, call with nothing to call); each coercion is recorded on the tracker and surfaces in `cited.md`.
 
@@ -98,4 +105,4 @@ The Vite dev server proxies `/api` and `/ws` to `:8787`, so run the tournament a
 
 ## Tests
 
-`server/test/engine.test.ts` and `server/test/evolution.test.ts`, numbered to match the spec's guarantees: chip conservation at every action boundary, determinism, `decide()` monotonicity in each dial, reflection schema parsing, betting legality, oscillation counting, plus mock-persona, reflection-input and prompt-builder coverage. Chips must always sum to 3000 — that assertion is the fastest signal that an engine change broke something.
+50 tests across `server/test/engine.test.ts` (14) and `server/test/evolution.test.ts` (36), numbered to match the spec's guarantees: chip conservation at every action boundary, determinism, `decide()` monotonicity in each dial, reflection schema parsing and repair, betting legality, oscillation counting, plus mock-persona, reflection-input and prompt-builder coverage. Chips must always sum to 3000 — that assertion is the fastest signal that an engine change broke something.

@@ -119,8 +119,15 @@ export interface ReflectionInput {
   latestHand: ReflectionLatestHand;
   cumulative: ReflectionCumulative;
   opponents: Record<string, OpponentBehavior>;
+  /**
+   * Includes FAILED reflections, not just applied ones. A model that cannot see
+   * that its hand-3 response was rejected will produce the same malformed
+   * response on hand 4.
+   */
   evolutionHistory: {
     hand: number;
+    status: EvolutionStatus;
+    /** For non-applied entries this equals the strategy that stayed in force. */
     strategy: Strategy;
     reason: string;
     chipsChangeSince: number;
@@ -153,6 +160,10 @@ export interface EvolutionEvent {
   inputTokens: number;
   outputTokens: number;
   estCostUsd: number;
+  /** Actual adapter calls spent on THIS reflection: 1, or 2 when a retry fired. */
+  llmCalls: number;
+  /** Local coercions applied to the raw response before validation. */
+  repairs: string[];
   status: EvolutionStatus;
   retried: boolean;
   rawResponse?: string; // audit pack only
@@ -199,6 +210,11 @@ export interface StrategyEvolutionMetrics {
   updatesAttempted: number;
   changesApplied: number;
   noChanges: number;
+  /**
+   * noChanges / updatesAttempted. A model that never declines to change is not
+   * reasoning about evidence, and this is the number that shows it.
+   */
+  noChangeRate: number;
   invalid: number;
   timeouts: number;
   /** Σ |Δdial| across all dials and all applied updates. "volatility". */
@@ -233,6 +249,9 @@ export interface MetricsSnapshot {
   evolution: Record<PlayerId, StrategyEvolutionMetrics>;
   models: Record<PlayerId, ModelPerformance>;
   totals: {
+    /** Reflections run: hands × players. Exactly one per player per hand. */
+    reflections: number;
+    /** Adapter calls actually spent. ≥ reflections, because retries cost a call. */
     llmCalls: number;
     estCostUsd: number;
     avgLatencyMs: number;
@@ -335,6 +354,8 @@ export interface AuditPack {
     inputTokens: number;
     outputTokens: number;
     estCostUsd: number;
+    llmCalls: number;
+    repairs: string[];
   }[];
   trace: TraceMessage[];
   standings: FinalStandings | null;

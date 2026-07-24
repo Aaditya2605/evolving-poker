@@ -43,7 +43,9 @@ export function generateCited(
   push("# Evolving Poker — Run Report");
   push();
   push(
-    `Seed \`${standings.seed}\` · ${standings.handsPlayed} hands · ${snap.totals.llmCalls} model calls · ` +
+    `Seed \`${standings.seed}\` · ${standings.handsPlayed} hands · ` +
+      `${snap.totals.reflections} reflections costing ${snap.totals.llmCalls} model calls` +
+      `${snap.totals.llmCalls > snap.totals.reflections ? ` (${snap.totals.llmCalls - snap.totals.reflections} retry)` : ""} · ` +
       `est. \$${snap.totals.estCostUsd.toFixed(4)} · Pioneer mode \`${extras.pioneerMode}\` · Band mode \`${extras.bandMode}\``,
   );
   push();
@@ -104,7 +106,9 @@ export function generateCited(
       push(`- **after hand-${ev.handId} · ${tag}** — ${dialLine(ev)}`);
       push(`  > ${ev.reason}${cites}`);
       push(
-        `  <sub>${ev.latencyMs}ms · ${ev.inputTokens}+${ev.outputTokens} tok · \$${ev.estCostUsd.toFixed(5)}${ev.retried ? " · retried once" : ""}</sub>`,
+        `  <sub>${ev.latencyMs}ms · ${ev.inputTokens}+${ev.outputTokens} tok · \$${ev.estCostUsd.toFixed(5)} · ` +
+          `${ev.llmCalls} call${ev.llmCalls === 1 ? "" : "s"}${ev.retried ? " (retried once)" : ""}` +
+          `${ev.repairs.length ? ` · repaired: ${ev.repairs.join("; ")}` : ""}</sub>`,
       );
     }
     push();
@@ -123,18 +127,30 @@ export function generateCited(
   // --- model comparison -----------------------------------------------------
   push("## Model comparison");
   push();
-  push("| Model | Chips | Adaptation gain* | Bluffs | Volatility | Oscillations | Avg latency | Est. cost |");
-  push("|-------|-------|------------------|--------|------------|--------------|-------------|-----------|");
+  push("| Model | Chips | Adaptation gain* | Bluffs | Volatility | Oscillations | No-change rate | Repairs | Avg latency | Est. cost |");
+  push("|-------|-------|------------------|--------|------------|--------------|----------------|---------|-------------|-----------|");
   for (const id of PLAYER_IDS) {
     const a = snap.agents[id];
     const e = snap.evolution[id];
     const m = snap.models[id];
+    const repairs = evolutions
+      .filter((ev) => ev.playerId === id)
+      .reduce((n, ev) => n + ev.repairs.length, 0);
     push(
       `| \`${a.model}\` | ${a.chips} | ${a.adaptationGain >= 0 ? "+" : ""}${a.adaptationGain} | ` +
         `${a.bluffsSuccessful}/${a.bluffsAttempted} | ${e.totalAbsMovement} | ${e.oscillations} | ` +
+        `${Math.round(e.noChangeRate * 100)}% | ${repairs} | ` +
         `${m.avgLatencyMs}ms | \$${m.estCostUsd.toFixed(5)} |`,
     );
   }
+  push();
+  push(
+    "No-change rate = share of reflections where the model explicitly declined to move a dial. " +
+      "Repairs = local coercions applied to the raw response before validation (a number sent as " +
+      "a string, evidence sent unwrapped, a second object after the first). Repairs fix transport, " +
+      "never judgement, and they do not always rescue a response. Both columns are properties of " +
+      "the model's output hygiene, not of its poker.",
+  );
   push();
   push(
     "\\* Adaptation gain = second-half average chips/hand minus first-half. **Directional, this run only.** " +

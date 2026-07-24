@@ -7,6 +7,32 @@ function strategyJson(s: { aggression: number; bluffRate: number; callThreshold:
   return `{"aggression": ${n2(s.aggression)}, "bluffRate": ${n2(s.bluffRate)}, "callThreshold": ${n2(s.callThreshold)}}`;
 }
 
+/** Keeps the prompt bounded as the tournament runs long. */
+const HISTORY_LIMIT = 6;
+
+/**
+ * Failed reflections are rendered, not hidden. Telling a model only about its
+ * successes means it never learns that hand 3 came back unparseable — so it
+ * emits the same shape again on hand 4 with nothing to correct against.
+ */
+function historyLine(h: ReflectionInput["evolutionHistory"][number]): string {
+  const chips = `${h.chipsChangeSince >= 0 ? "+" : ""}${h.chipsChangeSince}`;
+  switch (h.status) {
+    case "applied":
+      return `  hand ${h.hand}: ${strategyJson(h.strategy)} — "${h.reason}" (chips since: ${chips})`;
+    case "no_change":
+      return `  hand ${h.hand}: HELD — "${h.reason}". No change was made. (chips since: ${chips})`;
+    case "timeout":
+      return `  hand ${h.hand}: TIMED OUT. No change was made.`;
+    default: {
+      // The status word already says it was rejected; keep only the parser's
+      // complaint, which is the part the model can actually act on.
+      const detail = h.reason.replace(/^invalid response after retry\s*—\s*/, "");
+      return `  hand ${h.hand}: RESPONSE REJECTED — ${detail}. No change was made.`;
+    }
+  }
+}
+
 function handSummary(input: ReflectionInput): string {
   const h = input.latestHand;
   const board = h.communityCards.join(" ");
@@ -49,10 +75,8 @@ export function buildReflectionPrompt(input: ReflectionInput): string {
 
   const historyLines =
     input.evolutionHistory
-      .map(
-        (h) =>
-          `  hand ${h.hand}: ${strategyJson(h.strategy)} — "${h.reason}" (chips since: ${h.chipsChangeSince >= 0 ? "+" : ""}${h.chipsChangeSince})`,
-      )
+      .slice(-HISTORY_LIMIT)
+      .map(historyLine)
       .join("\n") || "  (this is your first reflection)";
 
   const yourActions =
@@ -81,15 +105,41 @@ CUMULATIVE: ${cumulativeLine(cumulative)}
 OPPONENTS (public behavior only):
 ${opponentLines}
 
-YOUR PREVIOUS UPDATES:
+YOUR REFLECTION HISTORY (including responses that were rejected):
 ${historyLines}
 
-Decide whether to change your strategy. One noisy hand may be luck; you may
-answer no-change. If you change, choose the new values yourself.
+${closingBlock()}`;
+}
+
+/**
+ * The ask, not the enforcement. `schema.ts` still validates shape and range
+ * only — no step cap, no one-dial rule, no anti-reversal rule. This block
+ * makes no-change a real option rather than a footnote, because a blank
+ * three-dial object invites the model to fill in all three every hand.
+ */
+export const DEFAULT_CLOSING_BLOCK = `Decide whether to change your strategy.
+
+One hand is a small sample. Most hands do not justify a change, and holding
+steady on noise is a better answer than drifting. Answer no-change unless you
+can point at something specific that happened.
+
+If you do change, cite the hand in \`evidence\` — "hand-4", not a general poker
+principle. If you cannot cite a hand, you do not have a reason.
+
 Respond with ONLY this JSON (no markdown, no extra text):
 {"change": <bool>, "strategy": {"aggression": <n>, "bluffRate": <n>,
-"callThreshold": <n>}, "reason": "<=200 chars, public>", "evidence":
-["hand-N", ...], "confidence": <n>}`;
+"callThreshold": <n>}, "reason": "<=200 chars, public>",
+ "evidence": ["hand-N", ...], "confidence": <n>}`;
+
+let override: string | null = null;
+
+/** Only `npm run tune` calls this — it A/Bs wording without editing source. */
+export function setClosingBlock(text: string | null): void {
+  override = text;
+}
+
+function closingBlock(): string {
+  return override ?? DEFAULT_CLOSING_BLOCK;
 }
 
 /** One retry only: the same prompt with the parser's complaint appended. */

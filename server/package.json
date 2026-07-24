@@ -7,6 +7,7 @@
     "tournament": "tsx src/index.ts tournament",
     "serve": "tsx src/index.ts serve",
     "find-seed": "tsx src/index.ts find-seed",
+    "tune": "tsx src/tune.ts",
     "test": "vitest run",
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit"

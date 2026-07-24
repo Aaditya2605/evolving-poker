@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import type { PlayerId, Strategy } from "../../shared/types.js";
+import type { PlayerId, ReflectionInput, Strategy } from "../../shared/types.js";
 import { PLAYER_IDS } from "../../shared/types.js";
 import { parseReflection } from "../src/evolution/schema.js";
 import { countOscillations } from "../src/engine/metrics.js";
@@ -19,6 +19,41 @@ class ScriptedAdapter implements LlmAdapter {
     const raw = this.responses[Math.min(this.calls++, this.responses.length - 1)];
     return { raw, latencyMs: 5, inputTokens: 100, outputTokens: 20, estCostUsd: 0.0001 };
   }
+}
+
+function inputWithHistory(history: ReflectionInput["evolutionHistory"]): ReflectionInput {
+  return {
+    identity: { name: "ATLAS", model: "test-model", chips: 1000, strategy: neutral },
+    latestHand: {
+      handId: 1,
+      communityCards: ["Qh", "Jc", "4h"],
+      myCards: ["As", "Kd"],
+      myHandStrength: 0.6,
+      myActions: [{ action: "call", amount: 50 }],
+      opponentActions: [],
+      bluffOutcome: null,
+      chipDelta: 0,
+      winner: "playerB",
+      wentToShowdown: false,
+      revealed: {},
+    },
+    cumulative: {
+      handsPlayed: 1,
+      handsWon: 0,
+      netChips: 0,
+      avgChipsPerHand: 0,
+      foldRate: 0,
+      callRate: 1,
+      raiseRate: 0,
+      checkRate: 0,
+      bluffsAttempted: 0,
+      bluffsSuccessful: 0,
+      showdownsReached: 0,
+      showdownsWon: 0,
+    },
+    opponents: {},
+    evolutionHistory: history,
+  };
 }
 
 describe("4. reflection schema", () => {
@@ -126,6 +161,174 @@ describe("4. reflection schema", () => {
   });
 });
 
+describe("3. parser isolation and local repairs", () => {
+  it("takes the FIRST complete object when a model emits two", () => {
+    const r = parseReflection(
+      '{"change":false,"reason":"first","evidence":[]}\n{"change":true,"reason":"second","evidence":[]}',
+    );
+    expect(r.ok).toBe(true);
+    expect(r.value?.reason).toBe("first");
+  });
+
+  it("survives a brace inside prose after the object", () => {
+    const r = parseReflection(
+      '{"change":false,"reason":"holding","evidence":[]}\nNote: the set {A, B} folded.',
+    );
+    expect(r.ok).toBe(true);
+    expect(r.value?.change).toBe(false);
+  });
+
+  it("survives a brace inside a string literal", () => {
+    const r = parseReflection('{"change":false,"reason":"pot odds {2:1} were wrong","evidence":[]}');
+    expect(r.ok).toBe(true);
+    expect(r.value?.reason).toBe("pot odds {2:1} were wrong");
+  });
+
+  it("survives an escaped quote inside a string literal", () => {
+    const r = parseReflection('{"change":false,"reason":"he said \\"raise\\" first","evidence":[]}');
+    expect(r.ok).toBe(true);
+    expect(r.value?.reason).toBe('he said "raise" first');
+  });
+
+  it("coerces numeric strings on the dials", () => {
+    const r = parseReflection(
+      '{"change":true,"strategy":{"aggression":"0.45","bluffRate":"0.3","callThreshold":0.4},"reason":"x","evidence":["hand-1"]}',
+    );
+    expect(r.ok).toBe(true);
+    expect(r.value?.strategy?.aggression).toBe(0.45);
+    expect(r.repairs).toContain("strategy.aggression: string coerced to number");
+    expect(r.repairs).toContain("strategy.bluffRate: string coerced to number");
+  });
+
+  it("coerces a stringified boolean on change", () => {
+    const r = parseReflection('{"change":"false","reason":"holding","evidence":[]}');
+    expect(r.ok).toBe(true);
+    expect(r.value?.change).toBe(false);
+    expect(r.repairs).toContain('change: string "false" coerced to boolean');
+  });
+
+  it("wraps a bare evidence string in an array", () => {
+    const r = parseReflection('{"change":false,"reason":"x","evidence":"hand-2"}');
+    expect(r.ok).toBe(true);
+    expect(r.value?.evidence).toEqual(["hand-2"]);
+    expect(r.repairs).toContain("evidence: bare string wrapped in array");
+  });
+
+  it("truncates an over-long reason rather than rejecting it", () => {
+    const r = parseReflection(
+      `{"change":false,"reason":"${"z".repeat(400)}","evidence":[]}`,
+    );
+    expect(r.ok).toBe(true);
+    expect(r.value!.reason.length).toBe(300);
+    expect(r.repairs).toContain("reason: truncated to 300 chars");
+  });
+
+  it("drops a strategy sent alongside change=false", () => {
+    const r = parseReflection(
+      '{"change":false,"strategy":{"aggression":0.9,"bluffRate":0.9,"callThreshold":0.1},"reason":"x","evidence":[]}',
+    );
+    expect(r.ok).toBe(true);
+    expect(r.value?.strategy).toBeUndefined();
+    expect(r.repairs).toContain("strategy dropped: change was false");
+  });
+
+  it("still reports no repairs for a clean response", () => {
+    const r = parseReflection('{"change":false,"reason":"clean","evidence":["hand-1"]}');
+    expect(r.ok).toBe(true);
+    expect(r.repairs).toEqual([]);
+  });
+
+  it("repairs transport, never judgement — an out-of-range dial is still rejected", () => {
+    const r = parseReflection(
+      '{"change":true,"strategy":{"aggression":"1.4","bluffRate":0.3,"callThreshold":0.4},"reason":"x","evidence":[]}',
+    );
+    expect(r.ok).toBe(false);
+    expect(r.error).toContain("aggression");
+  });
+});
+
+describe("1. failed reflections feed back into the next prompt", () => {
+  /** Garbage on hand 1, valid thereafter — keyed on handId, not call order. */
+  class FailFirstHand implements LlmAdapter {
+    readonly mode = "fail-first";
+    async reflect(_id: PlayerId, _prompt: string, meta: { handId: number }) {
+      const raw =
+        meta.handId === 1
+          ? "I reckon we should play looser."
+          : '{"change":false,"reason":"holding","evidence":["hand-2"]}';
+      return { raw, latencyMs: 5, inputTokens: 100, outputTokens: 20, estCostUsd: 0.0001 };
+    }
+  }
+
+  it("tells the model its previous response was rejected", async () => {
+    const result = await runTournament({
+      seed: "feedback",
+      totalHands: 2,
+      players: initialPlayers(neutral),
+      adapter: new FailFirstHand(),
+      timeoutMs: 1000,
+    });
+
+    const hand2 = result.reflections.filter((r) => r.handId === 2 && r.playerId === "playerA");
+    expect(hand2.length).toBeGreaterThan(0);
+    expect(hand2[0].prompt).toContain("hand 1: RESPONSE REJECTED");
+    expect(hand2[0].prompt).toContain("No change was made.");
+  });
+
+  it("shows explicit no-change decisions too, not just applied ones", async () => {
+    const result = await runTournament({
+      seed: "held",
+      totalHands: 2,
+      players: initialPlayers(neutral),
+      adapter: new ScriptedAdapter(['{"change":false,"reason":"variance","evidence":["hand-1"]}']),
+      timeoutMs: 1000,
+    });
+    const hand2 = result.reflections.find((r) => r.handId === 2)!;
+    expect(hand2.prompt).toContain("HELD");
+    expect(hand2.prompt).toContain("variance");
+  });
+
+  it("caps the history block so the prompt cannot grow unbounded", () => {
+    const long = Array.from({ length: 20 }, (_, i) => ({
+      hand: i + 1,
+      status: "applied" as const,
+      strategy: neutral,
+      reason: `reason-${i + 1}`,
+      chipsChangeSince: 0,
+    }));
+    const prompt = buildReflectionPrompt(inputWithHistory(long));
+    expect(prompt).not.toContain("reason-14");
+    expect(prompt).toContain("reason-15");
+    expect(prompt).toContain("reason-20");
+  });
+});
+
+describe("2. no-change is offered as a real option", () => {
+  it("asks for a hand citation and biases toward holding", () => {
+    const prompt = buildReflectionPrompt(inputWithHistory([]));
+    expect(prompt).toContain("Answer no-change unless you");
+    expect(prompt).toContain("cite the hand in");
+  });
+
+  it("still imposes no strategic guardrails in the wording", () => {
+    const prompt = buildReflectionPrompt(inputWithHistory([]));
+    for (const banned of ["at most", "one dial", "step size", "do not reverse"]) {
+      expect(prompt.toLowerCase()).not.toContain(banned);
+    }
+  });
+
+  it("reports a per-model no-change rate", async () => {
+    const result = await runTournament({
+      seed: "rate",
+      totalHands: 2,
+      players: initialPlayers(neutral),
+      adapter: new ScriptedAdapter(['{"change":false,"reason":"variance","evidence":["hand-1"]}']),
+      timeoutMs: 1000,
+    });
+    expect(result.standings.snapshot.evolution.playerA.noChangeRate).toBe(1);
+  });
+});
+
 describe("6. oscillation counter", () => {
   it("fires on the 0.30 → 0.80 → 0.20 pattern", () => {
     expect(countOscillations([0.5, -0.6])).toBe(1);
@@ -159,7 +362,12 @@ describe("mock personas", () => {
     });
 
     const evo = result.standings.snapshot.evolution;
-    expect(result.standings.snapshot.totals.llmCalls).toBe(18);
+    const totals = result.standings.snapshot.totals;
+    // Exactly one reflection per player per hand — that part is fixed.
+    expect(totals.reflections).toBe(18);
+    // Calls are NOT 18: playerC's hand-3 response is malformed twice, so its
+    // retry spends a second call. Claiming 18 calls would be a lie on a slide.
+    expect(totals.llmCalls).toBe(19);
     expect(evo.playerB.timeouts).toBe(1);
     expect(evo.playerC.invalid).toBe(1);
 

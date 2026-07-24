@@ -26,6 +26,8 @@ export interface CapturedReflection {
   inputTokens: number;
   outputTokens: number;
   estCostUsd: number;
+  llmCalls: number;
+  repairs: string[];
 }
 
 export interface ReflectAllArgs {
@@ -94,14 +96,14 @@ export function buildReflectionInput(
     },
     cumulative: tracker.cumulativeFor(id),
     opponents,
-    evolutionHistory: player.strategyHistory
-      .filter((e) => e.status === "applied")
-      .map((e) => ({
-        hand: e.handId,
-        strategy: e.after,
-        reason: e.reason,
-        chipsChangeSince: player.chips - (chipsAtHandEnd.get(e.handId)?.[id] ?? player.chips),
-      })),
+    // Failures included, marked. See ReflectionInput.evolutionHistory.
+    evolutionHistory: player.strategyHistory.map((e) => ({
+      hand: e.handId,
+      status: e.status,
+      strategy: e.after,
+      reason: e.reason,
+      chipsChangeSince: player.chips - (chipsAtHandEnd.get(e.handId)?.[id] ?? player.chips),
+    })),
   };
 }
 
@@ -139,10 +141,13 @@ async function reflectOne(
 
   let retried = false;
   let lastRaw = "";
-  let usage = { latencyMs: 0, inputTokens: 0, outputTokens: 0, estCostUsd: 0 };
+  let usage = { latencyMs: 0, inputTokens: 0, outputTokens: 0, estCostUsd: 0, llmCalls: 0 };
+  const repairs: string[] = [];
 
   for (let attempt = 0; attempt < 2; attempt++) {
     let result;
+    // Counted before the await: a call that times out still cost us a call.
+    usage.llmCalls += 1;
     try {
       result = await withTimeout(
         adapter.reflect(player.id, prompt, { handId, input }),
@@ -160,6 +165,8 @@ async function reflectOne(
           : `adapter error: ${(e as Error).message}`,
         latencyMs,
         retried,
+        usage.llmCalls,
+        repairs,
       );
       onCapture?.(capture(player, handId, prompt, lastRaw, null, ev));
       return ev;
@@ -171,11 +178,22 @@ async function reflectOne(
       inputTokens: usage.inputTokens + result.inputTokens,
       outputTokens: usage.outputTokens + result.outputTokens,
       estCostUsd: Number((usage.estCostUsd + result.estCostUsd).toFixed(6)),
+      llmCalls: usage.llmCalls,
     };
 
     const parsed = parseReflection(result.raw);
+    repairs.push(...parsed.repairs);
     if (parsed.ok && parsed.value) {
-      const ev = applyReflection(player, handId, before, parsed.value, usage, retried, result.raw);
+      const ev = applyReflection(
+        player,
+        handId,
+        before,
+        parsed.value,
+        usage,
+        retried,
+        result.raw,
+        repairs,
+      );
       onCapture?.(capture(player, handId, prompt, result.raw, parsed.value, ev));
       return ev;
     }
@@ -196,6 +214,7 @@ async function reflectOne(
       reason: `invalid response after retry — ${parsed.error}`,
       evidence: [],
       ...usage,
+      repairs,
       status: "invalid",
       retried,
       rawResponse: result.raw.slice(0, 500),
@@ -205,7 +224,16 @@ async function reflectOne(
     return ev;
   }
 
-  return failureEvent(player, handId, "invalid", "exhausted attempts", usage.latencyMs, retried);
+  return failureEvent(
+    player,
+    handId,
+    "invalid",
+    "exhausted attempts",
+    usage.latencyMs,
+    retried,
+    usage.llmCalls,
+    repairs,
+  );
 }
 
 function applyReflection(
@@ -213,9 +241,16 @@ function applyReflection(
   handId: number,
   before: Strategy,
   out: ReflectionOutput,
-  usage: { latencyMs: number; inputTokens: number; outputTokens: number; estCostUsd: number },
+  usage: {
+    latencyMs: number;
+    inputTokens: number;
+    outputTokens: number;
+    estCostUsd: number;
+    llmCalls: number;
+  },
   retried: boolean,
   raw: string,
+  repairs: string[],
 ): EvolutionEvent {
   const wantsChange = out.change && !!out.strategy;
   const after: Strategy = wantsChange ? { ...out.strategy! } : before;
@@ -234,6 +269,7 @@ function applyReflection(
     evidence: out.evidence,
     confidence: out.confidence,
     ...usage,
+    repairs,
     status: changed ? "applied" : "no_change",
     retried,
     rawResponse: raw.slice(0, 500),
@@ -249,6 +285,8 @@ function failureEvent(
   reason: string,
   latencyMs: number,
   retried: boolean,
+  llmCalls = 1,
+  repairs: string[] = [],
 ): EvolutionEvent {
   const before: Strategy = { ...player.strategy };
   const ev: EvolutionEvent = {
@@ -264,6 +302,8 @@ function failureEvent(
     inputTokens: 0,
     outputTokens: 0,
     estCostUsd: 0,
+    llmCalls,
+    repairs,
     status,
     retried,
   };
@@ -291,6 +331,8 @@ function capture(
     inputTokens: ev.inputTokens,
     outputTokens: ev.outputTokens,
     estCostUsd: ev.estCostUsd,
+    llmCalls: ev.llmCalls,
+    repairs: ev.repairs,
   };
 }
 
