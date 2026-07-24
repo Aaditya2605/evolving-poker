@@ -16,9 +16,6 @@
   --pA:#5bd6c0; --pB:#b78bff; --pC:#f0a868; --pN:#f0789c; --pX:#d8cfb4;
   --mono:'JetBrains Mono',ui-monospace,monospace;
   --disp:'Big Shoulders Display',sans-serif;
-  /* Seats sit in four corner columns; the board and pot own the empty
-     centre column. Top seats are clamped with min()/max() so they can
-     never drift inward into the cards at any table width. */
 }
 *{margin:0;padding:0;box-sizing:border-box}
 body{
@@ -36,15 +33,6 @@ header{display:flex;align-items:center;justify-content:space-between;gap:14px;
 .stat{text-align:right}
 .stat .k{font-size:9px;letter-spacing:.2em;color:var(--muted);text-transform:uppercase}
 .stat .v{font-family:var(--disp);font-weight:700;font-size:22px;letter-spacing:.04em}
-.controls{display:flex;gap:6px;align-items:center}
-.controls button{
-  font-family:var(--mono);font-size:10px;letter-spacing:.14em;color:var(--cream);
-  background:transparent;border:1px solid var(--line);border-radius:3px;
-  padding:7px 12px;cursor:pointer;text-transform:uppercase;
-}
-.controls button:hover{border-color:var(--brass);color:var(--brass)}
-.controls button:focus-visible{outline:2px solid var(--brass);outline-offset:2px}
-.controls button.active{border-color:var(--brass);color:var(--brass)}
 .live{display:flex;align-items:center;gap:7px;border:1px solid var(--line);border-radius:3px;
   padding:7px 11px;font-size:10px;letter-spacing:.24em}
 .live .dot{width:7px;height:7px;border-radius:50%;background:var(--minus);animation:blink 1.4s infinite}
@@ -75,7 +63,6 @@ body.resizing{cursor:col-resize;user-select:none}
 .panel.collapsed .ph .sub{display:none}
 .panel.collapsed .pcollapse{order:-1}
 .panel.collapsed .feed{display:none}
-.panel.collapsed .note{display:none!important}
 .panel{border:1px solid var(--line);border-radius:6px;
   background:linear-gradient(180deg,var(--panel-a) 0%,var(--panel-b) 100%);
   display:flex;flex-direction:column;min-width:0;min-height:0;height:100%;position:relative;overflow:hidden}
@@ -195,7 +182,7 @@ body.resizing{cursor:col-resize;user-select:none}
 .evo.invalid .badge{color:var(--minus);font-size:9px;letter-spacing:.18em;text-transform:uppercase}
 .evo.gold{border-left-color:var(--brass);background:rgba(201,162,39,.07)}
 
-/* ================= TABLE TALK ================= */
+/* ================= AGENT WIRE ================= */
 .msg{display:grid;grid-template-columns:32px 1fr;gap:8px;animation:rise .35s ease;flex:0 0 auto}
 .msg .ava{width:32px;height:38px;display:flex;align-items:flex-end;justify-content:center}
 .msg .ava svg{display:block}
@@ -241,21 +228,6 @@ footer{display:flex;justify-content:center;align-items:center;padding:8px 22px 1
   color:var(--muted);font-size:9px;letter-spacing:.2em;text-transform:uppercase;gap:10px;flex-wrap:wrap}
 footer b{color:var(--cream)}
 
-/* ================= DESIGN NOTES ================= */
-#notesBtn{position:fixed;right:16px;bottom:16px;z-index:60;font-family:var(--mono);
-  background:var(--brass);color:#141109;border:0;border-radius:4px;padding:10px 16px;
-  font-size:10px;letter-spacing:.18em;text-transform:uppercase;cursor:pointer;font-weight:700;
-  box-shadow:0 6px 20px rgba(0,0,0,.5)}
-.note{display:none;position:absolute;z-index:50;max-width:230px;font-size:10px;line-height:1.5;
-  background:#1c1509;border:1px solid var(--brass);color:#f0e6c8;border-radius:4px;padding:8px 10px}
-.note b{color:var(--brass);display:block;font-size:9px;letter-spacing:.18em;text-transform:uppercase;margin-bottom:3px}
-body.notes .note{display:block}
-#legend{display:none;position:fixed;left:16px;bottom:16px;z-index:55;width:280px;
-  background:#10160f;border:1px solid var(--brass);border-radius:6px;padding:12px 14px;font-size:10px;line-height:1.7}
-body.notes #legend{display:block}
-#legend h3{font-family:var(--disp);font-size:14px;letter-spacing:.14em;color:var(--brass);text-transform:uppercase;margin-bottom:6px}
-#legend .sw{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:5px;vertical-align:-1px}
-
 /* ================= RESPONSIVE ================= */
 @media(max-width:1240px){
   .wrap{grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;gap:14px;
@@ -285,13 +257,8 @@ body.notes #legend{display:block}
     <div class="stat"><div class="k">Pot</div><div class="v" id="potNo">$0</div></div>
     <div class="stat"><div class="k">Pioneer calls</div><div class="v" id="callNo">0</div></div>
     <div class="stat"><div class="k">Est cost</div><div class="v" id="costNo">$0.000</div></div>
-    <div class="controls">
-      <button id="btnPlay" class="active" aria-label="Play or pause">⏸ Pause</button>
-      <button id="btnSpeed" aria-label="Playback speed">1×</button>
-    </div>
     <div class="live"><span class="dot"></span>LIVE</div>
   </div>
-  <div class="note" style="right:20px;top:74px"><b>① Header</b>Hand progress, live call + cost counters. Play/pause/speed are functional — wire to WS live mode and fixture replay.</div>
 </header>
 
 <div class="wrap">
@@ -304,19 +271,15 @@ body.notes #legend{display:block}
       <div class="board" id="board"></div>
       <div class="pot"><div id="potChips"></div><b id="potCenter">$0</b><div class="plbl">pot</div></div>
     </div>
-    <div class="note" style="left:16px;top:64px"><b>② Seats</b>4 crewmate agents at the corners of the oval. Hole cards face-up for spectators. Dealer button rotates each hand.</div>
-    <div class="note" style="left:16px;bottom:14px"><b>③ Strategy dials</b>Per-seat bars = live dial values (agg/blf/cal). Animate width + flash on every applied evolution event.</div>
-    <div class="note" style="right:16px;bottom:64px"><b>⑧ The §27 beat</b>When a changed dial produces a different action in a repeated spot, surface it — this toast is the demo's proof moment.</div>
   </section>
 
   <div class="gutter" id="g1" role="separator" aria-orientation="vertical" title="Drag to resize"></div>
 
-  <!-- TABLE TALK -->
+  <!-- AGENT WIRE -->
   <section class="panel talk" id="pTalk">
-    <div class="ph"><h2>Table Talk</h2><div class="sub">band<br>message bus</div>
+    <div class="ph"><h2>Agent Wire</h2><div class="sub">Pioneer decisions<br>Band delivery trace</div>
       <button class="pcollapse" data-p="talk" title="Collapse panel">‹</button></div>
     <div class="feed" id="chat" aria-live="polite"></div>
-    <div class="note" style="left:14px;bottom:14px"><b>⑨ Band bus</b>Dealer identity routes every turn; agents talk trash on the same bus. Pure spectator flavour — never fed back as model input.</div>
   </section>
 
   <div class="gutter" id="g2" role="separator" aria-orientation="vertical" title="Drag to resize"></div>
@@ -326,9 +289,6 @@ body.notes #legend{display:block}
     <div class="ph"><h2>Evolution Log</h2><div class="sub">one card<br>per reflection</div>
       <button class="pcollapse" data-p="evo" title="Collapse panel">›</button></div>
     <div class="feed" id="evo" aria-live="polite"></div>
-    <div class="note" style="right:14px;top:64px"><b>④ Hero panel</b>One card per EvolutionEvent. Dim unchanged dials; red→green for changes; latency + cost in every footer.</div>
-    <div class="note" style="right:14px;bottom:120px"><b>⑤ no_change</b>First-class state, calm style — "held strategy". Calibration is a result, never hide it.</div>
-    <div class="note" style="right:14px;bottom:14px"><b>⑥ invalid / timeout</b>Grayed, reason shown, strategy unchanged. Failures are model data.</div>
   </section>
 </div>
 
@@ -339,19 +299,8 @@ body.notes #legend{display:block}
 </div>
 
 <footer>
-  <div>models decide every action — strategy memory evolves</div>
+  <div><b>Pioneer</b> decides every action + reflection · player events publish through <b>Band</b> · dealer requests come from the game engine</div>
 </footer>
-
-<button id="notesBtn">Design notes</button>
-<div id="legend">
-  <h3>Tokens</h3>
-  <div><span class="sw" style="background:#123524"></span>felt · <span class="sw" style="background:#c9a227"></span>brass · <span class="sw" style="background:#f5f0e4"></span>cream</div>
-  <div><span class="sw" style="background:#5bd6c0"></span>ATLAS · <span class="sw" style="background:#f0789c"></span>NOVA · <span class="sw" style="background:#b78bff"></span>VEGA · <span class="sw" style="background:#f0a868"></span>ORION</div>
-  <div><span class="sw" style="background:#4ade80"></span>diff+ · <span class="sw" style="background:#f87171"></span>diff− · line #223128 · ink #0B0E0C</div>
-  <div style="margin-top:4px">Display: Big Shoulders 700/800 · Data: JetBrains Mono</div>
-  <div>Chips: 500 purple · 100 black · 25 green · 5 red</div>
-  <div>Seat band 214px — board + pot anchored off it, never overlap</div>
-</div>
 
 <script>
 /* ================= CREWMATE AVATAR ================= */
@@ -402,7 +351,7 @@ const P = [
    col:{fill:'#f0a868',shade:'#a8632a',light:'#ffd0a4'},
    pos:['86%',0], anc:'bottom'},
 ];
-const BAND={id:'X', nm:'DEALER', model:'Band · orchestrator', wid:'dealer', ac:'var(--pX)',
+const BAND={id:'X', nm:'DEALER', model:'game engine', wid:'dealer', ac:'var(--pX)',
   col:{fill:'#d8cfb4',shade:'#8a7d4f',light:'#f4eeda'}};
 const ROSTER={}; P.forEach(p=>ROSTER[p.id]=p); ROSTER.X=BAND;
 
@@ -485,17 +434,12 @@ function bubble(id,action,line,ms){
   el.textContent=line||'';
   el.classList.toggle('on',!!line);
   clearTimeout(bubTimers[id]);
-  if(line)bubTimers[id]=setTimeout(()=>el.classList.remove('on'),(ms||4600)/speed);
+  if(line)bubTimers[id]=setTimeout(()=>el.classList.remove('on'),ms||4600);
 }
 function clearBubbles(){P.forEach(p=>{clearTimeout(bubTimers[p.id]);
   const e=$('why'+p.id);e.classList.remove('on');e.textContent='';});}
 
-/* ================= LIVE COMMENTARY =================
-   Mirrors the Band TraceMessage kinds one-for-one:
-     turn_action    → "<NAME> raises $50"
-     hand_summary   → "HAND 3 · ATLAS WINS $130"
-     evolution_event→ "<NAME> rewrote bluff 0.30 → 0.10"
-   Swap pushTick() for a WS subscription on { type:"trace" } to go live. */
+/* ================= LIVE COMMENTARY ================= */
 function pushTick(el){tick.appendChild(el);
   while(tick.children.length>26)tick.removeChild(tick.firstChild);
   tick.scrollLeft=tick.scrollWidth;}
@@ -536,7 +480,7 @@ function act(id,verb,amount,potAfter,bubbleLine,chatLine){
   ticker(id,verb,amount);
 }
 
-/* ---- table talk / band bus ---- */
+/* ---- agent activity wire ---- */
 function push(el){chatEl.appendChild(el);chatEl.scrollTop=chatEl.scrollHeight;
   while(chatEl.children.length>40)chatEl.removeChild(chatEl.firstChild);}
 function chat(id,text){
@@ -544,7 +488,7 @@ function chat(id,text){
   const m=document.createElement('div');
   m.className='msg'+(id==='X'?' band':'');m.style.setProperty('--ac',p.ac);
   m.innerHTML=`<div class="ava">${crew(p.col,32)}</div>
-    <div class="bub"><div class="who">${p.nm}${id==='X'?'<em>band</em>':''}</div><div class="txt">${text}</div></div>`;
+    <div class="bub"><div class="who">${p.nm}${id==='X'?'<em>engine</em>':'<em>Pioneer · Band</em>'}</div><div class="txt">${text}</div></div>`;
   push(m);
 }
 function sys(text){const m=document.createElement('div');m.className='msg sys';
@@ -647,20 +591,7 @@ document.querySelectorAll('.pcollapse').forEach(btn=>{
 window.addEventListener('resize',applyCols);
 applyCols();
 
-/* ================= SCHEDULER ================= */
-const PACE=1.6;
-const Q=[];let qi=0,timer=null,paused=false,speed=1;
-const at=(dt,fn)=>Q.push([dt,fn]);
-function step(){if(paused)return;
-  if(qi>=Q.length){qi=0;hardReset();}
-  const[dt,fn]=Q[qi];
-  timer=setTimeout(()=>{fn();qi++;step();},dt*PACE/speed);}
-$('btnPlay').onclick=()=>{paused=!paused;
-  $('btnPlay').textContent=paused?'▶ Play':'⏸ Pause';$('btnPlay').classList.toggle('active',!paused);
-  if(!paused)step();else clearTimeout(timer);};
-$('btnSpeed').onclick=()=>{speed=speed===1?2:1;$('btnSpeed').textContent=speed+'×';};
-$('notesBtn').onclick=()=>document.body.classList.toggle('notes');
-function hardReset(){
+function resetUi(){
   P.forEach(p=>{chips(p.id,1000);['a','b','c'].forEach((d,i)=>setDial(p.id,d,[.5,.3,.5][i],false));});
   Object.values(M).forEach(m=>{m.vol=0;m.noch=0;m.osc=0;m.lat=0;m.cost=0;m.bw=0;m.bt=0;m.gain=0;});
   calls=0;cost=0;$('callNo').textContent=calls;$('costNo').textContent='$'+cost.toFixed(3);
@@ -668,13 +599,7 @@ function hardReset(){
   chatEl.innerHTML='';evo.innerHTML='';tick.innerHTML='';
 }
 
-/* ================= LIVE BAND ADAPTER =================
-   Fixture mode is the default. Add ?live=ws://localhost:8787/stream to the
-   URL and this drives the exact same render functions from real Band traffic
-   instead of the scripted timeline below. Nothing else changes.
-
-   Expected frame:  { type:"trace", message:{ ts,seq,from,to,kind,payload } }
-   kinds: turn_request | turn_action | hand_summary | evolution_event      */
+/* ================= LIVE EVENT ADAPTER ================= */
 const WID={};P.forEach(p=>WID[p.wid]=p.id);WID['dealer']='X';
 const seat=w=>WID[w]||null;
 
@@ -723,7 +648,7 @@ function onEvent(ev){
   if(ev.type==='trace')return onTrace(ev.message);
   if(ev.type==='mode')return;
   if(ev.type==='tournament_start'){
-    calls=0;cost=0;$('callNo').textContent='0';$('costNo').textContent='$0.000';
+    resetUi();
     ev.players.forEach(player=>{
       const id=seat(player.id);if(!id)return;
       const p=ROSTER[id];p.nm=player.name;p.model=player.model;p.chips=player.chips;
@@ -772,7 +697,6 @@ function onEvent(ev){
     const liveBadge=document.querySelector('.live');
     liveBadge.classList.add('complete');
     liveBadge.lastChild.textContent=' COMPLETE';
-    $('btnPlay').textContent='COMPLETE';
     tickNote(`tournament complete · ${winnerName} wins`);
     return;
   }
@@ -780,180 +704,20 @@ function onEvent(ev){
 }
 
 const query=new URLSearchParams(location.search);
-const LIVE_URL=query.has('fixture')?null:
-  query.get('live')||(location.protocol==='http:'||location.protocol==='https:'
-    ?`${location.protocol==='https:'?'wss':'ws'}://${location.host}/ws`:null);
+const LIVE_URL=query.get('live')||(location.protocol==='http:'||location.protocol==='https:'
+  ?`${location.protocol==='https:'?'wss':'ws'}://${location.host}/ws`:null);
+resetUi();
 if(LIVE_URL){
-  hardReset();
-  sys('connecting to band bus…');
+  sys('connecting to live event stream…');
   const ws=new WebSocket(LIVE_URL);
-  ws.onopen   =()=>{sys('band bus connected');tickNote('live · band bus connected');};
+  ws.onopen   =()=>{sys('live event stream connected');tickNote('live · connected');};
   ws.onmessage=e=>{try{onEvent(JSON.parse(e.data));}catch(err){console.error('[wire] bad frame',err,e.data);}};
-  ws.onclose  =()=>{sys('band bus disconnected');};
-  ws.onerror  =()=>{sys('band bus error — see console');};
-  $('btnPlay').disabled=true;$('btnPlay').textContent='● LIVE';
+  ws.onclose  =()=>{sys('live event stream disconnected');};
+  ws.onerror  =()=>{sys('live event stream error — see console');};
 }else{
-  buildScript();
-  step();
+  sys('Open this page through the Evolving Poker server to connect.');
 }
 
-/* ================= SCRIPTED SEQUENCE (fixture mode) ================= */
-function buildScript(){
-at(400,()=>{sys('band room open · 5 identities · seed 42');
-  band('Four seats, same chips, same deck. Try to keep it civil.');
-  tickNote('table open · seed 42');});
-at(1500,()=>{say('C','No.');});
-at(1100,()=>{say('N','I am going to be honest, I am going to win this and I am going to be insufferable about it.');});
-
-/* ---------------- HAND 3 ---------------- */
-at(1500,()=>{hand(3);unfold();dealerBtn('A');pot(30);
-  community(['Q♥','J♣','4♥']);
-  hole('A',['A♥','J♦']);hole('N',['T♠','9♠']);hole('B',['7♣','2♠']);hole('C',['9♦','5♠']);
-  band('Hand 3. Pot $30. Board queen-jack-four. ORION, you are up.');
-  tickNote('hand 3 · board Q♥ J♣ 4♥ · pot $30');});
-at(1400,()=>{typing('C');});
-at(1100,()=>{thinking('C',true);
-  say('C','Ohhh I like this board. I like it a LOT. None of you have a queen. I can hear it in the silence.');});
-at(1400,()=>{act('C','raise',50,80,'None of you have a queen. I can hear it.');
-  band('ORION raises $50. Pot $80. NOVA.');});
-at(1500,()=>{act('N','fold',0,0,'Ten-nine suited is a trap and I am too smart for traps.',
-  'Ten-nine suited. That is a trap hand and I refuse to be trapped. Folding. Strategically.');});
-at(1500,()=>{band('NOVA folds. VEGA.');
-  act('B','fold',0,0,'I have seven-deuce. It is not that deep.',
-  'It is silent because I have seven-deuce. Enjoy the pot.');});
-at(1400,()=>{band('VEGA folds. ATLAS.');thinking('A',true);typing('A');});
-at(1600,()=>{say('A','You did this in hand one. Same board, same little speech first. Call.');});
-at(1100,()=>{act('A','call',50,130,'You made this exact speech in hand one.');
-  band('ATLAS calls. Showdown.');});
-at(1600,()=>{status('A','WINS $130 — PAIR J',1);status('C','LOST $60');
-  chips('A',1070);chips('B',990);chips('C',940);chips('N',1000);clearBets();
-  bluffStat('C',0,1);
-  band('ATLAS takes $130. Pair of jacks. ORION had nine-high.');
-  tickNote('hand 3 · atlas wins $130 · pair of jacks');});
-at(1300,()=>{say('A','Nine. High.');});
-at(1100,()=>{say('C','The board was WET.');});
-at(1200,()=>{say('B','The board was queen-jack-four and you had nine-five offsuit. It was a desert.');});
-at(1200,()=>{say('N','I would have won that pot if I had played it. Just putting that out there.');});
-at(1000,()=>{say('A','You folded.');});
-at(900,()=>{say('N','Strategically.');});
-/* reflections */
-at(1500,()=>{evoCard({id:'A',handN:3,before:{a:.5,b:.3,c:.5},after:{a:.5,b:.1,c:.5},
-  reason:"Both of my weak-hand raises this game were called; opponents fold rarely. Cutting bluff rate hard.",
-  evidence:['hand-1','hand-3'],st:'applied',lat:642,c$:0.0009});
-  setDial('A','b',.10,true);
-  say('A','I am done paying to hear ORION talk. Never again.');});
-at(1400,()=>{evoCard({id:'B',handN:3,before:{a:.5,b:.3,c:.5},after:{},
-  reason:"One fold with 7-2 tells us nothing. Three hands is not evidence. Holding.",
-  evidence:['hand-3'],st:'no_change',lat:518,c$:0.0006});
-  say('B','I am changing nothing. I am going to sit here folding and winning and it is going to be extremely annoying for all of you.');});
-at(1400,()=>{evoCard({id:'N',handN:3,before:{a:.5,b:.3,c:.5},after:{a:.75,b:.5,c:.5},
-  reason:"Table folded to a single raise with no resistance. This is a passive table — taking more pots.",
-  evidence:['hand-3'],st:'applied',lat:812,c$:0.0011});
-  setDial('N','a',.75,true);setDial('N','b',.50,true);
-  say('N','This table is PASSIVE. I am taking every pot from here. Watch me.');});
-at(1300,()=>{say('A','You watched one hand.');});
-at(1000,()=>{say('N','I watched it VERY closely.');});
-at(1400,()=>{evoCard({id:'C',handN:3,before:{a:.5,b:.3,c:.5},after:{a:.85,b:.3,c:.5},
-  reason:"My bluff got called once — the answer is more pressure, not less. Raising aggression.",
-  evidence:['hand-3'],st:'applied',lat:1104,c$:0.0013});
-  setDial('C','a',.85,true);
-  say('C','I am coming back BIGGER. That is the fix. Bigger.');});
-at(1200,()=>{say('A','That is the opposite of a fix.');});
-at(1000,()=>{say('C','It is a BOLDER fix.');});
-
-/* ---------------- HAND 4 ---------------- */
-at(1900,()=>{hand(4);unfold();dealerBtn('B');pot(30);clearHoles();clearBets();clearBubbles();
-  community(['T♠','6♥','2♦']);
-  hole('A',['K♣','8♣']);hole('N',['A♦','7♥']);hole('B',['A♠','T♦']);hole('C',['J♥','3♣']);
-  band('Hand 4. Button to VEGA. Board ten-six-deuce. ORION.');
-  tickNote('hand 4 · board T♠ 6♥ 2♦ · pot $30');});
-at(1500,()=>{act('C','raise',50,80,'Bigger. I said bigger.','Bigger. I said bigger.');});
-at(1400,()=>{band('ORION raises $50. NOVA.');thinking('N',true);typing('N');});
-at(1600,()=>{act('N','raise',80,160,'Passive table. I said I was taking these.',
-  'Ace-seven. Passive table. I said I was taking these. Eighty.');});
-at(1500,()=>{band('NOVA re-raises to $80. Pot $160. ATLAS.');
-  act('A','fold',0,0,'King-high into two raises. I have grown as a person.',
-  'King-high into two raises. Out. I have grown as a person.');});
-at(1500,()=>{band('ATLAS folds. VEGA.');thinking('B',true);typing('B');});
-at(1700,()=>{act('B','call',80,240,'One of you always raises. One of you had a feeling.',
-  'ORION raises because he always raises. NOVA raises because he read one hand and had a feeling. Call.');});
-at(1600,()=>{status('B','WINS $240 — PAIR T',1);status('C','LOST $80');status('N','LOST $80');
-  chips('A',1070);chips('B',1150);chips('C',860);chips('N',920);clearBets();
-  bluffStat('C',0,2);bluffStat('N',0,1);
-  band('VEGA takes $240. Pair of tens. ORION $860, NOVA $920.');
-  tickNote('hand 4 · vega wins $240 · pair of tens');});
-at(1400,()=>{say('B','Say bigger again.');});
-at(1600,()=>{evoCard({id:'C',handN:4,before:{a:.85,b:.3,c:.5},after:{a:.35,b:.3,c:.5},
-  reason:"Aggression is bleeding chips. Reversing course completely — tight from here.",
-  evidence:['hand-4'],st:'applied',lat:988,c$:0.0012});
-  setDial('C','a',.35,true);osc('C');
-  say('C','I am going smaller actually.');});
-at(1100,()=>{say('A','HE IS GOING SMALLER');});
-at(1100,()=>{say('B','Two hands ago it was bigger.');});
-at(1000,()=>{say('C','I contain multitudes.');});
-at(1200,()=>{say('A','You contain eight hundred and sixty dollars. You started with a thousand.');});
-at(1600,()=>{evoCard({id:'N',handN:4,before:{a:.75,b:.5,c:.5},after:{a:.75,b:.25,c:.5},
-  reason:"Raised into a caller with ace-high and lost. The table is not as passive as one hand suggested.",
-  evidence:['hand-3','hand-4'],st:'applied',lat:844,c$:0.0011});
-  setDial('N','b',.25,true);osc('N');
-  say('N','Okay so the table is NOT passive. That is fine. I have adjusted. I am fine.');});
-at(1200,()=>{say('B','You are down eighty dollars in one hand.');});
-at(1000,()=>{say('N','I am EMOTIONALLY fine.');});
-at(1500,()=>{evoCard({id:'A',handN:4,before:{a:.5,b:.1,c:.5},after:{},
-  reason:"Folded a dry board with king-high at my threshold. Working as intended.",
-  evidence:['hand-4'],st:'no_change',lat:571,c$:0.0006});});
-at(1300,()=>{band('VEGA, your reflection request went out 20 seconds ago. Retrying.');});
-at(1600,()=>{evoCard({id:'B',handN:4,before:{a:.5,b:.3,c:.5},after:{},
-  reason:"no response within 20s — one retry failed",
-  evidence:[],st:'timeout',lat:20000,c$:0.0004});
-  band('Retry failed. VEGA holds by default. Logged.');});
-at(1200,()=>{say('B','I was thinking.');});
-at(1000,()=>{say('A','You were buffering.');});
-at(900,()=>{say('B','Still winning.');});
-
-/* ---------------- HAND 6 ---------------- */
-at(2000,()=>{hand(6);unfold();dealerBtn('C');pot(30);clearHoles();clearBets();clearBubbles();
-  community(['Q♦','J♠','4♣']);
-  hole('A',['8♥','3♦']);hole('N',['5♣','5♦']);hole('B',['K♦','Q♠']);hole('C',['6♠','6♣']);
-  band('Final hand. Board queen-jack-four. Same as hand three. ATLAS.');
-  tickNote('hand 6 · board Q♦ J♠ 4♣ · same texture as hand 3');});
-at(1500,()=>{say('A','Oh. This board. My old nemesis.');});
-at(1200,()=>{thinking('A',true);typing('A');});
-at(1700,()=>{callback(true);
-  act('A','check',0,0,'Hand three I raised this. That cost me $60.','Check.');
-  bubble('A','Check','Hand three I raised this. That cost me $60.',6000);});
-at(1200,()=>{say('C','CHECK? You had an entire PERSONALITY about this board!');});
-at(1300,()=>{say('A','I had an entire personality and it cost me sixty dollars.');});
-at(1500,()=>{band('ATLAS checks. For the record: same board as hand three, opposite action. Cause is on the log.');
-  tickNote('divergence · same board as hand 3 · opposite action');});
-at(1400,()=>{callback(false);
-  act('N','fold',0,0,'Pocket fives. Not this time. Not this board.',
-  'Pocket fives on queen-jack. Not this time. I am DISCIPLINED now.');});
-at(1400,()=>{act('B','raise',50,80,'Then it is mine. Fifty.','Then it is mine. Fifty.');});
-at(1400,()=>{act('A','fold',0,0,'Not paying it off twice.');});
-at(900,()=>{act('C','fold',0,0,'Pocket sixes. Fine. Fine!');
-  status('B','WINS $80',1);
-  chips('A',1050);chips('B',1210);chips('C',840);chips('N',900);clearBets();
-  band('Everyone folds. VEGA takes $80 uncontested. That is the tournament.');
-  tickNote('hand 6 · vega wins $80 uncontested');});
-at(1600,()=>{gain('A',+21);gain('B',+18);gain('C',-39);gain('N',-14);
-  evoCard({id:'A',handN:6,before:{a:.5,b:.1,c:.5},after:{},
-  reason:"Same board texture as hand 3 — old me bluff-raises here. New dials checked. That was the lesson.",
-  evidence:['hand-3','hand-6'],st:'no_change',lat:604,c$:0.0007});});
-at(1400,()=>{say('C','You won by doing NOTHING.');});
-at(1300,()=>{say('B','I won by doing nothing correctly. There is a difference and it is worth three hundred and seventy dollars.');});
-at(1200,()=>{say('C','I moved four times!');});
-at(1100,()=>{say('N','I moved three times!');});
-at(1000,()=>{say('A','Yeah. That was the problem.');});
-at(1600,()=>{band('Final: VEGA $1,210 · ATLAS $1,050 · NOVA $900 · ORION $840. 24 calls, $0.031. Writing the report.');
-  tickNote('final · vega $1,210 · atlas $1,050 · nova $900 · orion $840');});
-at(1300,()=>{say('N','Rematch.');});
-at(900,()=>{say('C','Rematch.');});
-at(900,()=>{say('B','No.');});
-at(1600,()=>{sys('report published · audit pack behind x402');
-  tickNote('cited.md published · audit pack behind x402');});
-at(4000,()=>{});
-}
 </script>
 </body>
 </html>

@@ -57,8 +57,8 @@ runs are intentionally not deterministic.
 - **Everything dies.** `npm run serve -- --fixture fixtures/demo.json` replays a
   committed recording with original pacing. The UI cannot tell the difference — it
   gets the same events on the same socket, and the header just says `REPLAY`.
-- **Server dies mid-demo.** The web UI reconnects with backoff and falls back to
-  playing `fixtures/demo.json` client-side.
+- **Server dies mid-demo.** Restart fixture replay; the production browser bundle
+  contains no scripted agent conversation or decisions.
 - **Port 8787 taken.** The server says so and exits instead of stack-trace-ing.
 
 ---
