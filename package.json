@@ -2,7 +2,7 @@
   "name": "evolving-poker",
   "private": true,
   "version": "1.0.0",
-  "description": "Three LLMs play poker and rewrite their own strategy after every hand.",
+  "description": "Four LLMs play poker and rewrite their own strategy after every hand.",
   "type": "module",
   "workspaces": [
     "server",

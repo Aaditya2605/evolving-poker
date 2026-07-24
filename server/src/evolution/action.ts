@@ -11,7 +11,7 @@ import { LlmRequestError, type LlmAdapter, type LlmResult } from "./pioneer.js";
 
 const responseSchema = z.object({
   action: z.enum(["fold", "check", "call", "raise"]),
-  reason: z.string().min(1).max(220),
+  reason: z.string().min(1).max(500),
   confidence: z.number().min(0).max(1).optional(),
 });
 
@@ -82,7 +82,7 @@ CURRENT TURN:
 
 Choose the action yourself. Stay in character, but use the actual evidence.
 Return ONLY JSON:
-{"action":"${legal.join("|")}","reason":"<=220 public characters","confidence":0.0}`;
+{"action":"${legal.join("|")}","reason":"one concise public sentence","confidence":0.0}`;
 }
 
 export async function decideWithAgent(args: {

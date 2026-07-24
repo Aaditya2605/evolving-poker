@@ -127,6 +127,11 @@ function repairShape(input: unknown, repairs: string[]): unknown {
     repairs.push("evidence: bare string wrapped in array");
   }
 
+  if (typeof o.nextModel === "string" && o.nextModel.trim() === "") {
+    delete o.nextModel;
+    repairs.push("nextModel dropped: empty optional value");
+  }
+
   if (typeof o.reason === "string" && o.reason.length > MAX_REASON) {
     o.reason = `${o.reason.slice(0, MAX_REASON - 1)}…`;
     repairs.push(`reason: truncated to ${MAX_REASON} chars`);

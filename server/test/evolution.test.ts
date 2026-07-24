@@ -136,7 +136,7 @@ describe("4. reflection schema", () => {
       totalHands: 1,
       players: initialPlayers(neutral),
       adapter: new ScriptedAdapter([
-        '{"change":false,"nextModel":"openai/gpt-oss-20b","reason":"Need stronger structured output.","evidence":["hand-1"]}',
+        '{"change":false,"nextModel":"claude-haiku-4-5","reason":"Need stronger structured output.","evidence":["hand-1"]}',
       ]),
       timeoutMs: 1000,
     });
@@ -147,9 +147,18 @@ describe("4. reflection schema", () => {
     expect(event?.type).toBe("evolution");
     if (event?.type === "evolution") {
       expect(event.event.modelChanged).toBe(true);
-      expect(event.event.modelAfter).toBe("openai/gpt-oss-20b");
+      expect(event.event.modelAfter).toBe("claude-haiku-4-5");
       expect(event.event.before).toEqual(event.event.after);
     }
+  });
+
+  it("treats an empty optional nextModel as no migration", () => {
+    const result = parseReflection(
+      '{"change":false,"reason":"hold","evidence":["hand-1"],"nextModel":""}',
+    );
+    expect(result.ok).toBe(true);
+    expect(result.value?.nextModel).toBeUndefined();
+    expect(result.repairs).toContain("nextModel dropped: empty optional value");
   });
 
   it("marks a doubly-malformed response invalid, retries once, and continues", async () => {

@@ -6,7 +6,7 @@ import type {
   PlayerId,
   TournamentEvent,
 } from "../../../shared/types.js";
-import { DIALS, PLAYER_IDS } from "../../../shared/types.js";
+import { DIALS } from "../../../shared/types.js";
 
 const n2 = (x: number) => x.toFixed(2);
 
@@ -30,6 +30,7 @@ export function generateCited(
   },
 ): string {
   const snap = standings.snapshot;
+  const playerIds = standings.ranking.map((player) => player.playerId);
   const evolutions = events
     .filter((e): e is Extract<TournamentEvent, { type: "evolution" }> => e.type === "evolution")
     .map((e) => e.event);
@@ -74,7 +75,9 @@ export function generateCited(
   push();
   for (const h of hands) {
     const r = h.record;
-    const deltas = PLAYER_IDS.map((id) => `${id}: ${r.chipDeltas[id] >= 0 ? "+" : ""}${r.chipDeltas[id]}`).join(", ");
+    const deltas = playerIds
+      .map((id) => `${id}: ${r.chipDeltas[id] >= 0 ? "+" : ""}${r.chipDeltas[id]}`)
+      .join(", ");
     push(
       `- **hand-${r.handId}** — board \`${r.communityCards.join(" ")}\`, pot ${r.potSize}, ` +
         `winner **${r.winner}**${r.showdown.length ? ` at showdown (${r.showdown.join(", ")})` : " (no showdown)"}. ${deltas}`,
@@ -85,7 +88,7 @@ export function generateCited(
   // --- per-model timeline ---------------------------------------------------
   push("## Evolution timeline, by model");
   push();
-  for (const id of PLAYER_IDS) {
+  for (const id of playerIds) {
     const agent = snap.agents[id];
     const evo = snap.evolution[id];
     push(`### ${agent.name} — \`${agent.model}\``);
@@ -129,7 +132,7 @@ export function generateCited(
   push();
   push("| Model | Chips | Adaptation gain* | Bluffs | Volatility | Oscillations | No-change rate | Repairs | Avg latency | Est. cost |");
   push("|-------|-------|------------------|--------|------------|--------------|----------------|---------|-------------|-----------|");
-  for (const id of PLAYER_IDS) {
+  for (const id of playerIds) {
     const a = snap.agents[id];
     const e = snap.evolution[id];
     const m = snap.models[id];
@@ -184,7 +187,7 @@ export function generateCited(
   }
   push(
     "- In this six-hand run the sample is far too small for any claim about which model is better at poker. " +
-      "What it does show is that four different models, given identical evidence formats, chose visibly " +
+      `What it does show is that ${playerIds.length} different models, given identical evidence formats, chose visibly ` +
       "different self-modification policies.",
   );
   push();

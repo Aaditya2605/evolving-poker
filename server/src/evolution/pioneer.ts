@@ -235,7 +235,7 @@ export class PioneerAdapter implements LlmAdapter {
   readonly mode = "real";
 
   async reflect(_playerId: PlayerId, prompt: string, meta: ReflectMeta): Promise<LlmResult> {
-    return this.complete(meta.input.identity.model, prompt, 220, 0.3);
+    return this.complete(meta.input.identity.model, prompt, 500, 0.3);
   }
 
   async act(
@@ -243,7 +243,7 @@ export class PioneerAdapter implements LlmAdapter {
     prompt: string,
     meta: { handId: number; model: string },
   ): Promise<LlmResult> {
-    return this.complete(meta.model, prompt, 120, 0.2);
+    return this.complete(meta.model, prompt, 300, 0.2);
   }
 
   private async complete(
@@ -264,12 +264,9 @@ export class PioneerAdapter implements LlmAdapter {
         model,
         temperature,
         max_tokens: maxTokens,
-        response_format: { type: "json_object" },
-        // Stored inference traffic is the input to Pioneer's evaluation,
-        // clustering, and Adaptive Inference pipeline.
-        store: true,
         messages: [{ role: "user", content: prompt }],
       }),
+      signal: AbortSignal.timeout(REFLECT_TIMEOUT_MS),
     });
 
     const latencyMs = Date.now() - started;
@@ -285,6 +282,7 @@ export class PioneerAdapter implements LlmAdapter {
       model?: string;
       choices?: { message?: { content?: string } }[];
       usage?: { prompt_tokens?: number; completion_tokens?: number };
+      x_pioneer?: { inference_id?: string; routed_model?: string | null };
     };
     const raw = body.choices?.[0]?.message?.content ?? "";
     const inputTokens = body.usage?.prompt_tokens ?? approxTokens(prompt);
@@ -296,8 +294,8 @@ export class PioneerAdapter implements LlmAdapter {
       inputTokens,
       outputTokens,
       estCostUsd: estimateCost(model, inputTokens, outputTokens),
-      servedModel: body.model,
-      inferenceId: body.id,
+      servedModel: body.x_pioneer?.routed_model ?? body.model,
+      inferenceId: body.x_pioneer?.inference_id ?? body.id,
     };
   }
 }

@@ -19,7 +19,7 @@ npm install
 
 npm run demo      # full 6-hand live Pioneer tournament, server stays up on :8787
 npm run web       # spectator UI at http://localhost:5173 (separate terminal)
-npm test          # 53 tests
+npm test          # 57 tests
 ```
 
 Other entry points:
@@ -119,7 +119,7 @@ URLs remain fixed in code.
 - The default model IDs were verified against Pioneer's live decoder catalog.
   `MODEL_A` through `MODEL_D` remain optional shell overrides.
 - `MODEL_POOL` optionally sets the comma-separated models agents may migrate to.
-- Requests remain stored so Pioneer can use the traffic for inference history,
+- Requests use Pioneer's default persistence so it can use the traffic for inference history,
   evaluation, clustering, and Adaptive Inference. A six-hand run does not claim a
   retraining cycle completed.
 
@@ -148,7 +148,7 @@ URLs remain fixed in code.
 
 ## Pre-demo checklist
 
-- [ ] `npm install && npm test` — 54 green
+- [ ] `npm install && npm test` — 57 green
 - [ ] `npm run demo` finishes with chips conserved at 4000
 - [ ] `npm run web` shows the tournament streaming live
 - [ ] `curl localhost:8787/audit` returns 402

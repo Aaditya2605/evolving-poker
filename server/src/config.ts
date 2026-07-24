@@ -34,10 +34,10 @@ const bandConfigured =
   !!bandRoomId &&
   Object.values(bandAgents).every((agent) => !!agent.id && !!agent.handle && !!agent.key);
 const configuredModels = {
-  playerA: env("MODEL_A", "Qwen/Qwen3-4B-Instruct-2507"),
-  playerB: env("MODEL_B", "openai/gpt-oss-20b"),
-  playerC: env("MODEL_C", "deepseek-ai/DeepSeek-V3"),
-  playerD: env("MODEL_D", "gemini-3-flash"),
+  playerA: env("MODEL_A", "Qwen/Qwen3-8B"),
+  playerB: env("MODEL_B", "claude-haiku-4-5"),
+  playerC: env("MODEL_C", "meta-llama/Llama-3.1-8B-Instruct"),
+  playerD: env("MODEL_D", "deepseek-ai/DeepSeek-V3"),
 } as Record<PlayerId, string>;
 
 export const config = {
