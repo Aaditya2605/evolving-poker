@@ -56,7 +56,7 @@ export type StoreAction =
   | { kind: "event"; event: TournamentEvent };
 
 function perPlayer<T>(value: T): Record<PlayerId, T> {
-  return { playerA: value, playerB: value, playerC: value };
+  return { playerA: value, playerB: value, playerC: value, playerD: value };
 }
 
 export const initialState: UiState = {
@@ -69,6 +69,7 @@ export const initialState: UiState = {
     playerA: { ...NEUTRAL_STRATEGY },
     playerB: { ...NEUTRAL_STRATEGY },
     playerC: { ...NEUTRAL_STRATEGY },
+    playerD: { ...NEUTRAL_STRATEGY },
   },
   handId: 0,
   dealer: null,
@@ -102,6 +103,7 @@ export function reducer(state: UiState, action: StoreAction): UiState {
         playerA: { ...NEUTRAL_STRATEGY },
         playerB: { ...NEUTRAL_STRATEGY },
         playerC: { ...NEUTRAL_STRATEGY },
+        playerD: { ...NEUTRAL_STRATEGY },
       };
       for (const p of event.players) {
         chips[p.id] = p.chips;

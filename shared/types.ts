@@ -3,13 +3,13 @@
 // Imported by server/ and web/ alike. Keep it dependency-free.
 // ============================================================================
 
-export type PlayerId = "playerA" | "playerB" | "playerC";
+export type PlayerId = "playerA" | "playerB" | "playerC" | "playerD";
 export type Street = "betting"; // single betting round per spec
 export type Action = "fold" | "check" | "call" | "raise";
 
-export const PLAYER_IDS: PlayerId[] = ["playerA", "playerB", "playerC"];
+export const PLAYER_IDS: PlayerId[] = ["playerA", "playerB", "playerC", "playerD"];
 
-/** The three dials a model may move. All values ∈ [0,1]. */
+/** The strategy dials a model may move. All values ∈ [0,1]. */
 export interface Strategy {
   aggression: number;
   bluffRate: number;

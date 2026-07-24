@@ -48,6 +48,7 @@ function emptyRecord<T>(fill: (id: PlayerId) => T): Record<PlayerId, T> {
     playerA: fill("playerA"),
     playerB: fill("playerB"),
     playerC: fill("playerC"),
+    playerD: fill("playerD"),
   };
 }
 

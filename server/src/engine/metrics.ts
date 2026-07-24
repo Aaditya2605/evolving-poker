@@ -101,6 +101,7 @@ export class MetricsTracker {
       playerA: fill("playerA"),
       playerB: fill("playerB"),
       playerC: fill("playerC"),
+      playerD: fill("playerD"),
     };
   }
 

@@ -185,7 +185,7 @@ describe("4. reflection schema", () => {
       expect(result.standings.snapshot.evolution[id].timeouts).toBe(1);
       expect(result.players.find((p) => p.id === id)!.strategy).toEqual(neutral);
     }
-    expect(result.standings.ranking).toHaveLength(3);
+    expect(result.standings.ranking).toHaveLength(4);
   });
 });
 
@@ -392,14 +392,14 @@ describe("mock personas", () => {
     const evo = result.standings.snapshot.evolution;
     const totals = result.standings.snapshot.totals;
     // Exactly one reflection per player per hand — that part is fixed.
-    expect(totals.reflections).toBe(18);
-    // Calls are NOT 18: playerC's hand-3 response is malformed twice, so its
-    // retry spends a second call. Claiming 18 calls would be a lie on a slide.
-    expect(totals.llmCalls).toBe(19);
+    expect(totals.reflections).toBe(24);
+    // Calls are NOT 24: playerC's hand-3 response is malformed twice, so its
+    // retry spends a second call. Claiming 24 calls would be a lie on a slide.
+    expect(totals.llmCalls).toBe(25);
     expect(evo.playerB.timeouts).toBe(1);
     expect(evo.playerC.invalid).toBe(1);
 
-    // Three distinct self-modification policies is the whole demo.
+    // Distinct self-modification policies are the whole demo.
     expect(evo.playerA.changesApplied).toBeGreaterThan(evo.playerB.changesApplied);
     expect(evo.playerB.noChanges).toBeGreaterThan(evo.playerA.noChanges);
     expect(evo.playerC.oscillations).toBeGreaterThan(0);

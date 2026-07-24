@@ -1,8 +1,8 @@
 # Evolving Poker
 
-Three LLMs play poker and rewrite their own strategy after every hand.
+Four LLMs play poker and rewrite their own strategy after every hand.
 
-Three persistent AI players, one mechanical dealer, six hands. Pioneer models choose
+Four persistent AI players, one mechanical dealer, six hands. Pioneer models choose
 every fold, check, call, and raise from a legal-action list. Between hands each player
 may rewrite its three strategy dials and migrate to another allowed Pioneer model.
 
@@ -110,14 +110,14 @@ mechanical check/fold; invalid reflection output leaves strategy and model uncha
 Copy `.env.example` to `.env`. The server loads it automatically; production service
 URLs remain fixed in code.
 
-### Pioneer (three different models, one per player)
+### Pioneer (four different models, one per player)
 
 - Add `PIONEER_API_KEY`. Live mode fails clearly if inference is unavailable; it never
   substitutes scripted agents. Mock adapters exist only for automated tests.
 - The adapter uses Pioneer's fixed OpenAI-compatible endpoint,
   `https://api.pioneer.ai/v1/chat/completions`, with `X-API-Key` authentication.
-- The three default model IDs were verified against Pioneer's live decoder catalog.
-  `MODEL_A`, `MODEL_B`, and `MODEL_C` remain optional shell overrides.
+- The default model IDs were verified against Pioneer's live decoder catalog.
+  `MODEL_A` through `MODEL_D` remain optional shell overrides.
 - `MODEL_POOL` optionally sets the comma-separated models agents may migrate to.
 - Requests remain stored so Pioneer can use the traffic for inference history,
   evaluation, clustering, and Adaptive Inference. A six-hand run does not claim a
@@ -125,13 +125,11 @@ URLs remain fixed in code.
 
 ### Band (agent-to-agent messaging)
 
-- **Now:** local trace only. The previous `band-sdk` npm import was removed because
-  Band documents a Python SDK, not a JavaScript package.
-- Real three-player routing needs `BAND_ROOM_ID` plus one registered remote-agent key
-  per player. A single shared key would only mirror an audit log as one identity.
-- The TypeScript implementation must use Band's REST API plus its Phoenix-channel
-  WebSocket. Until that transport exists, configured credentials warn and fall back
-  to the local trace.
+- Set `BAND_ROOM_ID` plus each player's `ID`, `HANDLE`, and `API_KEY`.
+- Player actions, hand summaries, and evolution events are published through Band's
+  REST API with real sender identities and recipient mentions.
+- Dealer-only control messages remain local because the dealer has no Band identity.
+  The complete local trace is always preserved for the UI and audit pack.
 
 ### Replay QA
 
@@ -150,12 +148,12 @@ URLs remain fixed in code.
 
 ## Pre-demo checklist
 
-- [ ] `npm install && npm test` — 50 green
-- [ ] `npm run demo` finishes with chips conserved at 3000
+- [ ] `npm install && npm test` — 54 green
+- [ ] `npm run demo` finishes with chips conserved at 4000
 - [ ] `npm run web` shows the tournament streaming live
 - [ ] `curl localhost:8787/audit` returns 402
 - [ ] `npm run serve -- --fixture fixtures/demo.json` replays cleanly
 - [ ] Pioneer key in `.env`; one real reflection request succeeds
-- [ ] Three Band remote agents and one shared room created
-- [ ] Band REST/WebSocket transport implemented; local trace still populated
+- [ ] Four Band remote agents and one shared room created
+- [ ] Band REST transport publishes messages; local trace still populated
 - [ ] Deployed spectator URL passes Replay QA

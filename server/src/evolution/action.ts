@@ -59,7 +59,7 @@ export function buildActionPrompt(args: {
   return `You are ${player.name}, a persistent AI poker agent.
 PERSONALITY: ${player.personality}
 
-GAME: 3 players, 2 private cards, 3 shared cards, one betting round, fixed-size raises.
+GAME: 4 players, 2 private cards, 3 shared cards, one betting round, fixed-size raises.
 OBJECTIVE: maximize your chips across six hands. Outcomes are noisy.
 HAND STRENGTH: 0.00 is weakest, 1.00 is strongest. Treat the supplied score as authoritative.
 

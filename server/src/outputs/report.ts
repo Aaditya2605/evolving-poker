@@ -184,7 +184,7 @@ export function generateCited(
   }
   push(
     "- In this six-hand run the sample is far too small for any claim about which model is better at poker. " +
-      "What it does show is that three different models, given identical evidence formats, chose visibly " +
+      "What it does show is that four different models, given identical evidence formats, chose visibly " +
       "different self-modification policies.",
   );
   push();

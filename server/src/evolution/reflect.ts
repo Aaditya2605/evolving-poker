@@ -112,7 +112,7 @@ export function buildReflectionInput(
   };
 }
 
-/** Runs all three reflections concurrently. Never throws, never stalls. */
+/** Runs every player's reflection concurrently. Never throws, never stalls. */
 export async function reflectAll(args: ReflectAllArgs): Promise<EvolutionEvent[]> {
   const { handId, players, record, tracker, adapter, chipsAtHandEnd, onCapture } = args;
   const timeoutMs = args.timeoutMs ?? REFLECT_TIMEOUT_MS;

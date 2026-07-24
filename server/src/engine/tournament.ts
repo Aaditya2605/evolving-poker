@@ -100,7 +100,7 @@ export async function runTournament(opts: TournamentOptions): Promise<Tournament
             myChips: ctx.myChips,
           }),
         traceTurnAction: (playerId, decision, potAfter) =>
-          router.send(playerId, "dealer", "turn_action", {
+          router.send(playerId, "all", "turn_action", {
             handId,
             action: decision.action,
             amount: decision.amount,
@@ -117,7 +117,7 @@ export async function runTournament(opts: TournamentOptions): Promise<Tournament
 
     tracker.recordHand(record);
     emit({ type: "hand_end", record, chips: { ...chipsAfter } });
-    router.send("dealer", "all", "hand_summary", {
+    router.send(record.winner, "all", "hand_summary", {
       handId,
       winner: record.winner,
       potSize: record.potSize,

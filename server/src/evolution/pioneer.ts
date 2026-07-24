@@ -68,6 +68,7 @@ const BASE_LATENCY: Record<PlayerId, number> = {
   playerA: 620,
   playerB: 1150,
   playerC: 1780,
+  playerD: 900,
 };
 
 /**
@@ -181,6 +182,29 @@ export class MockAdapter implements LlmAdapter {
         reason: `Hand-${handId} outcome is within variance for a ${input.cumulative.handsPlayed}-hand sample. Holding.`,
         evidence,
         confidence: 0.72,
+      };
+    }
+
+    if (playerId === "playerD") {
+      const foldRate = Math.max(...Object.values(input.opponents).map((o) => o.foldToRaiseRate));
+      if (handId < 3 || foldRate < 0.5) {
+        return {
+          change: false,
+          reason: `Hand-${handId} is not enough repeated opponent evidence. Keeping the balanced profile.`,
+          evidence,
+          confidence: 0.74,
+        };
+      }
+      return {
+        change: true,
+        strategy: {
+          aggression: clamp(s.aggression + 0.1),
+          bluffRate: clamp(s.bluffRate + 0.08),
+          callThreshold: s.callThreshold,
+        },
+        reason: `By hand-${handId}, repeated folds justify applying more selective pressure.`,
+        evidence,
+        confidence: 0.7,
       };
     }
 

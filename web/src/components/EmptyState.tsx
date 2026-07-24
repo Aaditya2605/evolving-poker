@@ -24,7 +24,7 @@ export function EmptyState({ connection, mode, onLoadOffline }: Props) {
         <h2 className="empty__title">AWAITING TOURNAMENT</h2>
         <p className="empty__body">{describe(connection, mode)}</p>
         <p className="empty__meta mono">
-          3 models · 6 hands · 18 reflections · 3 dials each
+          4 models · 6 hands · 24 reflections · 3 dials each
         </p>
         <button type="button" className="ctl" onClick={onLoadOffline}>
           Load recorded demo
