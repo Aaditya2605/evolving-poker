@@ -3,9 +3,9 @@
 Three LLMs play poker and rewrite their own strategy after every hand.
 
 Three AI players, one deterministic dealer, six hands. No LLM ever picks a poker
-action — the action loop is a pure function of `(hand strength, pot odds, position,
-strategy dials)`. Between hands each player gets one shot at rewriting its own four
-strategy dials, and the tournament shows you what that rewrite did to its results.
+action — the action loop is a pure function of `(hand strength, pot odds, strategy
+dials)`. Between hands each player gets one shot at rewriting its own three strategy
+dials, and the tournament shows you what that rewrite did to its results.
 
 **6 hands x 3 players = exactly 18 LLM calls.** That is the whole model budget.
 
