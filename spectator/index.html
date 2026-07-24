@@ -182,6 +182,26 @@ body.resizing{cursor:col-resize;user-select:none}
 .evo.invalid .badge{color:var(--minus);font-size:9px;letter-spacing:.18em;text-transform:uppercase}
 .evo.gold{border-left-color:var(--brass);background:rgba(201,162,39,.07)}
 
+/* ================= ADAPTATION MONITOR ================= */
+.adapt{flex:0 0 auto;padding:10px 12px;border-bottom:1px solid var(--line);background:rgba(0,0,0,.16)}
+.adapt-head{display:flex;justify-content:space-between;gap:8px;align-items:baseline;margin-bottom:8px}
+.adapt-head b{font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--brass)}
+.adapt-head span{font-size:7.5px;letter-spacing:.08em;color:var(--muted);text-align:right}
+.adapt-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.trail{border:1px solid var(--line);border-left:2px solid var(--ac);border-radius:3px;
+  background:rgba(0,0,0,.24);padding:7px;min-width:0}
+.trail-top{display:flex;justify-content:space-between;gap:5px;align-items:baseline}
+.trail-name{font-size:9px;letter-spacing:.12em;font-weight:700;color:var(--ac)}
+.trail-state{font-size:7px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);text-align:right}
+.trail-state.up{color:var(--plus)}.trail-state.down{color:var(--minus)}
+.trail svg{display:block;width:100%;height:42px;margin:5px 0 3px;overflow:visible}
+.trail .gridline{stroke:#2b3b30;stroke-width:1}.trail .baseline{stroke:#6b735f;stroke-width:1;stroke-dasharray:3 3}
+.trail .trend{fill:none;stroke:var(--ac);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.trail .point{fill:var(--panel-a);stroke:var(--ac);stroke-width:1.5}
+.trail .change{fill:var(--brass);stroke:none}
+.trail-meta{display:flex;justify-content:space-between;gap:5px;font-size:7.5px;color:var(--muted)}
+.trail-meta b{font-weight:500;color:var(--cream)}
+
 /* ================= AGENT WIRE ================= */
 .msg{display:grid;grid-template-columns:32px 1fr;gap:8px;animation:rise .35s ease;flex:0 0 auto}
 .msg .ava{width:32px;height:38px;display:flex;align-items:flex-end;justify-content:center}
@@ -286,8 +306,12 @@ footer b{color:var(--cream)}
 
   <!-- EVOLUTION LOG -->
   <section class="panel stream" id="pEvo">
-    <div class="ph"><h2>Evolution Log</h2><div class="sub">one card<br>per reflection</div>
+    <div class="ph"><h2>Adaptation</h2><div class="sub">outcomes above<br>reflections below</div>
       <button class="pcollapse" data-p="evo" title="Collapse panel">›</button></div>
+    <div class="adapt" id="adapt">
+      <div class="adapt-head"><b>Outcome trend</b><span>Directional and luck-influenced · ◆ strategy update</span></div>
+      <div class="adapt-grid" id="adaptGrid"></div>
+    </div>
     <div class="feed" id="evo" aria-live="polite"></div>
   </section>
 </div>
@@ -354,6 +378,7 @@ const P = [
 const BAND={id:'X', nm:'DEALER', model:'game engine', wid:'dealer', ac:'var(--pX)',
   col:{fill:'#d8cfb4',shade:'#8a7d4f',light:'#f4eeda'}};
 const ROSTER={}; P.forEach(p=>ROSTER[p.id]=p); ROSTER.X=BAND;
+const trails={};P.forEach(p=>trails[p.id]={chips:[p.chips],changes:new Set(),metrics:null});
 
 const stage=document.getElementById('stage');
 P.forEach(p=>{
@@ -426,6 +451,34 @@ function setDial(id,d,v,flash){const p=ROSTER[id];
   if(flash&&!reduced){el.classList.remove('flash');void el.offsetWidth;el.classList.add('flash');}}
 function bumpCall(lat,c,n=1){calls+=n;cost=+(cost+c).toFixed(4);
   $('callNo').textContent=calls;$('costNo').textContent='$'+cost.toFixed(3);}
+
+function renderTrails(){
+  $('adaptGrid').innerHTML=P.map(p=>{
+    const t=trails[p.id],m=t.metrics,values=t.chips;
+    const min=Math.min(...values),max=Math.max(...values),span=Math.max(100,max-min);
+    const y=v=>38-((v-(min-(span-(max-min))/2))/span)*32;
+    const x=i=>values.length<2?4:4+i*112/(values.length-1);
+    const points=values.map((v,i)=>`${x(i)},${y(v)}`).join(' ');
+    const startY=y(values[0]);
+    const gain=m?.adaptationGain||0,hands=m?.handsPlayed||0;
+    const state=hands<4?'collecting evidence':gain>0?'improving this run':gain<0?'declining this run':'flat this run';
+    const cls=hands<4?'':gain>0?'up':gain<0?'down':'';
+    const markers=[...t.changes].filter(h=>h<values.length).map(h=>
+      `<rect class="change" x="${x(h)-2}" y="${y(values[h])-2}" width="4" height="4" transform="rotate(45 ${x(h)} ${y(values[h])})"/>`).join('');
+    const dots=values.map((v,i)=>`<circle class="point" cx="${x(i)}" cy="${y(v)}" r="2"/>`).join('');
+    return `<div class="trail" style="--ac:${p.ac}">
+      <div class="trail-top"><span class="trail-name">${p.nm}</span><span class="trail-state ${cls}">${state}</span></div>
+      <svg viewBox="0 0 120 42" role="img" aria-label="${p.nm} chip outcome by hand">
+        <line class="gridline" x1="4" y1="38" x2="116" y2="38"/>
+        <line class="baseline" x1="4" y1="${startY}" x2="116" y2="${startY}"/>
+        <polyline class="trend" points="${points}"/>${dots}${markers}
+      </svg>
+      <div class="trail-meta"><span>chips <b>${values.at(-1).toLocaleString()}</b></span>
+        <span>2H vs 1H <b>${hands<4?'—':(gain>0?'+':'')+gain}</b></span>
+        <span>changes <b>${m?.changesApplied||0}</b></span></div>
+    </div>`;
+  }).join('');
+}
 
 /* ---- decision bubble ---- */
 const bubTimers={};
@@ -597,6 +650,8 @@ function resetUi(){
   calls=0;cost=0;$('callNo').textContent=calls;$('costNo').textContent='$'+cost.toFixed(3);
   unfold();clearHoles();clearBets();clearBubbles();community([]);pot(0);callback(false);
   chatEl.innerHTML='';evo.innerHTML='';tick.innerHTML='';
+  P.forEach(p=>trails[p.id]={chips:[p.chips],changes:new Set(),metrics:null});
+  renderTrails();
 }
 
 /* ================= LIVE EVENT ADAPTER ================= */
@@ -636,6 +691,7 @@ function onTrace(msg){
       c$:d.estCostUsd||0,llmCalls:d.llmCalls||1});
     if(d.status==='applied')Object.entries(K).forEach(([k,s])=>{
       if(d.after[k]!==d.before[k])setDial(id,s,d.after[k],true);});
+    if(d.status==='applied'){trails[id].changes.add(d.handId);renderTrails();}
     if(d.banter)say(id,d.banter);
     return;
   }
@@ -676,12 +732,17 @@ function onEvent(ev){
   }
   if(ev.type==='hand_end'){
     Object.entries(ev.chips||{}).forEach(([wid,value])=>{
-      const id=seat(wid);if(id)chips(id,value);});
+      const id=seat(wid);if(id){chips(id,value);trails[id].chips.push(value);}});
+    renderTrails();
     return;
   }
   if(ev.type==='metrics'){
     calls=ev.snapshot.totals.llmCalls;cost=ev.snapshot.totals.estCostUsd;
     $('callNo').textContent=calls;$('costNo').textContent='$'+cost.toFixed(3);
+    Object.entries(ev.snapshot.agents).forEach(([wid,metrics])=>{
+      const id=seat(wid);if(id)trails[id].metrics={...metrics,
+        changesApplied:ev.snapshot.evolution[wid].changesApplied};});
+    renderTrails();
     return;
   }
   if(ev.type==='action'||ev.type==='evolution')return;
