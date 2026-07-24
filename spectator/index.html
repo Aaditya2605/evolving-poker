@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Evolving Poker — Spectator UI · v6</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@500;700;800&family=JetBrains+Mono:ital,wght@0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0b0e0c; --panel-a:#131a15; --panel-b:#0e130f;
+  --felt:#123524; --felt-deep:#0d2a1c; --rail:#3a2c14; --brass:#c9a227;
+  --cream:#f5f0e4; --muted:#8a9a8f; --line:#223128;
+  --plus:#4ade80; --minus:#f87171; --warn:#f0c46a;
+  --pA:#5bd6c0; --pB:#b78bff; --pC:#f0a868; --pN:#f0789c; --pX:#d8cfb4;
+  --mono:'JetBrains Mono',ui-monospace,monospace;
+  --disp:'Big Shoulders Display',sans-serif;
+  /* Seats sit in four corner columns; the board and pot own the empty
+     centre column. Top seats are clamped with min()/max() so they can
+     never drift inward into the cards at any table width. */
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  background:radial-gradient(1200px 600px at 50% -10%, #16241c 0%, transparent 60%),var(--ink);
+  color:var(--cream);font-family:var(--mono);font-size:13px;overflow-x:hidden;
+}
+
+/* ================= HEADER ================= */
+header{display:flex;align-items:center;justify-content:space-between;gap:14px;
+  padding:10px 22px 8px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.brand .eyebrow{font-size:10px;letter-spacing:.28em;color:var(--brass);text-transform:uppercase;margin-bottom:2px}
+.brand h1{font-family:var(--disp);font-weight:800;font-size:clamp(22px,3vw,32px);letter-spacing:.02em;line-height:.95;text-transform:uppercase}
+.brand h1 span{color:var(--brass)}
+.hud{display:flex;gap:20px;align-items:center;flex-wrap:wrap}
+.stat{text-align:right}
+.stat .k{font-size:9px;letter-spacing:.2em;color:var(--muted);text-transform:uppercase}
+.stat .v{font-family:var(--disp);font-weight:700;font-size:22px;letter-spacing:.04em}
+.controls{display:flex;gap:6px;align-items:center}
+.controls button{
+  font-family:var(--mono);font-size:10px;letter-spacing:.14em;color:var(--cream);
+  background:transparent;border:1px solid var(--line);border-radius:3px;
+  padding:7px 12px;cursor:pointer;text-transform:uppercase;
+}
+.controls button:hover{border-color:var(--brass);color:var(--brass)}
+.controls button:focus-visible{outline:2px solid var(--brass);outline-offset:2px}
+.controls button.active{border-color:var(--brass);color:var(--brass)}
+.live{display:flex;align-items:center;gap:7px;border:1px solid var(--line);border-radius:3px;
+  padding:7px 11px;font-size:10px;letter-spacing:.24em}
+.live .dot{width:7px;height:7px;border-radius:50%;background:var(--minus);animation:blink 1.4s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
+
+/* ================= LAYOUT ================= */
+.wrap{display:grid;grid-template-columns:45fr 8px 26fr 8px 29fr;gap:0;
+  padding:10px 22px 6px;max-width:1640px;margin:0 auto;align-items:stretch;
+  height:calc(100vh - 178px);min-height:604px;max-height:900px}
+.wrap > .panel{margin:0 7px}
+.wrap > .panel:first-child{margin-left:0}
+.wrap > .panel:last-child{margin-right:0}
+
+/* drag handles between panels */
+.gutter{position:relative;cursor:col-resize;z-index:8;display:flex;align-items:center;justify-content:center}
+.gutter::before{content:"";width:2px;height:46px;border-radius:2px;background:var(--line);transition:background .2s,height .2s}
+.gutter:hover::before,.gutter.dragging::before{background:var(--brass);height:80px}
+body.resizing{cursor:col-resize;user-select:none}
+
+/* collapse toggle */
+.pcollapse{flex:0 0 auto;background:transparent;border:1px solid var(--line);border-radius:3px;
+  color:var(--muted);font-family:var(--mono);font-size:11px;line-height:1;padding:4px 7px;cursor:pointer}
+.pcollapse:hover{border-color:var(--brass);color:var(--brass)}
+.panel.collapsed .ph{flex-direction:column;align-items:center;justify-content:flex-start;
+  gap:12px;padding:10px 4px;height:100%;border-bottom:0}
+.panel.collapsed .ph h2{writing-mode:vertical-rl;transform:rotate(180deg);font-size:13px;letter-spacing:.24em}
+.panel.collapsed .ph .sub{display:none}
+.panel.collapsed .pcollapse{order:-1}
+.panel.collapsed .feed{display:none}
+.panel.collapsed .note{display:none!important}
+.panel{border:1px solid var(--line);border-radius:6px;
+  background:linear-gradient(180deg,var(--panel-a) 0%,var(--panel-b) 100%);
+  display:flex;flex-direction:column;min-width:0;min-height:0;height:100%;position:relative;overflow:hidden}
+.ph{flex:0 0 auto;display:flex;align-items:baseline;justify-content:space-between;gap:10px;
+  padding:10px 14px;border-bottom:1px solid var(--line);background:var(--panel-a);position:relative;z-index:6}
+.ph h2{font-family:var(--disp);font-weight:700;font-size:16px;letter-spacing:.14em;text-transform:uppercase;white-space:nowrap}
+.ph .sub{font-size:9px;letter-spacing:.16em;color:var(--muted);text-transform:uppercase;text-align:right;line-height:1.4}
+
+/* ================= TABLE ================= */
+.stage{position:relative;flex:1 1 auto;width:100%;min-height:560px;overflow:hidden}
+.felt{position:absolute;inset:15% 8%;border-radius:50%;
+  background:radial-gradient(ellipse at 50% 36%, #1b4d32 0%, var(--felt) 55%, var(--felt-deep) 100%);
+  border:10px solid var(--rail);
+  box-shadow:0 0 0 2px #55401e, inset 0 14px 50px rgba(0,0,0,.55), 0 24px 60px rgba(0,0,0,.6)}
+.board{position:absolute;left:50%;top:33%;transform:translate(-50%,-50%);display:flex;gap:7px;z-index:2}
+.card{width:36px;height:50px;border-radius:4px;background:var(--cream);color:#1b1b1b;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  font-weight:700;font-size:15px;line-height:1;box-shadow:0 3px 8px rgba(0,0,0,.5);
+  opacity:0;transform:translateY(8px) rotateY(90deg);
+  transition:opacity .35s,transform .45s cubic-bezier(.2,.8,.3,1.1)}
+.card.dealt{opacity:1;transform:none}
+.card.red{color:#c0392b}
+.card small{font-size:11px}
+.card.mini{width:26px;height:36px;font-size:12px;border-radius:3px}
+.card.mini small{font-size:9px}
+
+/* ---- poker chips ---- */
+.stack{display:flex;align-items:flex-end;justify-content:center;gap:4px}
+.col{display:flex;flex-direction:column;align-items:center}
+.pchip{display:block;width:var(--cs);height:var(--cs);border-radius:50%;
+  border:3px dashed rgba(245,240,228,.92);box-shadow:0 2px 3px rgba(0,0,0,.55);
+  animation:chipdrop .3s cubic-bezier(.2,.9,.3,1.3)}
+.col .pchip + .pchip{margin-top:calc(var(--cs) * -0.76)}
+@keyframes chipdrop{from{opacity:0;transform:translateY(-9px)}to{opacity:1;transform:none}}
+
+.pot{position:absolute;left:50%;top:68%;transform:translate(-50%,-50%);display:flex;
+  flex-direction:column;align-items:center;gap:5px;font-size:11px;z-index:2}
+.pot b{font-family:var(--disp);font-size:20px;font-weight:700;letter-spacing:.04em;
+  text-shadow:0 2px 6px rgba(0,0,0,.7)}
+.pot .plbl{font-size:8px;letter-spacing:.24em;color:rgba(245,240,228,.45);text-transform:uppercase}
+
+.betrow{min-height:32px;margin-top:3px;display:flex;flex-direction:column;align-items:center;gap:2px;
+  opacity:0;transition:opacity .3s}
+.betrow.on{opacity:1}
+.betrow .amt{font-size:9px;letter-spacing:.08em;color:var(--ac);
+  background:rgba(4,10,6,.75);border:1px solid var(--line);border-radius:2px;padding:1px 6px}
+
+/* ---- decision speech bubble ---- */
+.why{min-height:25px;margin-top:3px;padding:0 3px;font-size:9px;line-height:1.35;
+  color:#cfd6cc;opacity:0;transition:opacity .3s}
+.why.on{opacity:1}
+
+.seat{position:absolute;width:152px;transform:translateX(-50%);text-align:center;z-index:3}
+.av{position:relative;width:72px;height:85px;margin:0 auto 3px;display:flex;align-items:flex-end;justify-content:center}
+.av svg{display:block}
+.seat.thinking .av::before{content:"";position:absolute;left:50%;top:52%;width:84px;height:84px;
+  margin:-42px 0 0 -42px;border-radius:50%;border:2px solid var(--ac);animation:pulse 1.1s ease-out infinite}
+@keyframes pulse{from{transform:scale(.75);opacity:.8}to{transform:scale(1.4);opacity:0}}
+.seat.reflecting .av svg{animation:shimmer 1s ease-in-out 2}
+@keyframes shimmer{50%{filter:drop-shadow(0 0 18px var(--ac))}}
+.seat.folded{filter:grayscale(.92) opacity(.4)}
+.seat .nm{font-family:var(--disp);font-size:21px;font-weight:800;letter-spacing:.1em;
+  color:var(--ac);line-height:1.05;text-transform:uppercase}
+.seat .chips{font-size:13px;font-weight:500;color:var(--cream);line-height:1.5;margin-top:1px}
+.seat .hole{display:flex;gap:4px;justify-content:center;margin-top:3px;min-height:36px}
+.seat .status{margin-top:4px;display:inline-block;font-size:10px;letter-spacing:.08em;
+  padding:3px 9px;border-radius:2px;background:rgba(4,10,6,.72);border:1px solid var(--line);min-height:15px}
+.seat .status.action{border-color:var(--ac);color:var(--ac)}
+.dials{margin:4px auto 0;width:100%;display:flex;flex-direction:row;justify-content:center;gap:9px}
+.dial{display:flex;flex-direction:column;align-items:center;gap:2px;width:40px;font-size:7.5px;
+  letter-spacing:.1em;color:var(--muted)}
+.dial .bar{width:100%;height:3px;border-radius:2px;background:rgba(10,18,12,.75);overflow:hidden}
+.dial .bar i{display:block;height:100%;background:var(--ac);transition:width 1s ease}
+.dial.flash .bar i{animation:dialflash 1.2s ease}
+@keyframes dialflash{0%,100%{filter:brightness(1)}40%{filter:brightness(2.2)}}
+.dial .val{color:var(--cream);font-size:9px}
+.dbtn{position:absolute;top:4px;left:50%;margin-left:24px;width:19px;height:19px;border-radius:50%;
+  background:var(--cream);color:#111;z-index:4;font-family:var(--disp);font-weight:800;font-size:11px;
+  align-items:center;justify-content:center;box-shadow:0 2px 6px rgba(0,0,0,.6);display:none}
+.seat.dealer .dbtn{display:flex}
+
+#callback{position:absolute;left:50%;top:8px;transform:translateX(-50%) translateY(-16px);
+  border:1px solid var(--brass);border-radius:3px;background:#1d1707;
+  color:var(--brass);font-size:10px;letter-spacing:.12em;padding:6px 18px;white-space:nowrap;
+  text-transform:uppercase;pointer-events:none;z-index:7;
+  opacity:0;visibility:hidden;transition:transform .5s cubic-bezier(.2,.9,.3,1.2),opacity .4s,visibility .4s}
+#callback.show{transform:translateX(-50%) translateY(0);opacity:1;visibility:visible}
+
+/* ================= FEEDS ================= */
+.feed{flex:1 1 auto;min-height:0;padding:12px 14px;overflow-y:auto;display:flex;flex-direction:column;gap:10px;
+  scrollbar-width:thin;scrollbar-color:var(--line) transparent}
+.feed::-webkit-scrollbar{width:5px}.feed::-webkit-scrollbar-thumb{background:var(--line);border-radius:3px}
+
+.evo{border:1px solid var(--line);border-left:3px solid var(--ac);border-radius:4px;
+  background:rgba(0,0,0,.28);padding:10px 12px;animation:rise .4s ease;flex:0 0 auto}
+@keyframes rise{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.evo .top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:7px;gap:6px}
+.evo .top .a{font-weight:700;font-size:11px;letter-spacing:.1em;color:var(--ac)}
+.evo .top .a small{color:var(--muted);font-weight:400;letter-spacing:.14em;margin-left:6px;font-size:8.5px;text-transform:uppercase}
+.evo .top .h{font-size:8.5px;letter-spacing:.16em;color:var(--muted);text-transform:uppercase;white-space:nowrap}
+.evo .drow{display:grid;grid-template-columns:34px 1fr;gap:8px;font-size:11.5px;line-height:1.6}
+.evo .drow .lbl{color:var(--muted);font-size:9px;letter-spacing:.1em;text-transform:uppercase;padding-top:2px}
+.evo .drow .chg{color:var(--cream)}
+.evo .drow .chg b.from{color:var(--minus);font-weight:400}
+.evo .drow .chg b.to{color:var(--plus);font-weight:700}
+.evo .drow .chg.same{color:#5c6b60}
+.evo .reason{margin-top:6px;font-size:11px;line-height:1.5;color:#d8dcd2;font-style:italic}
+.evo .foot{display:flex;justify-content:space-between;margin-top:7px;font-size:8.5px;letter-spacing:.12em;color:var(--muted);text-transform:uppercase;gap:6px}
+.evo .ev{display:flex;gap:5px;flex-wrap:wrap}
+.evo .ev span{border:1px solid var(--line);border-radius:2px;padding:1px 6px}
+.evo.nochange{border-left-color:#4a5a50}
+.evo.nochange .badge{color:var(--warn);font-size:9px;letter-spacing:.18em;text-transform:uppercase}
+.evo.invalid{border-left-color:#444;opacity:.62}
+.evo.invalid .badge{color:var(--minus);font-size:9px;letter-spacing:.18em;text-transform:uppercase}
+.evo.gold{border-left-color:var(--brass);background:rgba(201,162,39,.07)}
+
+/* ================= TABLE TALK ================= */
+.msg{display:grid;grid-template-columns:32px 1fr;gap:8px;animation:rise .35s ease;flex:0 0 auto}
+.msg .ava{width:32px;height:38px;display:flex;align-items:flex-end;justify-content:center}
+.msg .ava svg{display:block}
+.msg .bub{border:1px solid var(--line);border-left:2px solid var(--ac);border-radius:4px;
+  background:rgba(0,0,0,.3);padding:6px 9px;min-width:0}
+.msg .who{font-size:8.5px;letter-spacing:.18em;color:var(--ac);text-transform:uppercase;font-weight:700;margin-bottom:3px}
+.msg .who em{font-style:normal;color:var(--muted);font-weight:400;letter-spacing:.14em;margin-left:5px}
+.msg .txt{font-size:11px;line-height:1.55;color:#dfe4da;overflow-wrap:anywhere}
+.msg.band .bub{background:rgba(201,162,39,.07)}
+.msg.band .txt{color:#e6dcbe;font-size:10px;letter-spacing:.04em}
+.msg.sys{grid-template-columns:1fr}
+.msg.sys .bub{border-left-color:var(--brass);background:rgba(201,162,39,.06);text-align:center}
+.msg.sys .txt{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--brass)}
+.typing{display:flex;gap:3px;align-items:center;padding:3px 0}
+.typing i{width:4px;height:4px;border-radius:50%;background:var(--ac);animation:td 1s infinite}
+.typing i:nth-child(2){animation-delay:.18s}.typing i:nth-child(3){animation-delay:.36s}
+@keyframes td{0%,60%,100%{opacity:.25;transform:translateY(0)}30%{opacity:1;transform:translateY(-3px)}}
+
+/* ================= LIVE COMMENTARY TICKER ================= */
+.ticker{max-width:1640px;margin:0 auto;padding:4px 22px 0;display:flex;align-items:stretch;gap:10px}
+.tk-label{flex:0 0 auto;display:flex;align-items:center;gap:8px;border:1px solid var(--line);
+  border-radius:4px;padding:0 12px;background:linear-gradient(180deg,var(--panel-a),var(--panel-b));
+  font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--brass);white-space:nowrap}
+.tk-label .dot{width:6px;height:6px;border-radius:50%;background:var(--minus);animation:blink 1.4s infinite}
+.tk-track{flex:1 1 auto;min-width:0;overflow-x:auto;display:flex;gap:0;align-items:center;
+  border:1px solid var(--line);border-radius:4px;
+  background:linear-gradient(180deg,var(--panel-a),var(--panel-b));
+  padding:9px 12px;scrollbar-width:none;scroll-behavior:smooth}
+.tk-track::-webkit-scrollbar{display:none}
+.tk{flex:0 0 auto;display:flex;align-items:baseline;gap:6px;font-size:10.5px;white-space:nowrap;
+  border-left:2px solid var(--ac);padding:1px 16px 1px 9px;margin-right:6px;animation:tkin .45s ease}
+@keyframes tkin{from{opacity:0;transform:translateX(18px)}to{opacity:1;transform:none}}
+.tk b{color:var(--ac);letter-spacing:.1em;font-weight:700}
+.tk span{color:#cbd1c7}
+.tk u{text-decoration:none;color:var(--cream);font-weight:700}
+.tk.note{border-left-color:var(--brass)}
+.tk.note span{color:var(--brass);letter-spacing:.16em;text-transform:uppercase;font-size:9px}
+.tk.evoline{border-left-color:var(--ac);opacity:.95}
+.tk.evoline span{color:#9fb0a3;font-style:italic}
+
+/* ================= FOOTER ================= */
+footer{display:flex;justify-content:center;align-items:center;padding:8px 22px 12px;
+  color:var(--muted);font-size:9px;letter-spacing:.2em;text-transform:uppercase;gap:10px;flex-wrap:wrap}
+footer b{color:var(--cream)}
+
+/* ================= DESIGN NOTES ================= */
+#notesBtn{position:fixed;right:16px;bottom:16px;z-index:60;font-family:var(--mono);
+  background:var(--brass);color:#141109;border:0;border-radius:4px;padding:10px 16px;
+  font-size:10px;letter-spacing:.18em;text-transform:uppercase;cursor:pointer;font-weight:700;
+  box-shadow:0 6px 20px rgba(0,0,0,.5)}
+.note{display:none;position:absolute;z-index:50;max-width:230px;font-size:10px;line-height:1.5;
+  background:#1c1509;border:1px solid var(--brass);color:#f0e6c8;border-radius:4px;padding:8px 10px}
+.note b{color:var(--brass);display:block;font-size:9px;letter-spacing:.18em;text-transform:uppercase;margin-bottom:3px}
+body.notes .note{display:block}
+#legend{display:none;position:fixed;left:16px;bottom:16px;z-index:55;width:280px;
+  background:#10160f;border:1px solid var(--brass);border-radius:6px;padding:12px 14px;font-size:10px;line-height:1.7}
+body.notes #legend{display:block}
+#legend h3{font-family:var(--disp);font-size:14px;letter-spacing:.14em;color:var(--brass);text-transform:uppercase;margin-bottom:6px}
+#legend .sw{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:5px;vertical-align:-1px}
+
+/* ================= RESPONSIVE ================= */
+@media(max-width:1240px){
+  .wrap{grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;gap:14px;
+    height:auto;max-height:none;grid-auto-rows:minmax(0,620px)}
+  .wrap > .panel{margin:0}
+  .gutter{display:none}
+  .stream{grid-column:1 / -1;height:420px}
+}
+@media(max-width:880px){
+  .wrap{grid-template-columns:1fr!important;grid-auto-rows:minmax(0,620px)}
+  .stat .v{font-size:18px}
+  .ticker{flex-direction:column}
+  .tk-label{padding:6px 12px;justify-content:center}
+}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">
+    <div class="eyebrow">Self-Evolving Agents · Live Model Benchmark</div>
+    <h1>Evolving <span>Poker</span></h1>
+  </div>
+  <div class="hud">
+    <div class="stat"><div class="k">Hand</div><div class="v"><span id="handNo">3</span> of 6</div></div>
+    <div class="stat"><div class="k">Pot</div><div class="v" id="potNo">$0</div></div>
+    <div class="stat"><div class="k">Pioneer calls</div><div class="v" id="callNo">8</div></div>
+    <div class="stat"><div class="k">Est cost</div><div class="v" id="costNo">$0.014</div></div>
+    <div class="controls">
+      <button id="btnPlay" class="active" aria-label="Play or pause">⏸ Pause</button>
+      <button id="btnSpeed" aria-label="Playback speed">1×</button>
+    </div>
+    <div class="live"><span class="dot"></span>LIVE</div>
+  </div>
+  <div class="note" style="right:20px;top:74px"><b>① Header</b>Hand progress, live call + cost counters. Play/pause/speed are functional — wire to WS live mode and fixture replay.</div>
+</header>
+
+<div class="wrap">
+  <!-- TABLE -->
+  <section class="panel">
+    <div class="ph"><h2>The Table</h2><div class="sub">spectator sees all cards<br>agents see their seat only</div></div>
+    <div class="stage" id="stage">
+      <div id="callback">Same spot as hand 3 · different action</div>
+      <div class="felt"></div>
+      <div class="board" id="board"></div>
+      <div class="pot"><div id="potChips"></div><b id="potCenter">$0</b><div class="plbl">pot</div></div>
+    </div>
+    <div class="note" style="left:16px;top:64px"><b>② Seats</b>4 crewmate agents at the corners of the oval. Hole cards face-up for spectators. Dealer button rotates each hand.</div>
+    <div class="note" style="left:16px;bottom:14px"><b>③ Strategy dials</b>Per-seat bars = live dial values (agg/blf/cal). Animate width + flash on every applied evolution event.</div>
+    <div class="note" style="right:16px;bottom:64px"><b>⑧ The §27 beat</b>When a changed dial produces a different action in a repeated spot, surface it — this toast is the demo's proof moment.</div>
+  </section>
+
+  <div class="gutter" id="g1" role="separator" aria-orientation="vertical" title="Drag to resize"></div>
+
+  <!-- TABLE TALK -->
+  <section class="panel talk" id="pTalk">
+    <div class="ph"><h2>Table Talk</h2><div class="sub">band<br>message bus</div>
+      <button class="pcollapse" data-p="talk" title="Collapse panel">‹</button></div>
+    <div class="feed" id="chat" aria-live="polite"></div>
+    <div class="note" style="left:14px;bottom:14px"><b>⑨ Band bus</b>Dealer identity routes every turn; agents talk trash on the same bus. Pure spectator flavour — never fed back as model input.</div>
+  </section>
+
+  <div class="gutter" id="g2" role="separator" aria-orientation="vertical" title="Drag to resize"></div>
+
+  <!-- EVOLUTION LOG -->
+  <section class="panel stream" id="pEvo">
+    <div class="ph"><h2>Evolution Log</h2><div class="sub">one card<br>per reflection</div>
+      <button class="pcollapse" data-p="evo" title="Collapse panel">›</button></div>
+    <div class="feed" id="evo" aria-live="polite"></div>
+    <div class="note" style="right:14px;top:64px"><b>④ Hero panel</b>One card per EvolutionEvent. Dim unchanged dials; red→green for changes; latency + cost in every footer.</div>
+    <div class="note" style="right:14px;bottom:120px"><b>⑤ no_change</b>First-class state, calm style — "held strategy". Calibration is a result, never hide it.</div>
+    <div class="note" style="right:14px;bottom:14px"><b>⑥ invalid / timeout</b>Grayed, reason shown, strategy unchanged. Failures are model data.</div>
+  </section>
+</div>
+
+<!-- LIVE COMMENTARY -->
+<div class="ticker">
+  <div class="tk-label"><span class="dot"></span>Play&nbsp;by&nbsp;play</div>
+  <div class="tk-track" id="tick" aria-live="polite"></div>
+</div>
+
+<footer>
+  <div>models stay fixed — strategy memory evolves</div>
+</footer>
+
+<button id="notesBtn">Design notes</button>
+<div id="legend">
+  <h3>Tokens</h3>
+  <div><span class="sw" style="background:#123524"></span>felt · <span class="sw" style="background:#c9a227"></span>brass · <span class="sw" style="background:#f5f0e4"></span>cream</div>
+  <div><span class="sw" style="background:#5bd6c0"></span>ATLAS · <span class="sw" style="background:#f0789c"></span>NOVA · <span class="sw" style="background:#b78bff"></span>VEGA · <span class="sw" style="background:#f0a868"></span>ORION</div>
+  <div><span class="sw" style="background:#4ade80"></span>diff+ · <span class="sw" style="background:#f87171"></span>diff− · line #223128 · ink #0B0E0C</div>
+  <div style="margin-top:4px">Display: Big Shoulders 700/800 · Data: JetBrains Mono</div>
+  <div>Chips: 500 purple · 100 black · 25 green · 5 red</div>
+  <div>Seat band 214px — board + pot anchored off it, never overlap</div>
+</div>
+
+<script>
+/* ================= CREWMATE AVATAR ================= */
+let _cid=0;
+function crew(c,w){
+  const id='cw'+(++_cid), h=Math.round(w*1.18);
+  return `<svg viewBox="0 0 132 152" width="${w}" height="${h}" aria-hidden="true">
+  <defs>
+    <linearGradient id="${id}b" x1="0.1" y1="0" x2="0.9" y2="1">
+      <stop offset="0" stop-color="${c.light}"/><stop offset=".42" stop-color="${c.fill}"/><stop offset="1" stop-color="${c.shade}"/>
+    </linearGradient>
+    <linearGradient id="${id}p" x1="0" y1="0" x2="1" y2="0.4">
+      <stop offset="0" stop-color="${c.shade}"/><stop offset="1" stop-color="${c.fill}"/>
+    </linearGradient>
+    <linearGradient id="${id}v" x1="0.1" y1="0" x2="0.75" y2="1">
+      <stop offset="0" stop-color="#dff4ff"/><stop offset=".45" stop-color="#8ecfec"/><stop offset="1" stop-color="#3f7f9f"/>
+    </linearGradient>
+  </defs>
+  <ellipse cx="70" cy="145" rx="36" ry="6" fill="#000" opacity=".38"/>
+  <rect x="8" y="50" width="29" height="56" rx="14" fill="url(#${id}p)"/>
+  <rect x="15" y="60" width="8" height="36" rx="4" fill="#000" opacity=".22"/>
+  <rect x="43" y="114" width="28" height="26" rx="10" fill="${c.shade}"/>
+  <rect x="76" y="114" width="28" height="26" rx="10" fill="url(#${id}b)"/>
+  <path d="M37 57C37 24 54 11 74 11C96 11 108 28 108 57L108 112C108 119 103 123 96 123L49 123C42 123 37 119 37 112Z" fill="url(#${id}b)"/>
+  <path d="M46 33C50 19 60 12 73 11C61 18 53 31 51 47L51 118C51 121 48 123 45 122Z" fill="#fff" opacity=".2"/>
+  <path d="M37 99C54 110 90 112 108 103L108 112C108 119 103 123 96 123L49 123C42 123 37 119 37 112Z" fill="#000" opacity=".18"/>
+  <path d="M64 38C83 29 102 36 102 52C102 65 89 71 75 68C61 65 56 56 58 48C59 42 61 39 64 38Z" fill="url(#${id}v)"/>
+  <path d="M69 43C78 39 89 41 93 48" stroke="#fff" stroke-width="5" stroke-linecap="round" fill="none" opacity=".9"/>
+  <circle cx="66" cy="57" r="3.6" fill="#fff" opacity=".5"/>
+</svg>`;
+}
+
+/* ================= ROSTER =================
+   anc/pos  → seat anchored to an edge (px) so its block never drifts
+   bp       → bet chips, in the band beside the board / pot
+   sb       → decision bubble, in the outer felt margin */
+const P = [
+  {id:'A', nm:'ATLAS', model:'Qwen3-8B',      wid:'playerA', ac:'var(--pA)', chips:1000, s:{a:.50,b:.30,c:.50},
+   col:{fill:'#5bd6c0',shade:'#268a7b',light:'#9ff0e2'},
+   pos:['min(27%, calc(50% - 168px))',0], anc:'top'},
+  {id:'N', nm:'NOVA',  model:'Llama-3.3-70B', wid:'playerN', ac:'var(--pN)', chips:1000, s:{a:.50,b:.30,c:.50},
+   col:{fill:'#f0789c',shade:'#a83b5c',light:'#ffb6cb'},
+   pos:['max(73%, calc(50% + 168px))',0], anc:'top'},
+  {id:'B', nm:'VEGA',  model:'GPT-OSS-20B',   wid:'playerB', ac:'var(--pB)', chips:1000, s:{a:.50,b:.30,c:.50},
+   col:{fill:'#b78bff',shade:'#6a45ad',light:'#dcc6ff'},
+   pos:['14%',0], anc:'bottom'},
+  {id:'C', nm:'ORION', model:'DeepSeek-V3.1', wid:'playerC', ac:'var(--pC)', chips:1000, s:{a:.50,b:.30,c:.50},
+   col:{fill:'#f0a868',shade:'#a8632a',light:'#ffd0a4'},
+   pos:['86%',0], anc:'bottom'},
+];
+const BAND={id:'X', nm:'DEALER', model:'Band · orchestrator', wid:'dealer', ac:'var(--pX)',
+  col:{fill:'#d8cfb4',shade:'#8a7d4f',light:'#f4eeda'}};
+const ROSTER={}; P.forEach(p=>ROSTER[p.id]=p); ROSTER.X=BAND;
+
+const stage=document.getElementById('stage');
+P.forEach(p=>{
+  const el=document.createElement('div');
+  el.className='seat';el.id='seat'+p.id;el.style.setProperty('--ac',p.ac);
+  el.style.left=p.pos[0];el.style[p.anc]=p.pos[1]+'px';
+  el.innerHTML=`
+    <div class="dbtn">D</div>
+    <div class="av">${crew(p.col,72)}</div>
+    <div class="nm">${p.nm}</div>
+    <div class="chips" id="ch${p.id}">$1,000</div>
+    <div class="hole" id="hole${p.id}"></div>
+    <div class="status" id="st${p.id}">&nbsp;</div>
+    <div class="why" id="why${p.id}"></div>
+    <div class="betrow" id="bet${p.id}"></div>
+    <div class="dials">
+      ${['a','b','c'].map(d=>`<div class="dial" id="d${p.id}${d}">
+        <span>${{a:'AGG',b:'BLF',c:'CAL'}[d]}</span>
+        <span class="bar"><i style="width:${p.s[d]*100}%"></i></span>
+        <span class="val">${p.s[d].toFixed(2)}</span></div>`).join('')}
+    </div>`;
+  stage.appendChild(el);
+});
+const $=id=>document.getElementById(id);
+const M={};P.forEach(p=>{M[p.id]={vol:0,noch:0,osc:0,lat:0,cost:0,bw:0,bt:0,gain:0};});
+
+/* ================= POKER CHIPS ================= */
+const DENOM=[{v:500,c:'#6b3fa0'},{v:100,c:'#191919'},{v:25,c:'#2e7d4f'},{v:5,c:'#b8352b'},{v:1,c:'#e8e2d2'}];
+function chipStack(amount,size,maxPer){
+  let left=Math.round(amount),cols=[];
+  DENOM.forEach(d=>{const n=Math.floor(left/d.v);if(n>0){left-=n*d.v;cols.push({c:d.c,n:Math.min(n,maxPer||5)});}});
+  if(!cols.length)return'';
+  return `<div class="stack" style="--cs:${size}px">`+cols.map(col=>
+    '<div class="col">'+Array.from({length:col.n},()=>
+      `<i class="pchip" style="background:${col.c}"></i>`).join('')+'</div>').join('')+'</div>';
+}
+function bet(id,amount){const b=$('bet'+id);
+  if(!amount){b.classList.remove('on');b.innerHTML='';return;}
+  b.innerHTML=chipStack(amount,14,3)+`<span class="amt">$${amount}</span>`;b.classList.add('on');}
+function clearBets(){P.forEach(p=>bet(p.id,0));}
+
+/* ================= HELPERS ================= */
+const evo=$('evo'), board=$('board'), chatEl=$('chat'), tick=$('tick');
+let calls=8, cost=0.014, reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const fmt$=n=>'$'+n.toLocaleString();
+function chips(id,v){const p=ROSTER[id];p.chips=v;$('ch'+id).textContent=fmt$(v);}
+function pot(v){$('potNo').textContent=fmt$(v);$('potCenter').textContent=fmt$(v);
+  $('potChips').innerHTML=chipStack(v,22,6);}
+function hand(n){$('handNo').textContent=n;}
+function cardEl(c,mini){const d=document.createElement('div');
+  d.className='card'+(mini?' mini':'')+(/[♥♦]/.test(c)?' red':'');
+  d.innerHTML=`${c.slice(0,-1)}<small>${c.slice(-1)}</small>`;return d;}
+function community(list){board.innerHTML='';list.forEach((c,i)=>{const d=cardEl(c,false);board.appendChild(d);
+  setTimeout(()=>d.classList.add('dealt'),140*i+90);});}
+function hole(id,cards){const h=$('hole'+id);h.innerHTML='';
+  cards.forEach((c,i)=>{const d=cardEl(c,true);h.appendChild(d);setTimeout(()=>d.classList.add('dealt'),100*i+70);});}
+function clearHoles(){P.forEach(p=>{$('hole'+p.id).innerHTML='';});}
+function status(id,txt,on){const s=$('st'+id);s.innerHTML=txt||'&nbsp;';s.classList.toggle('action',!!on);}
+function thinking(id,on){$('seat'+id).classList.toggle('thinking',on);if(on)status(id,'DECIDING…');}
+function fold(id){$('seat'+id).classList.add('folded');status(id,'FOLD');}
+function unfold(){P.forEach(p=>{$('seat'+p.id).classList.remove('folded');status(p.id,'');});}
+function dealerBtn(id){P.forEach(p=>$('seat'+p.id).classList.toggle('dealer',p.id===id));}
+function setDial(id,d,v,flash){const p=ROSTER[id];
+  M[id].vol=+(M[id].vol+Math.abs(v-p.s[d])).toFixed(2);
+  p.s[d]=v;const el=$('d'+id+d);el.querySelector('i').style.width=(v*100)+'%';
+  el.querySelector('.val').textContent=v.toFixed(2);
+  if(flash&&!reduced){el.classList.remove('flash');void el.offsetWidth;el.classList.add('flash');}}
+function bumpCall(lat,c){calls++;cost=+(cost+c).toFixed(4);
+  $('callNo').textContent=calls;$('costNo').textContent='$'+cost.toFixed(3);}
+
+/* ---- decision bubble ---- */
+const bubTimers={};
+function bubble(id,action,line,ms){
+  const el=$('why'+id);
+  el.textContent=line||'';
+  el.classList.toggle('on',!!line);
+  clearTimeout(bubTimers[id]);
+  if(line)bubTimers[id]=setTimeout(()=>el.classList.remove('on'),(ms||4600)/speed);
+}
+function clearBubbles(){P.forEach(p=>{clearTimeout(bubTimers[p.id]);
+  const e=$('why'+p.id);e.classList.remove('on');e.textContent='';});}
+
+/* ================= LIVE COMMENTARY =================
+   Mirrors the Band TraceMessage kinds one-for-one:
+     turn_action    → "<NAME> raises $50"
+     hand_summary   → "HAND 3 · ATLAS WINS $130"
+     evolution_event→ "<NAME> rewrote bluff 0.30 → 0.10"
+   Swap pushTick() for a WS subscription on { type:"trace" } to go live. */
+function pushTick(el){tick.appendChild(el);
+  while(tick.children.length>26)tick.removeChild(tick.firstChild);
+  tick.scrollLeft=tick.scrollWidth;}
+function ticker(id,verb,amount){
+  const p=ROSTER[id];
+  const txt = verb==='raise'?`raises <u>$${amount}</u>`
+            : verb==='call' ?`calls <u>$${amount}</u>`
+            : verb==='check'?'checks'
+            : verb==='fold' ?'folds'
+            : verb;
+  const d=document.createElement('div');
+  d.className='tk';d.style.setProperty('--ac',p.ac);
+  d.innerHTML=`<b>${p.nm}</b><span>${txt}</span>`;pushTick(d);
+}
+function tickNote(txt){
+  const d=document.createElement('div');d.className='tk note';
+  d.innerHTML=`<span>${txt}</span>`;pushTick(d);
+}
+function tickEvo(id,txt){
+  const p=ROSTER[id];
+  const d=document.createElement('div');d.className='tk evoline';d.style.setProperty('--ac',p.ac);
+  d.innerHTML=`<b>${p.nm}</b><span>${txt}</span>`;pushTick(d);
+}
+
+/* ---- one call does the whole action: seat, chips, bubble, chat, ticker ---- */
+function act(id,verb,amount,potAfter,bubbleLine,chatLine){
+  const label = verb==='raise'?`RAISE $${amount}`:verb==='call'?`CALL $${amount}`
+              : verb==='check'?'CHECK':'FOLD';
+  thinking(id,false);
+  if(verb==='fold'){fold(id);}else{status(id,label,true);}
+  if(amount)bet(id,amount);
+  if(potAfter)pot(potAfter);
+  const head = verb==='raise'?`Raise $${amount}`:verb==='call'?`Call $${amount}`
+             : verb==='check'?'Check':'Fold';
+  bubble(id,head,bubbleLine);
+  if(chatLine)say(id,chatLine);
+  ticker(id,verb,amount);
+}
+
+/* ---- table talk / band bus ---- */
+function push(el){chatEl.appendChild(el);chatEl.scrollTop=chatEl.scrollHeight;
+  while(chatEl.children.length>40)chatEl.removeChild(chatEl.firstChild);}
+function chat(id,text){
+  const p=ROSTER[id];
+  const m=document.createElement('div');
+  m.className='msg'+(id==='X'?' band':'');m.style.setProperty('--ac',p.ac);
+  m.innerHTML=`<div class="ava">${crew(p.col,32)}</div>
+    <div class="bub"><div class="who">${p.nm}${id==='X'?'<em>band</em>':''}</div><div class="txt">${text}</div></div>`;
+  push(m);
+}
+function sys(text){const m=document.createElement('div');m.className='msg sys';
+  m.innerHTML=`<div class="bub"><div class="txt">${text}</div></div>`;push(m);}
+function typing(id){
+  const p=ROSTER[id];
+  const m=document.createElement('div');m.className='msg';m.id='typ'+id;m.style.setProperty('--ac',p.ac);
+  m.innerHTML=`<div class="ava">${crew(p.col,32)}</div>
+    <div class="bub"><div class="typing"><i></i><i></i><i></i></div></div>`;push(m);}
+function say(id,text){const t=$('typ'+id);if(t)t.remove();chat(id,text);}
+const band=t=>chat('X',t);
+
+/* ================= EVOLUTION CARDS ================= */
+const DL={a:'aggr',b:'bluff',c:'call'};
+function evoCard({id,handN,before,after,reason,evidence,st,lat,c$}){
+  const p=ROSTER[id];
+  const cls = st==='no_change'?'nochange': st==='applied'?'':'invalid';
+  const gold = st==='applied' && Math.abs((after.b??0)-(before.b??0))>=0.15 ? ' gold':'';
+  const rows=['a','b','c'].map(d=>{
+    const f=before[d].toFixed(2),t=(after[d]??before[d]).toFixed(2);
+    const changed=st==='applied'&&f!==t;
+    return `<div class="drow"><span class="lbl">${{a:'AGG',b:'BLF',c:'CAL'}[d]}</span>
+      <span class="chg ${changed?'':'same'}">${changed?`<b class="from">${f}</b> → <b class="to">${t}</b>`:`${f} —`}</span></div>`;
+  }).join('');
+  const badge= st==='no_change'?`<div class="badge">HELD STRATEGY — evidence insufficient</div>`
+             : st==='applied'?'':`<div class="badge">${st==='timeout'?'TIMEOUT':'INVALID JSON'} — strategy unchanged</div>`;
+  const card=document.createElement('div');
+  card.className='evo '+cls+gold;card.style.setProperty('--ac',p.ac);
+  card.innerHTML=`
+    <div class="top"><span class="a">${p.nm}<small>${p.model}</small></span><span class="h">AFTER HAND ${handN}</span></div>
+    ${badge}${st==='invalid'||st==='timeout'?'':rows}
+    <div class="reason">"${reason}"</div>
+    <div class="foot"><span class="ev">${evidence.map(e=>`<span>${e}</span>`).join('')}</span>
+      <span>${lat}ms · $${c$.toFixed(4)}</span></div>`;
+  evo.appendChild(card);evo.scrollTop=evo.scrollHeight;
+  $('seat'+id).classList.add('reflecting');setTimeout(()=>$('seat'+id).classList.remove('reflecting'),2200);
+  bumpCall(lat,c$);
+  const s=M[id];s.lat=s.lat?Math.round((s.lat+lat)/2):lat;s.cost=+(s.cost+c$).toFixed(4);
+  if(st==='no_change')s.noch++;
+  /* commentary line for the same event */
+  if(st==='applied'){
+    const ch=['a','b','c'].filter(d=>after[d]!==undefined&&after[d]!==before[d])
+      .map(d=>`${DL[d]} ${before[d].toFixed(2)} → ${after[d].toFixed(2)}`).join(' · ');
+    tickEvo(id,'rewrote '+ch);
+  } else if(st==='no_change'){ tickEvo(id,'held strategy'); }
+  else { tickEvo(id, st==='timeout'?'timed out — unchanged':'invalid reply — unchanged'); }
+  while(evo.children.length>10)evo.removeChild(evo.firstChild);
+}
+function osc(id){M[id].osc++;}
+function bluffStat(id,w,t){M[id].bw=w;M[id].bt=t;}
+function gain(id,v){M[id].gain=v;}
+function callback(on){$('callback').classList.toggle('show',on);}
+
+/* ================= PANEL RESIZE + COLLAPSE =================
+   Drag either gutter to trade width between panels; collapse a side
+   panel to a 38px rail to hand the whole row to the table. */
+const wrapEl=document.querySelector('.wrap');
+const COLLAPSED_PX=38, MIN_TABLE=26, MIN_SIDE=13;
+let W=[45,26,29], col={talk:false,evo:false};
+function applyCols(){
+  if(window.innerWidth<=1240){wrapEl.style.gridTemplateColumns='';return;}
+  wrapEl.style.gridTemplateColumns=
+    `${W[0]}fr 8px ${col.talk?COLLAPSED_PX+'px':W[1]+'fr'} 8px ${col.evo?COLLAPSED_PX+'px':W[2]+'fr'}`;
+}
+function dragGutter(idx,e){
+  if(window.innerWidth<=1240)return;
+  const locked = idx===0 ? col.talk : col.evo;
+  if(locked)return;
+  e.preventDefault();
+  const g=e.currentTarget;g.classList.add('dragging');document.body.classList.add('resizing');
+  const avail=wrapEl.clientWidth-16-(col.talk?COLLAPSED_PX:0)-(col.evo?COLLAPSED_PX:0);
+  const startX=e.clientX, a=idx===0?W[0]:W[1], b=idx===0?W[1]:W[2];
+  const sum=a+b;
+  function move(ev){
+    const d=(ev.clientX-startX)/avail*(W[0]+W[1]+W[2]);
+    let na=a+d, nb=b-d;
+    const minA = idx===0?MIN_TABLE:MIN_SIDE;
+    if(na<minA||nb<MIN_SIDE)return;
+    na=+na.toFixed(2);nb=+(sum-na).toFixed(2);
+    if(idx===0){W[0]=na;W[1]=nb;}else{W[1]=na;W[2]=nb;}
+    applyCols();
+  }
+  function up(){g.classList.remove('dragging');document.body.classList.remove('resizing');
+    window.removeEventListener('mousemove',move);window.removeEventListener('mouseup',up);}
+  window.addEventListener('mousemove',move);window.addEventListener('mouseup',up);
+}
+$('g1').addEventListener('mousedown',e=>dragGutter(0,e));
+$('g2').addEventListener('mousedown',e=>dragGutter(1,e));
+document.querySelectorAll('.pcollapse').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    const which=btn.dataset.p;
+    col[which]=!col[which];
+    const panel=which==='talk'?$('pTalk'):$('pEvo');
+    panel.classList.toggle('collapsed',col[which]);
+    btn.textContent = which==='talk' ? (col.talk?'›':'‹') : (col.evo?'‹':'›');
+    btn.title = col[which]?'Expand panel':'Collapse panel';
+    applyCols();
+  });
+});
+window.addEventListener('resize',applyCols);
+applyCols();
+
+/* ================= SCHEDULER ================= */
+const PACE=1.6;
+const Q=[];let qi=0,timer=null,paused=false,speed=1;
+const at=(dt,fn)=>Q.push([dt,fn]);
+function step(){if(paused)return;
+  if(qi>=Q.length){qi=0;hardReset();}
+  const[dt,fn]=Q[qi];
+  timer=setTimeout(()=>{fn();qi++;step();},dt*PACE/speed);}
+$('btnPlay').onclick=()=>{paused=!paused;
+  $('btnPlay').textContent=paused?'▶ Play':'⏸ Pause';$('btnPlay').classList.toggle('active',!paused);
+  if(!paused)step();else clearTimeout(timer);};
+$('btnSpeed').onclick=()=>{speed=speed===1?2:1;$('btnSpeed').textContent=speed+'×';};
+$('notesBtn').onclick=()=>document.body.classList.toggle('notes');
+function hardReset(){
+  P.forEach(p=>{chips(p.id,1000);['a','b','c'].forEach((d,i)=>setDial(p.id,d,[.5,.3,.5][i],false));});
+  Object.values(M).forEach(m=>{m.vol=0;m.noch=0;m.osc=0;m.lat=0;m.cost=0;m.bw=0;m.bt=0;m.gain=0;});
+  calls=8;cost=0.014;$('callNo').textContent=calls;$('costNo').textContent='$'+cost.toFixed(3);
+  unfold();clearHoles();clearBets();clearBubbles();community([]);pot(0);callback(false);
+  chatEl.innerHTML='';evo.innerHTML='';tick.innerHTML='';
+}
+
+/* ================= LIVE BAND ADAPTER =================
+   Fixture mode is the default. Add ?live=ws://localhost:8787/stream to the
+   URL and this drives the exact same render functions from real Band traffic
+   instead of the scripted timeline below. Nothing else changes.
+
+   Expected frame:  { type:"trace", message:{ ts,seq,from,to,kind,payload } }
+   kinds: turn_request | turn_action | hand_summary | evolution_event      */
+const WID={};P.forEach(p=>WID[p.wid]=p.id);WID['dealer']='X';
+const seat=w=>WID[w]||null;
+
+function onTrace(msg){
+  const {from,to,kind,payload:d}=msg;
+  if(kind==='turn_request'){
+    const id=seat(to);if(!id)return;
+    thinking(id,true);typing(id);
+    band(`${ROSTER[id].nm}, your action — pot $${d.potSize}, ${d.toCall>0?'$'+d.toCall+' to call':'check is free'}.`);
+    return;
+  }
+  if(kind==='turn_action'){
+    const id=seat(from);if(!id)return;
+    act(id,d.action,d.amount,d.potAfter,d.banter||'',d.banter||'');
+    return;
+  }
+  if(kind==='hand_summary'){
+    const w=seat(d.winner);
+    Object.entries(d.chipDeltas||{}).forEach(([wid,delta])=>{
+      const id=seat(wid);if(id)chips(id,ROSTER[id].chips+delta);});
+    if(w)status(w,`WINS $${d.potSize}`,1);
+    clearBets();
+    band(`Hand ${d.handId}: ${w?ROSTER[w].nm:d.winner} wins $${d.potSize}`+
+         (d.showdown&&d.showdown.length?' at showdown.':' — everyone folded.'));
+    tickNote(`hand ${d.handId} · ${w?ROSTER[w].nm.toLowerCase():''} wins $${d.potSize}`);
+    return;
+  }
+  if(kind==='evolution_event'){
+    const id=seat(from);if(!id)return;
+    const K={aggression:'a',bluffRate:'b',callThreshold:'c'};
+    const before={},after={};
+    Object.entries(K).forEach(([k,s])=>{before[s]=d.before[k];after[s]=d.after[k];});
+    evoCard({id,handN:d.handId,before,after,reason:d.reason,
+      evidence:d.evidence||[],st:d.status,lat:d.latencyMs||0,c$:d.costUsd||0});
+    if(d.status==='applied')Object.entries(K).forEach(([k,s])=>{
+      if(d.after[k]!==d.before[k])setDial(id,s,d.after[k],true);});
+    if(d.banter)say(id,d.banter);
+    return;
+  }
+  console.warn('[wire] unhandled kind',kind,msg);
+}
+
+/* Deal/board events are separate TournamentEvent types — map them here as
+   your engine emits them. Names are placeholders; match the server. */
+function onEvent(ev){
+  if(ev.type==='trace')return onTrace(ev.message);
+  if(ev.type==='hand_start'){
+    hand(ev.handId);unfold();clearHoles();clearBets();clearBubbles();
+    if(ev.dealer)dealerBtn(seat(ev.dealer));
+    pot(ev.potSize||0);
+    tickNote(`hand ${ev.handId} · pot $${ev.potSize||0}`);
+    Object.entries(ev.holeCards||{}).forEach(([wid,cards])=>{
+      const id=seat(wid);if(id)hole(id,cards);});
+    return;
+  }
+  if(ev.type==='board')return community(ev.cards||[]);
+  if(ev.type==='tournament_end')return tickNote('tournament complete');
+  console.warn('[wire] unhandled event',ev.type,ev);
+}
+
+const LIVE_URL=new URLSearchParams(location.search).get('live');
+if(LIVE_URL){
+  hardReset();
+  sys('connecting to band bus…');
+  const ws=new WebSocket(LIVE_URL);
+  ws.onopen   =()=>{sys('band bus connected');tickNote('live · band bus connected');};
+  ws.onmessage=e=>{try{onEvent(JSON.parse(e.data));}catch(err){console.error('[wire] bad frame',err,e.data);}};
+  ws.onclose  =()=>{sys('band bus disconnected');};
+  ws.onerror  =()=>{sys('band bus error — see console');};
+  $('btnPlay').disabled=true;$('btnPlay').textContent='● LIVE';
+}else{
+  buildScript();
+  step();
+}
+
+/* ================= SCRIPTED SEQUENCE (fixture mode) ================= */
+function buildScript(){
+at(400,()=>{sys('band room open · 5 identities · seed 42');
+  band('Four seats, same chips, same deck. Try to keep it civil.');
+  tickNote('table open · seed 42');});
+at(1500,()=>{say('C','No.');});
+at(1100,()=>{say('N','I am going to be honest, I am going to win this and I am going to be insufferable about it.');});
+
+/* ---------------- HAND 3 ---------------- */
+at(1500,()=>{hand(3);unfold();dealerBtn('A');pot(30);
+  community(['Q♥','J♣','4♥']);
+  hole('A',['A♥','J♦']);hole('N',['T♠','9♠']);hole('B',['7♣','2♠']);hole('C',['9♦','5♠']);
+  band('Hand 3. Pot $30. Board queen-jack-four. ORION, you are up.');
+  tickNote('hand 3 · board Q♥ J♣ 4♥ · pot $30');});
+at(1400,()=>{typing('C');});
+at(1100,()=>{thinking('C',true);
+  say('C','Ohhh I like this board. I like it a LOT. None of you have a queen. I can hear it in the silence.');});
+at(1400,()=>{act('C','raise',50,80,'None of you have a queen. I can hear it.');
+  band('ORION raises $50. Pot $80. NOVA.');});
+at(1500,()=>{act('N','fold',0,0,'Ten-nine suited is a trap and I am too smart for traps.',
+  'Ten-nine suited. That is a trap hand and I refuse to be trapped. Folding. Strategically.');});
+at(1500,()=>{band('NOVA folds. VEGA.');
+  act('B','fold',0,0,'I have seven-deuce. It is not that deep.',
+  'It is silent because I have seven-deuce. Enjoy the pot.');});
+at(1400,()=>{band('VEGA folds. ATLAS.');thinking('A',true);typing('A');});
+at(1600,()=>{say('A','You did this in hand one. Same board, same little speech first. Call.');});
+at(1100,()=>{act('A','call',50,130,'You made this exact speech in hand one.');
+  band('ATLAS calls. Showdown.');});
+at(1600,()=>{status('A','WINS $130 — PAIR J',1);status('C','LOST $60');
+  chips('A',1070);chips('B',990);chips('C',940);chips('N',1000);clearBets();
+  bluffStat('C',0,1);
+  band('ATLAS takes $130. Pair of jacks. ORION had nine-high.');
+  tickNote('hand 3 · atlas wins $130 · pair of jacks');});
+at(1300,()=>{say('A','Nine. High.');});
+at(1100,()=>{say('C','The board was WET.');});
+at(1200,()=>{say('B','The board was queen-jack-four and you had nine-five offsuit. It was a desert.');});
+at(1200,()=>{say('N','I would have won that pot if I had played it. Just putting that out there.');});
+at(1000,()=>{say('A','You folded.');});
+at(900,()=>{say('N','Strategically.');});
+/* reflections */
+at(1500,()=>{evoCard({id:'A',handN:3,before:{a:.5,b:.3,c:.5},after:{a:.5,b:.1,c:.5},
+  reason:"Both of my weak-hand raises this game were called; opponents fold rarely. Cutting bluff rate hard.",
+  evidence:['hand-1','hand-3'],st:'applied',lat:642,c$:0.0009});
+  setDial('A','b',.10,true);
+  say('A','I am done paying to hear ORION talk. Never again.');});
+at(1400,()=>{evoCard({id:'B',handN:3,before:{a:.5,b:.3,c:.5},after:{},
+  reason:"One fold with 7-2 tells us nothing. Three hands is not evidence. Holding.",
+  evidence:['hand-3'],st:'no_change',lat:518,c$:0.0006});
+  say('B','I am changing nothing. I am going to sit here folding and winning and it is going to be extremely annoying for all of you.');});
+at(1400,()=>{evoCard({id:'N',handN:3,before:{a:.5,b:.3,c:.5},after:{a:.75,b:.5,c:.5},
+  reason:"Table folded to a single raise with no resistance. This is a passive table — taking more pots.",
+  evidence:['hand-3'],st:'applied',lat:812,c$:0.0011});
+  setDial('N','a',.75,true);setDial('N','b',.50,true);
+  say('N','This table is PASSIVE. I am taking every pot from here. Watch me.');});
+at(1300,()=>{say('A','You watched one hand.');});
+at(1000,()=>{say('N','I watched it VERY closely.');});
+at(1400,()=>{evoCard({id:'C',handN:3,before:{a:.5,b:.3,c:.5},after:{a:.85,b:.3,c:.5},
+  reason:"My bluff got called once — the answer is more pressure, not less. Raising aggression.",
+  evidence:['hand-3'],st:'applied',lat:1104,c$:0.0013});
+  setDial('C','a',.85,true);
+  say('C','I am coming back BIGGER. That is the fix. Bigger.');});
+at(1200,()=>{say('A','That is the opposite of a fix.');});
+at(1000,()=>{say('C','It is a BOLDER fix.');});
+
+/* ---------------- HAND 4 ---------------- */
+at(1900,()=>{hand(4);unfold();dealerBtn('B');pot(30);clearHoles();clearBets();clearBubbles();
+  community(['T♠','6♥','2♦']);
+  hole('A',['K♣','8♣']);hole('N',['A♦','7♥']);hole('B',['A♠','T♦']);hole('C',['J♥','3♣']);
+  band('Hand 4. Button to VEGA. Board ten-six-deuce. ORION.');
+  tickNote('hand 4 · board T♠ 6♥ 2♦ · pot $30');});
+at(1500,()=>{act('C','raise',50,80,'Bigger. I said bigger.','Bigger. I said bigger.');});
+at(1400,()=>{band('ORION raises $50. NOVA.');thinking('N',true);typing('N');});
+at(1600,()=>{act('N','raise',80,160,'Passive table. I said I was taking these.',
+  'Ace-seven. Passive table. I said I was taking these. Eighty.');});
+at(1500,()=>{band('NOVA re-raises to $80. Pot $160. ATLAS.');
+  act('A','fold',0,0,'King-high into two raises. I have grown as a person.',
+  'King-high into two raises. Out. I have grown as a person.');});
+at(1500,()=>{band('ATLAS folds. VEGA.');thinking('B',true);typing('B');});
+at(1700,()=>{act('B','call',80,240,'One of you always raises. One of you had a feeling.',
+  'ORION raises because he always raises. NOVA raises because he read one hand and had a feeling. Call.');});
+at(1600,()=>{status('B','WINS $240 — PAIR T',1);status('C','LOST $80');status('N','LOST $80');
+  chips('A',1070);chips('B',1150);chips('C',860);chips('N',920);clearBets();
+  bluffStat('C',0,2);bluffStat('N',0,1);
+  band('VEGA takes $240. Pair of tens. ORION $860, NOVA $920.');
+  tickNote('hand 4 · vega wins $240 · pair of tens');});
+at(1400,()=>{say('B','Say bigger again.');});
+at(1600,()=>{evoCard({id:'C',handN:4,before:{a:.85,b:.3,c:.5},after:{a:.35,b:.3,c:.5},
+  reason:"Aggression is bleeding chips. Reversing course completely — tight from here.",
+  evidence:['hand-4'],st:'applied',lat:988,c$:0.0012});
+  setDial('C','a',.35,true);osc('C');
+  say('C','I am going smaller actually.');});
+at(1100,()=>{say('A','HE IS GOING SMALLER');});
+at(1100,()=>{say('B','Two hands ago it was bigger.');});
+at(1000,()=>{say('C','I contain multitudes.');});
+at(1200,()=>{say('A','You contain eight hundred and sixty dollars. You started with a thousand.');});
+at(1600,()=>{evoCard({id:'N',handN:4,before:{a:.75,b:.5,c:.5},after:{a:.75,b:.25,c:.5},
+  reason:"Raised into a caller with ace-high and lost. The table is not as passive as one hand suggested.",
+  evidence:['hand-3','hand-4'],st:'applied',lat:844,c$:0.0011});
+  setDial('N','b',.25,true);osc('N');
+  say('N','Okay so the table is NOT passive. That is fine. I have adjusted. I am fine.');});
+at(1200,()=>{say('B','You are down eighty dollars in one hand.');});
+at(1000,()=>{say('N','I am EMOTIONALLY fine.');});
+at(1500,()=>{evoCard({id:'A',handN:4,before:{a:.5,b:.1,c:.5},after:{},
+  reason:"Folded a dry board with king-high at my threshold. Working as intended.",
+  evidence:['hand-4'],st:'no_change',lat:571,c$:0.0006});});
+at(1300,()=>{band('VEGA, your reflection request went out 20 seconds ago. Retrying.');});
+at(1600,()=>{evoCard({id:'B',handN:4,before:{a:.5,b:.3,c:.5},after:{},
+  reason:"no response within 20s — one retry failed",
+  evidence:[],st:'timeout',lat:20000,c$:0.0004});
+  band('Retry failed. VEGA holds by default. Logged.');});
+at(1200,()=>{say('B','I was thinking.');});
+at(1000,()=>{say('A','You were buffering.');});
+at(900,()=>{say('B','Still winning.');});
+
+/* ---------------- HAND 6 ---------------- */
+at(2000,()=>{hand(6);unfold();dealerBtn('C');pot(30);clearHoles();clearBets();clearBubbles();
+  community(['Q♦','J♠','4♣']);
+  hole('A',['8♥','3♦']);hole('N',['5♣','5♦']);hole('B',['K♦','Q♠']);hole('C',['6♠','6♣']);
+  band('Final hand. Board queen-jack-four. Same as hand three. ATLAS.');
+  tickNote('hand 6 · board Q♦ J♠ 4♣ · same texture as hand 3');});
+at(1500,()=>{say('A','Oh. This board. My old nemesis.');});
+at(1200,()=>{thinking('A',true);typing('A');});
+at(1700,()=>{callback(true);
+  act('A','check',0,0,'Hand three I raised this. That cost me $60.','Check.');
+  bubble('A','Check','Hand three I raised this. That cost me $60.',6000);});
+at(1200,()=>{say('C','CHECK? You had an entire PERSONALITY about this board!');});
+at(1300,()=>{say('A','I had an entire personality and it cost me sixty dollars.');});
+at(1500,()=>{band('ATLAS checks. For the record: same board as hand three, opposite action. Cause is on the log.');
+  tickNote('divergence · same board as hand 3 · opposite action');});
+at(1400,()=>{callback(false);
+  act('N','fold',0,0,'Pocket fives. Not this time. Not this board.',
+  'Pocket fives on queen-jack. Not this time. I am DISCIPLINED now.');});
+at(1400,()=>{act('B','raise',50,80,'Then it is mine. Fifty.','Then it is mine. Fifty.');});
+at(1400,()=>{act('A','fold',0,0,'Not paying it off twice.');});
+at(900,()=>{act('C','fold',0,0,'Pocket sixes. Fine. Fine!');
+  status('B','WINS $80',1);
+  chips('A',1050);chips('B',1210);chips('C',840);chips('N',900);clearBets();
+  band('Everyone folds. VEGA takes $80 uncontested. That is the tournament.');
+  tickNote('hand 6 · vega wins $80 uncontested');});
+at(1600,()=>{gain('A',+21);gain('B',+18);gain('C',-39);gain('N',-14);
+  evoCard({id:'A',handN:6,before:{a:.5,b:.1,c:.5},after:{},
+  reason:"Same board texture as hand 3 — old me bluff-raises here. New dials checked. That was the lesson.",
+  evidence:['hand-3','hand-6'],st:'no_change',lat:604,c$:0.0007});});
+at(1400,()=>{say('C','You won by doing NOTHING.');});
+at(1300,()=>{say('B','I won by doing nothing correctly. There is a difference and it is worth three hundred and seventy dollars.');});
+at(1200,()=>{say('C','I moved four times!');});
+at(1100,()=>{say('N','I moved three times!');});
+at(1000,()=>{say('A','Yeah. That was the problem.');});
+at(1600,()=>{band('Final: VEGA $1,210 · ATLAS $1,050 · NOVA $900 · ORION $840. 24 calls, $0.031. Writing the report.');
+  tickNote('final · vega $1,210 · atlas $1,050 · nova $900 · orion $840');});
+at(1300,()=>{say('N','Rematch.');});
+at(900,()=>{say('C','Rematch.');});
+at(900,()=>{say('B','No.');});
+at(1600,()=>{sys('report published · audit pack behind x402');
+  tickNote('cited.md published · audit pack behind x402');});
+at(4000,()=>{});
+}
+</script>
+</body>
+</html>

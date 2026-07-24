@@ -1,0 +1,3352 @@
+diff --git a/fixtures/demo.json b/fixtures/demo.json
+index b6477fe..d38a3c6 100644
+--- a/fixtures/demo.json
++++ b/fixtures/demo.json
+@@ -1,7 +1,7 @@
+ {
+   "version": 1,
+   "seed": "135",
+-  "recordedAt": "2026-07-24T21:30:31.669Z",
++  "recordedAt": "2026-07-24T21:49:26.237Z",
+   "pioneerMode": "mock",
+   "events": [
+     {
+@@ -54,7 +54,7 @@
+       }
+     },
+     {
+-      "offsetMs": 35,
++      "offsetMs": 190,
+       "event": {
+         "type": "hand_start",
+         "handId": 1,
+@@ -87,7 +87,47 @@
+       }
+     },
+     {
+-      "offsetMs": 36,
++      "offsetMs": 192,
++      "event": {
++        "type": "trace",
++        "message": {
++          "ts": 1784929753564,
++          "seq": 0,
++          "from": "dealer",
++          "to": "playerB",
++          "kind": "turn_request",
++          "payload": {
++            "handId": 1,
++            "potSize": 30,
++            "toCall": 0,
++            "canRaise": true,
++            "raiseAmount": 50,
++            "myChips": 990
++          }
++        }
++      }
++    },
++    {
++      "offsetMs": 193,
++      "event": {
++        "type": "trace",
++        "message": {
++          "ts": 1784929753565,
++          "seq": 1,
++          "from": "playerB",
++          "to": "dealer",
++          "kind": "turn_action",
++          "payload": {
++            "handId": 1,
++            "action": "check",
++            "amount": 0,
++            "potAfter": 30
++          }
++        }
++      }
++    },
++    {
++      "offsetMs": 193,
+       "event": {
+         "type": "action",
+         "handId": 1,
+@@ -99,7 +139,47 @@
+       }
+     },
+     {
+-      "offsetMs": 36,
++      "offsetMs": 193,
++      "event": {
++        "type": "trace",
++        "message": {
++          "ts": 1784929753565,
++          "seq": 2,
++          "from": "dealer",
++          "to": "playerC",
++          "kind": "turn_request",
++          "payload": {
++            "handId": 1,
++            "potSize": 30,
++            "toCall": 0,
++            "canRaise": true,
++            "raiseAmount": 50,
++            "myChips": 990
++          }
++        }
++      }
++    },
++    {
++      "offsetMs": 193,
++      "event": {
++        "type": "trace",
++        "message": {
++          "ts": 1784929753565,
++          "seq": 3,
++          "from": "playerC",
++          "to": "dealer",
++          "kind": "turn_action",
++          "payload": {
++            "handId": 1,
++            "action": "raise",
++            "amount": 50,
++            "potAfter": 80
++          }
++        }
++      }
++    },
++    {
++      "offsetMs": 193,
+       "event": {
+         "type": "action",
+         "handId": 1,
+@@ -111,7 +191,47 @@
+       }
+     },
+     {
+-      "offsetMs": 36,
++      "offsetMs": 193,
++      "event": {
++        "type": "trace",
++        "message": {
++          "ts": 1784929753565,
++          "seq": 4,
++          "from": "dealer",
++          "to": "playerA",
++          "kind": "turn_request",
++          "payload": {
++            "handId": 1,
++            "potSize": 80,
++            "toCall": 50,
++            "canRaise": true,
++            "raiseAmount": 50,
++            "myChips": 990
++          }
++        }
++      }
++    },
++    {
++      "offsetMs": 193,
++      "event": {
++        "type": "trace",
++        "message": {
++          "ts": 1784929753565,
++          "seq": 5,
++          "from": "playerA",
++          "to": "dealer",
++          "kind": "turn_action",
++          "payload": {
++            "handId": 1,
++            "action": "fold",
++            "amount": 0,
++            "potAfter": 80
++          }
++        }
++      }
++    },
++    {
++      "offsetMs": 193,
+       "event": {
+         "type": "action",
+         "handId": 1,
+@@ -123,7 +243,47 @@
+       }
+     },
+     {
+-      "offsetMs": 36,
++      "offsetMs": 193,
++      "event": {
++        "type": "trace",
++        "message": {
++          "ts": 1784929753565,
++          "seq": 6,
++          "from": "dealer",
++          "to": "playerB",
++          "kind": "turn_request",
++          "payload": {
++            "handId": 1,
++            "potSize": 80,
++            "toCall": 50,
++            "canRaise": true,
++            "raiseAmount": 50,
++            "myChips": 990
++          }
++        }
++      }
++    },
++    {
++      "offsetMs": 193,
++      "event": {
++        "type": "trace",
++        "message": {
++          "ts": 1784929753565,
++          "seq": 7,
++          "from": "playerB",
++          "to": "dealer",
++          "kind": "turn_action",
++          "payload": {
++            "handId": 1,
++            "action": "raise",
++            "amount": 100,
++            "potAfter": 180
++          }
++        }
++      }
++    },
++    {
++      "offsetMs": 193,
+       "event": {
+         "type": "action",
+         "handId": 1,
+@@ -135,7 +295,47 @@
+       }
+     },
+     {
+-      "offsetMs": 36,
++      "offsetMs": 193,
++      "event": {
++        "type": "trace",
++        "message": {
++          "ts": 1784929753565,
++          "seq": 8,
++          "from": "dealer",
++          "to": "playerC",
++          "kind": "turn_request",
++          "payload": {
++            "handId": 1,
++            "potSize": 180,
++            "toCall": 50,
++            "canRaise": false,
++            "raiseAmount": 50,
++            "myChips": 940
++          }
++        }
++      }
++    },
++    {
++      "offsetMs": 193,
++      "event": {
++        "type": "trace",
++        "message": {
++          "ts": 1784929753565,
++          "seq": 9,
++          "from": "playerC",
++          "to": "dealer",
++          "kind": "turn_action",
++          "payload": {
++            "handId": 1,
++            "action": "call",
++            "amount": 50,
++            "potAfter": 230
++          }
++        }
++      }
++    },
++    {
++      "offsetMs": 193,
+       "event": {
+         "type": "action",
+         "handId": 1,
+@@ -147,7 +347,7 @@
+       }
+     },
+     {
+-      "offsetMs": 36,
++      "offsetMs": 193,
+       "event": {
+         "type": "hand_end",
+         "record": {
+@@ -240,7 +440,34 @@
+       }
+     },
+     {
+-      "offsetMs": 2014,
++      "offsetMs": 193,
++      "event": {
++        "type": "trace",
++        "message": {
++          "ts": 1784929753565,
++          "seq": 10,
++          "from": "dealer",
++          "to": "all",
++          "kind": "hand_summary",
++          "payload": {
++            "handId": 1,
++            "winner": "playerC",
++            "potSize": 230,
++            "showdown": [
++              "playerB",
++              "playerC"
++            ],
++            "chipDeltas": {
++              "playerA": -10,
++              "playerB": -110,
++              "playerC": 120
++            }
++          }
++        }
++      }
++    },
++    {
++      "offsetMs": 2160,
+       "event": {
+         "type": "evolution",
+         "event": {
+@@ -276,7 +503,38 @@
+       }
+     },
+     {
+-      "offsetMs": 2014,
++      "offsetMs": 2160,
++      "event": {
++        "type": "trace",
++        "message": {
++          "ts": 1784929755532,
++          "seq": 11,
++          "from": "playerA",
++          "to": "all",
++          "kind": "evolution_event",
++          "payload": {
++            "handId": 1,
++            "status": "applied",
++            "before": {
++              "aggression": 0.5,
++              "bluffRate": 0.2,
++              "callThreshold": 0.5
++            },
++            "after": {
++              "aggression": 0.38,
++              "bluffRate": 0.15,
++              "callThreshold": 0.6
++            },
++            "reason": "Dropped 10 on hand-1 paying off a bet. Tightening: less aggression, higher call bar.",
++            "evidence": [
++              "hand-1"
++            ]
++          }
++        }
++      }
++    },
++    {
++      "offsetMs": 2160,
+       "event": {
+         "type": "evolution",
+         "event": {
+@@ -312,7 +570,38 @@
+       }
+     },
+     {
+-      "offsetMs": 2014,
++      "offsetMs": 2160,
++      "event": {
++        "type": "trace",
++        "message": {
++          "ts": 1784929755532,
++          "seq": 12,
++          "from": "playerB",
++          "to": "all",
++          "kind": "evolution_event",
++          "payload": {
++            "handId": 1,
++            "status": "no_change",
++            "before": {
++              "aggression": 0.5,
++              "bluffRate": 0.2,
++              "callThreshold": 0.5
++            },
++            "after": {
++              "aggression": 0.5,
++              "bluffRate": 0.2,
++              "callThreshold": 0.5
++            },
++            "reason": "Hand-1 outcome is within variance for a 1-hand sample. Holding.",
++            "evidence": [
++              "hand-1"
++            ]
++          }
++        }
++      }
++    },
++    {
++      "offsetMs": 2160,
+       "event": {
+         "type": "evolution",
+         "event": {
+@@ -348,7 +637,38 @@
+       }
+     },
+     {
+-      "offsetMs": 2015,
++      "offsetMs": 2160,
++      "event": {
++        "type": "trace",
++        "message": {
++          "ts": 1784929755532,
++          "seq": 13,
++          "from": "playerC",
++          "to": "all",
++          "kind": "evolution_event",
++          "payload": {
++            "handId": 1,
++            "status": "applied",
++            "before": {
++              "aggression": 0.5,
++              "bluffRate": 0.2,
++              "callThreshold": 0.5
++            },
++            "after": {
++              "aggression": 0.85,
++              "bluffRate": 0.45,
++              "callThreshold": 0.25
++            },
++            "reason": "Hand-1 showed the table folding to pressure. Going maximally aggressive.",
++            "evidence": [
++              "hand-1"
++            ]
++          }
++        }
++      }
++    },
++    {
++      "offsetMs": 2162,
+       "event": {
+         "type": "metrics",
+         "snapshot": {
+@@ -642,7 +962,7 @@
+       }
+     },
+     {
+-      "offsetMs": 2046,
++      "offsetMs": 2262,
+       "event": {
+         "type": "hand_start",
+         "handId": 2,
+@@ -675,7 +995,47 @@
+       }
+     },
+     {
+-      "offsetMs": 2046,
++      "offsetMs": 2262,
++      "event": {
++        "type": "trace",
++        "message": {
++          "ts": 1784929755634,
++          "seq": 14,
++          "from": "dealer",
++          "to": "playerC",
++          "kind": "turn_request",
++          "payload": {
++            "handId": 2,
++            "potSize": 30,
++            "toCall": 0,
++            "canRaise": true,
++            "raiseAmount": 50,
++            "myChips": 1110
++          }
++        }
++      }
++    },
++    {
++      "offsetMs": 2262,
++      "event": {
++        "type": "trace",
++        "message": {
++          "ts": 1784929755634,
++          "seq": 15,
++          "from": "playerC",
++          "to": "dealer",
++          "kind": "turn_action",
++          "payload": {
++            "handId": 2,
++            "action": "raise",
++            "amount": 50,
++            "potAfter": 80
++          }
++        }
++      }
++    },
++    {
++      "offsetMs": 2262,
+       "event": {
+         "type": "action",
+         "handId": 2,
+@@ -687,7 +1047,47 @@
+       }
+     },
+     {
+-      "offsetMs": 2046,
++      "offsetMs": 2262,
++      "event": {
++        "type": "trace",
++        "message": {
++          "ts": 1784929755634,
++          "seq": 16,
++          "from": "dealer",
++          "to": "playerA",
++          "kind": "turn_request",
++          "payload": {
++            "handId": 2,
++            "potSize": 80,
++            "toCall": 50,
++            "canRaise": true,
++            "raiseAmount": 50,
++            "myChips": 980
++          }
++        }
++      }
++    },
++    {
++      "offsetMs": 2262,
++      "event": {
++        "type": "trace",
++        "message": {
++          "ts": 1784929755634,
++          "seq": 17,
++          "from": "playerA",
++          "to": "dealer",
++          "kind": "turn_action",
++          "payload": {
++            "handId": 2,
++            "action": "fold",
++            "amount": 0,
++            "potAfter": 80
++          }
++        }
++      }
++    },
++    {
++      "offsetMs": 2262,
+       "event": {
+         "type": "action",
+         "handId": 2,
+@@ -699,7 +1099,47 @@
+       }
+     },
+     {
+-      "offsetMs": 2046,
++      "offsetMs": 2262,
++      "event": {
++        "type": "trace",
++        "message": {
++          "ts": 1784929755634,
++          "seq": 18,
++          "from": "dealer",
++          "to": "playerB",
++          "kind": "turn_request",
++          "payload": {
++            "handId": 2,
++            "potSize": 80,
++            "toCall": 50,
++            "canRaise": true,
++            "raiseAmount": 50,
++            "myChips": 880
++          }
++        }
++      }
++    },
++    {
++      "offsetMs": 2262,
++      "event": {
++        "type": "trace",
++        "message": {
++          "ts": 1784929755634,
++          "seq": 19,
++          "from": "playerB",
++          "to": "dealer",
++          "kind": "turn_action",
++          "payload": {
++            "handId": 2,
++            "action": "call",
++            "amount": 50,
++            "potAfter": 130
++          }
++        }
++      }
++    },
++    {
++      "offsetMs": 2262,
+       "event": {
+         "type": "action",
+         "handId": 2,
+@@ -711,7 +1151,7 @@
+       }
+     },
+     {
+-      "offsetMs": 2046,
++      "offsetMs": 2262,
+       "event": {
+         "type": "hand_end",
+         "record": {
+@@ -790,7 +1230,34 @@
+       }
+     },
+     {
+-      "offsetMs": 3759,
++      "offsetMs": 2263,
++      "event": {
++        "type": "trace",
++        "message": {
++          "ts": 1784929755635,
++          "seq": 20,
++          "from": "dealer",
++          "to": "all",
++          "kind": "hand_summary",
++          "payload": {
++            "handId": 2,
++            "winner": "playerB",
++            "potSize": 130,
++            "showdown": [
++              "playerC",
++              "playerB"
++            ],
++            "chipDeltas": {
++              "playerA": -10,
++              "playerB": 70,
++              "playerC": -60
++            }
++          }
++        }
++      }
++    },
++    {
++      "offsetMs": 3973,
+       "event": {
+         "type": "evolution",
+         "event": {
+@@ -827,7 +1294,39 @@
+       }
+     },
+     {
+-      "offsetMs": 3759,
++      "offsetMs": 3973,
++      "event": {
++        "type": "trace",
++        "message": {
++          "ts": 1784929757345,
++          "seq": 21,
++          "from": "playerA",
++          "to": "all",
++          "kind": "evolution_event",
++          "payload": {
++            "handId": 2,
++            "status": "applied",
++            "before": {
++              "aggression": 0.38,
++              "bluffRate": 0.15,
++              "callThreshold": 0.6
++            },
++            "after": {
++              "aggression": 0.26,
++              "bluffRate": 0.1,
++              "callThreshold": 0.7
++            },
++            "reason": "Dropped 10 on hand-2 paying off a bet. Tightening: less aggression, higher call bar.",
++            "evidence": [
++              "hand-1",
++              "hand-2"
++            ]
++          }
++        }
++      }
++    },
++    {
++      "offsetMs": 3973,
+       "event": {
+         "type": "evolution",
+         "event": {
+@@ -864,7 +1363,39 @@
+       }
+     },
+     {
+-      "offsetMs": 3759,
++      "offsetMs": 3973,
++      "event": {
++        "type": "trace",
++        "message": {
++          "ts": 1784929757345,
++          "seq": 22,
++          "from": "playerB",
++          "to": "all",
++          "kind": "evolution_event",
++          "payload": {
++            "handId": 2,
++            "status": "no_change",
++            "before": {
++              "aggression": 0.5,
++              "bluffRate": 0.2,
++              "callThreshold": 0.5
++            },
++            "after": {
++              "aggression": 0.5,
++              "bluffRate": 0.2,
++              "callThreshold": 0.5
++            },
++            "reason": "Hand-2 outcome is within variance for a 2-hand sample. Holding.",
++            "evidence": [
++              "hand-1",
++              "hand-2"
++            ]
++          }
++        }
++      }
++    },
++    {
++      "offsetMs": 3973,
+       "event": {
+         "type": "evolution",
+         "event": {
+@@ -901,7 +1432,39 @@
+       }
+     },
+     {
+-      "offsetMs": 3759,
++      "offsetMs": 3973,
++      "event": {
++        "type": "trace",
++        "message": {
++          "ts": 1784929757345,
++          "seq": 23,
++          "from": "playerC",
++          "to": "all",
++          "kind": "evolution_event",
++          "payload": {
++            "handId": 2,
++            "status": "applied",
++            "before": {
++              "aggression": 0.85,
++              "bluffRate": 0.45,
++              "callThreshold": 0.25
++            },
++            "after": {
++              "aggression": 0.25,
++              "bluffRate": 0.2,
++              "callThreshold": 0.7
++            },
++            "reason": "Hand-2 punished the aggression I added. Reversing hard to a tight, high-call-bar profile.",
++            "evidence": [
++              "hand-1",
++              "hand-2"
++            ]
++          }
++        }
++      }
++    },
++    {
++      "offsetMs": 3973,
+       "event": {
+         "type": "metrics",
+         "snapshot": {
+@@ -1195,7 +1758,7 @@
+       }
+     },
+     {
+-      "offsetMs": 3787,
++      "offsetMs": 4086,
+       "event": {
+         "type": "hand_start",
+         "handId": 3,
+@@ -1228,7 +1791,47 @@
+       }
+     },
+     {
+-      "offsetMs": 3787,
++      "offsetMs": 4086,
++      "event": {
++        "type": "trace",
++        "message": {
++          "ts": 1784929757458,
++          "seq": 24,
++          "from": "dealer",
++          "to": "playerA",
++          "kind": "turn_request",
++          "payload": {
++            "handId": 3,
++            "potSize": 30,
++            "toCall": 0,
++            "canRaise": true,
++            "raiseAmount": 50,
++            "myChips": 970
++          }
++        }
++      }
++    },
++    {
++      "offsetMs": 4086,
++      "event": {
++        "type": "trace",
++        "message": {
++          "ts": 1784929757458,
++          "seq": 25,
++          "from": "playerA",
++          "to": "dealer",
++          "kind": "turn_action",
++          "payload": {
++            "handId": 3,
++            "action": "check",
++            "amount": 0,
++            "potAfter": 30
++          }
++        }
++      }
++    },
++    {
++      "offsetMs": 4086,
+       "event": {
+         "type": "action",
+         "handId": 3,
+@@ -1240,7 +1843,47 @@
+       }
+     },
+     {
+-      "offsetMs": 3787,
++      "offsetMs": 4086,
++      "event": {
++        "type": "trace",
++        "message": {
++          "ts": 1784929757458,
++          "seq": 26,
++          "from": "dealer",
++          "to": "playerB",
++          "kind": "turn_request",
++          "payload": {
++            "handId": 3,
++            "potSize": 30,
++            "toCall": 0,
++            "canRaise": true,
++            "raiseAmount": 50,
++            "myChips": 950
++          }
++        }
++      }
++    },
++    {
++      "offsetMs": 4086,
++      "event": {
++        "type": "trace",
++        "message": {
++          "ts": 1784929757458,
++          "seq": 27,
++          "from": "playerB",
++          "to": "dealer",
++          "kind": "turn_action",
++          "payload": {
++            "handId": 3,
++            "action": "check",
++            "amount": 0,
++            "potAfter": 30
++          }
++        }
++      }
++    },
++    {
++      "offsetMs": 4086,
+       "event": {
+         "type": "action",
+         "handId": 3,
+@@ -1252,7 +1895,47 @@
+       }
+     },
+     {
+-      "offsetMs": 3788,
++      "offsetMs": 4086,
++      "event": {
++        "type": "trace",
++        "message": {
++          "ts": 1784929757458,
++          "seq": 28,
++          "from": "dealer",
++          "to": "playerC",
++          "kind": "turn_request",
++          "payload": {
++            "handId": 3,
++            "potSize": 30,
++            "toCall": 0,
++            "canRaise": true,
++            "raiseAmount": 50,
++            "myChips": 1050
++          }
++        }
++      }
++    },
++    {
++      "offsetMs": 4086,
++      "event": {
++        "type": "trace",
++        "message": {
++          "ts": 1784929757458,
++          "seq": 29,
++          "from": "playerC",
++          "to": "dealer",
++          "kind": "turn_action",
++          "payload": {
++            "handId": 3,
++            "action": "raise",
++            "amount": 50,
++            "potAfter": 80
++          }
++        }
++      }
++    },
++    {
++      "offsetMs": 4086,
+       "event": {
+         "type": "action",
+         "handId": 3,
+@@ -1264,7 +1947,47 @@
+       }
+     },
+     {
+-      "offsetMs": 3788,
++      "offsetMs": 4086,
++      "event": {
++        "type": "trace",
++        "message": {
++          "ts": 1784929757458,
++          "seq": 30,
++          "from": "dealer",
++          "to": "playerA",
++          "kind": "turn_request",
++          "payload": {
++            "handId": 3,
++            "potSize": 80,
++            "toCall": 50,
++            "canRaise": true,
++            "raiseAmount": 50,
++            "myChips": 970
++          }
++        }
++      }
++    },
++    {
++      "offsetMs": 4086,
++      "event": {
++        "type": "trace",
++        "message": {
++          "ts": 1784929757458,
++          "seq": 31,
++          "from": "playerA",
++          "to": "dealer",
++          "kind": "turn_action",
++          "payload": {
++            "handId": 3,
++            "action": "fold",
++            "amount": 0,
++            "potAfter": 80
++          }
++        }
++      }
++    },
++    {
++      "offsetMs": 4086,
+       "event": {
+         "type": "action",
+         "handId": 3,
+@@ -1276,7 +1999,47 @@
+       }
+     },
+     {
+-      "offsetMs": 3788,
++      "offsetMs": 4086,
++      "event": {
++        "type": "trace",
++        "message": {
++          "ts": 1784929757458,
++          "seq": 32,
++          "from": "dealer",
++          "to": "playerB",
++          "kind": "turn_request",
++          "payload": {
++            "handId": 3,
++            "potSize": 80,
++            "toCall": 50,
++            "canRaise": true,
++            "raiseAmount": 50,
++            "myChips": 950
++          }
++        }
++      }
++    },
++    {
++      "offsetMs": 4086,
++      "event": {
++        "type": "trace",
++        "message": {
++          "ts": 1784929757458,
++          "seq": 33,
++          "from": "playerB",
++          "to": "dealer",
++          "kind": "turn_action",
++          "payload": {
++            "handId": 3,
++            "action": "call",
++            "amount": 50,
++            "potAfter": 130
++          }
++        }
++      }
++    },
++    {
++      "offsetMs": 4086,
+       "event": {
+         "type": "action",
+         "handId": 3,
+@@ -1288,7 +2051,7 @@
+       }
+     },
+     {
+-      "offsetMs": 3788,
++      "offsetMs": 4087,
+       "event": {
+         "type": "hand_end",
+         "record": {
+@@ -1381,7 +2144,34 @@
+       }
+     },
+     {
+-      "offsetMs": 6561,
++      "offsetMs": 4087,
++      "event": {
++        "type": "trace",
++        "message": {
++          "ts": 1784929757459,
++          "seq": 34,
++          "from": "dealer",
++          "to": "all",
++          "kind": "hand_summary",
++          "payload": {
++            "handId": 3,
++            "winner": "playerB",
++            "potSize": 130,
++            "showdown": [
++              "playerB",
++              "playerC"
++            ],
++            "chipDeltas": {
++              "playerA": -10,
++              "playerB": 70,
++              "playerC": -60
++            }
++          }
++        }
++      }
++    },
++    {
++      "offsetMs": 6833,
+       "event": {
+         "type": "evolution",
+         "event": {
+@@ -1418,7 +2208,39 @@
+       }
+     },
+     {
+-      "offsetMs": 6561,
++      "offsetMs": 6833,
++      "event": {
++        "type": "trace",
++        "message": {
++          "ts": 1784929760205,
++          "seq": 35,
++          "from": "playerA",
++          "to": "all",
++          "kind": "evolution_event",
++          "payload": {
++            "handId": 3,
++            "status": "applied",
++            "before": {
++              "aggression": 0.26,
++              "bluffRate": 0.1,
++              "callThreshold": 0.7
++            },
++            "after": {
++              "aggression": 0.14,
++              "bluffRate": 0.05,
++              "callThreshold": 0.8
++            },
++            "reason": "Dropped 10 on hand-3 paying off a bet. Tightening: less aggression, higher call bar.",
++            "evidence": [
++              "hand-2",
++              "hand-3"
++            ]
++          }
++        }
++      }
++    },
++    {
++      "offsetMs": 6833,
+       "event": {
+         "type": "evolution",
+         "event": {
+@@ -1456,7 +2278,40 @@
+       }
+     },
+     {
+-      "offsetMs": 6561,
++      "offsetMs": 6833,
++      "event": {
++        "type": "trace",
++        "message": {
++          "ts": 1784929760205,
++          "seq": 36,
++          "from": "playerB",
++          "to": "all",
++          "kind": "evolution_event",
++          "payload": {
++            "handId": 3,
++            "status": "applied",
++            "before": {
++              "aggression": 0.5,
++              "bluffRate": 0.2,
++              "callThreshold": 0.5
++            },
++            "after": {
++              "aggression": 0.58,
++              "bluffRate": 0.2,
++              "callThreshold": 0.43
++            },
++            "reason": "Three hands of evidence now: playerA folds often. Small, single-direction adjustment only.",
++            "evidence": [
++              "hand-1",
++              "hand-2",
++              "hand-3"
++            ]
++          }
++        }
++      }
++    },
++    {
++      "offsetMs": 6833,
+       "event": {
+         "type": "evolution",
+         "event": {
+@@ -1491,7 +2346,36 @@
+       }
+     },
+     {
+-      "offsetMs": 6561,
++      "offsetMs": 6833,
++      "event": {
++        "type": "trace",
++        "message": {
++          "ts": 1784929760205,
++          "seq": 37,
++          "from": "playerC",
++          "to": "all",
++          "kind": "evolution_event",
++          "payload": {
++            "handId": 3,
++            "status": "invalid",
++            "before": {
++              "aggression": 0.25,
++              "bluffRate": 0.2,
++              "callThreshold": 0.7
++            },
++            "after": {
++              "aggression": 0.25,
++              "bluffRate": 0.2,
++              "callThreshold": 0.7
++            },
++            "reason": "invalid response after retry — JSON.parse failed: Unexpected token '}', ...\"uffRate\": }}\" is not valid JSON",
++            "evidence": []
++          }
++        }
++      }
++    },
++    {
++      "offsetMs": 6834,
+       "event": {
+         "type": "metrics",
+         "snapshot": {
+@@ -1785,7 +2669,7 @@
+       }
+     },
+     {
+-      "offsetMs": 6590,
++      "offsetMs": 6918,
+       "event": {
+         "type": "hand_start",
+         "handId": 4,
+@@ -1818,7 +2702,47 @@
+       }
+     },
+     {
+-      "offsetMs": 6590,
++      "offsetMs": 6918,
++      "event": {
++        "type": "trace",
++        "message": {
++          "ts": 1784929760290,
++          "seq": 38,
++          "from": "dealer",
++          "to": "playerB",
++          "kind": "turn_request",
++          "payload": {
++            "handId": 4,
++            "potSize": 30,
++            "toCall": 0,
++            "canRaise": true,
++            "raiseAmount": 50,
++            "myChips": 1020
++          }
++        }
++      }
++    },
++    {
++      "offsetMs": 6918,
++      "event": {
++        "type": "trace",
++        "message": {
++          "ts": 1784929760290,
++          "seq": 39,
++          "from": "playerB",
++          "to": "dealer",
++          "kind": "turn_action",
++          "payload": {
++            "handId": 4,
++            "action": "raise",
++            "amount": 50,
++            "potAfter": 80
++          }
++        }
++      }
++    },
++    {
++      "offsetMs": 6918,
+       "event": {
+         "type": "action",
+         "handId": 4,
+@@ -1830,7 +2754,47 @@
+       }
+     },
+     {
+-      "offsetMs": 6590,
++      "offsetMs": 6918,
++      "event": {
++        "type": "trace",
++        "message": {
++          "ts": 1784929760290,
++          "seq": 40,
++          "from": "dealer",
++          "to": "playerC",
++          "kind": "turn_request",
++          "payload": {
++            "handId": 4,
++            "potSize": 80,
++            "toCall": 50,
++            "canRaise": true,
++            "raiseAmount": 50,
++            "myChips": 990
++          }
++        }
++      }
++    },
++    {
++      "offsetMs": 6918,
++      "event": {
++        "type": "trace",
++        "message": {
++          "ts": 1784929760290,
++          "seq": 41,
++          "from": "playerC",
++          "to": "dealer",
++          "kind": "turn_action",
++          "payload": {
++            "handId": 4,
++            "action": "fold",
++            "amount": 0,
++            "potAfter": 80
++          }
++        }
++      }
++    },
++    {
++      "offsetMs": 6918,
+       "event": {
+         "type": "action",
+         "handId": 4,
+@@ -1842,7 +2806,47 @@
+       }
+     },
+     {
+-      "offsetMs": 6590,
++      "offsetMs": 6918,
++      "event": {
++        "type": "trace",
++        "message": {
++          "ts": 1784929760290,
++          "seq": 42,
++          "from": "dealer",
++          "to": "playerA",
++          "kind": "turn_request",
++          "payload": {
++            "handId": 4,
++            "potSize": 80,
++            "toCall": 50,
++            "canRaise": true,
++            "raiseAmount": 50,
++            "myChips": 960
++          }
++        }
++      }
++    },
++    {
++      "offsetMs": 6918,
++      "event": {
++        "type": "trace",
++        "message": {
++          "ts": 1784929760290,
++          "seq": 43,
++          "from": "playerA",
++          "to": "dealer",
++          "kind": "turn_action",
++          "payload": {
++            "handId": 4,
++            "action": "fold",
++            "amount": 0,
++            "potAfter": 80
++          }
++        }
++      }
++    },
++    {
++      "offsetMs": 6918,
+       "event": {
+         "type": "action",
+         "handId": 4,
+@@ -1854,7 +2858,7 @@
+       }
+     },
+     {
+-      "offsetMs": 6590,
++      "offsetMs": 6918,
+       "event": {
+         "type": "hand_end",
+         "record": {
+@@ -1927,7 +2931,31 @@
+       }
+     },
+     {
+-      "offsetMs": 8489,
++      "offsetMs": 6918,
++      "event": {
++        "type": "trace",
++        "message": {
++          "ts": 1784929760290,
++          "seq": 44,
++          "from": "dealer",
++          "to": "all",
++          "kind": "hand_summary",
++          "payload": {
++            "handId": 4,
++            "winner": "playerB",
++            "potSize": 80,
++            "showdown": [],
++            "chipDeltas": {
++              "playerA": -10,
++              "playerB": 20,
++              "playerC": -10
++            }
++          }
++        }
++      }
++    },
++    {
++      "offsetMs": 8802,
+       "event": {
+         "type": "evolution",
+         "event": {
+@@ -1964,7 +2992,39 @@
+       }
+     },
+     {
+-      "offsetMs": 8489,
++      "offsetMs": 8802,
++      "event": {
++        "type": "trace",
++        "message": {
++          "ts": 1784929762174,
++          "seq": 45,
++          "from": "playerA",
++          "to": "all",
++          "kind": "evolution_event",
++          "payload": {
++            "handId": 4,
++            "status": "no_change",
++            "before": {
++              "aggression": 0.14,
++              "bluffRate": 0.05,
++              "callThreshold": 0.8
++            },
++            "after": {
++              "aggression": 0.14,
++              "bluffRate": 0.05,
++              "callThreshold": 0.8
++            },
++            "reason": "One losing hand on hand-4 is noise, not signal. Holding the dials I set after hand-3.",
++            "evidence": [
++              "hand-3",
++              "hand-4"
++            ]
++          }
++        }
++      }
++    },
++    {
++      "offsetMs": 8802,
+       "event": {
+         "type": "evolution",
+         "event": {
+@@ -2001,7 +3061,39 @@
+       }
+     },
+     {
+-      "offsetMs": 8489,
++      "offsetMs": 8802,
++      "event": {
++        "type": "trace",
++        "message": {
++          "ts": 1784929762174,
++          "seq": 46,
++          "from": "playerB",
++          "to": "all",
++          "kind": "evolution_event",
++          "payload": {
++            "handId": 4,
++            "status": "no_change",
++            "before": {
++              "aggression": 0.58,
++              "bluffRate": 0.2,
++              "callThreshold": 0.43
++            },
++            "after": {
++              "aggression": 0.58,
++              "bluffRate": 0.2,
++              "callThreshold": 0.43
++            },
++            "reason": "Hand-4 outcome is within variance for a 4-hand sample. Holding.",
++            "evidence": [
++              "hand-3",
++              "hand-4"
++            ]
++          }
++        }
++      }
++    },
++    {
++      "offsetMs": 8802,
+       "event": {
+         "type": "evolution",
+         "event": {
+@@ -2038,7 +3130,39 @@
+       }
+     },
+     {
+-      "offsetMs": 8489,
++      "offsetMs": 8802,
++      "event": {
++        "type": "trace",
++        "message": {
++          "ts": 1784929762174,
++          "seq": 47,
++          "from": "playerC",
++          "to": "all",
++          "kind": "evolution_event",
++          "payload": {
++            "handId": 4,
++            "status": "applied",
++            "before": {
++              "aggression": 0.25,
++              "bluffRate": 0.2,
++              "callThreshold": 0.7
++            },
++            "after": {
++              "aggression": 0.25,
++              "bluffRate": 0,
++              "callThreshold": 0.7
++            },
++            "reason": "Hand-4 punished the aggression I added. Reversing hard to a tight, high-call-bar profile.",
++            "evidence": [
++              "hand-3",
++              "hand-4"
++            ]
++          }
++        }
++      }
++    },
++    {
++      "offsetMs": 8802,
+       "event": {
+         "type": "metrics",
+         "snapshot": {
+@@ -2332,7 +3456,7 @@
+       }
+     },
+     {
+-      "offsetMs": 8544,
++      "offsetMs": 8878,
+       "event": {
+         "type": "hand_start",
+         "handId": 5,
+@@ -2365,7 +3489,47 @@
+       }
+     },
+     {
+-      "offsetMs": 8544,
++      "offsetMs": 8878,
++      "event": {
++        "type": "trace",
++        "message": {
++          "ts": 1784929762250,
++          "seq": 48,
++          "from": "dealer",
++          "to": "playerC",
++          "kind": "turn_request",
++          "payload": {
++            "handId": 5,
++            "potSize": 30,
++            "toCall": 0,
++            "canRaise": true,
++            "raiseAmount": 50,
++            "myChips": 980
++          }
++        }
++      }
++    },
++    {
++      "offsetMs": 8878,
++      "event": {
++        "type": "trace",
++        "message": {
++          "ts": 1784929762250,
++          "seq": 49,
++          "from": "playerC",
++          "to": "dealer",
++          "kind": "turn_action",
++          "payload": {
++            "handId": 5,
++            "action": "raise",
++            "amount": 50,
++            "potAfter": 80
++          }
++        }
++      }
++    },
++    {
++      "offsetMs": 8878,
+       "event": {
+         "type": "action",
+         "handId": 5,
+@@ -2377,7 +3541,47 @@
+       }
+     },
+     {
+-      "offsetMs": 8544,
++      "offsetMs": 8878,
++      "event": {
++        "type": "trace",
++        "message": {
++          "ts": 1784929762250,
++          "seq": 50,
++          "from": "dealer",
++          "to": "playerA",
++          "kind": "turn_request",
++          "payload": {
++            "handId": 5,
++            "potSize": 80,
++            "toCall": 50,
++            "canRaise": true,
++            "raiseAmount": 50,
++            "myChips": 950
++          }
++        }
++      }
++    },
++    {
++      "offsetMs": 8878,
++      "event": {
++        "type": "trace",
++        "message": {
++          "ts": 1784929762250,
++          "seq": 51,
++          "from": "playerA",
++          "to": "dealer",
++          "kind": "turn_action",
++          "payload": {
++            "handId": 5,
++            "action": "fold",
++            "amount": 0,
++            "potAfter": 80
++          }
++        }
++      }
++    },
++    {
++      "offsetMs": 8878,
+       "event": {
+         "type": "action",
+         "handId": 5,
+@@ -2389,7 +3593,47 @@
+       }
+     },
+     {
+-      "offsetMs": 8544,
++      "offsetMs": 8878,
++      "event": {
++        "type": "trace",
++        "message": {
++          "ts": 1784929762250,
++          "seq": 52,
++          "from": "dealer",
++          "to": "playerB",
++          "kind": "turn_request",
++          "payload": {
++            "handId": 5,
++            "potSize": 80,
++            "toCall": 50,
++            "canRaise": true,
++            "raiseAmount": 50,
++            "myChips": 1040
++          }
++        }
++      }
++    },
++    {
++      "offsetMs": 8878,
++      "event": {
++        "type": "trace",
++        "message": {
++          "ts": 1784929762250,
++          "seq": 53,
++          "from": "playerB",
++          "to": "dealer",
++          "kind": "turn_action",
++          "payload": {
++            "handId": 5,
++            "action": "fold",
++            "amount": 0,
++            "potAfter": 80
++          }
++        }
++      }
++    },
++    {
++      "offsetMs": 8878,
+       "event": {
+         "type": "action",
+         "handId": 5,
+@@ -2401,7 +3645,7 @@
+       }
+     },
+     {
+-      "offsetMs": 8544,
++      "offsetMs": 8878,
+       "event": {
+         "type": "hand_end",
+         "record": {
+@@ -2474,7 +3718,31 @@
+       }
+     },
+     {
+-      "offsetMs": 10320,
++      "offsetMs": 8878,
++      "event": {
++        "type": "trace",
++        "message": {
++          "ts": 1784929762250,
++          "seq": 54,
++          "from": "dealer",
++          "to": "all",
++          "kind": "hand_summary",
++          "payload": {
++            "handId": 5,
++            "winner": "playerC",
++            "potSize": 80,
++            "showdown": [],
++            "chipDeltas": {
++              "playerA": -10,
++              "playerB": -10,
++              "playerC": 20
++            }
++          }
++        }
++      }
++    },
++    {
++      "offsetMs": 10641,
+       "event": {
+         "type": "evolution",
+         "event": {
+@@ -2511,7 +3779,39 @@
+       }
+     },
+     {
+-      "offsetMs": 10320,
++      "offsetMs": 10641,
++      "event": {
++        "type": "trace",
++        "message": {
++          "ts": 1784929764013,
++          "seq": 55,
++          "from": "playerA",
++          "to": "all",
++          "kind": "evolution_event",
++          "payload": {
++            "handId": 5,
++            "status": "applied",
++            "before": {
++              "aggression": 0.14,
++              "bluffRate": 0.05,
++              "callThreshold": 0.8
++            },
++            "after": {
++              "aggression": 0.02,
++              "bluffRate": 0,
++              "callThreshold": 0.9
++            },
++            "reason": "Dropped 10 on hand-5 paying off a bet. Tightening: less aggression, higher call bar.",
++            "evidence": [
++              "hand-4",
++              "hand-5"
++            ]
++          }
++        }
++      }
++    },
++    {
++      "offsetMs": 10641,
+       "event": {
+         "type": "evolution",
+         "event": {
+@@ -2543,7 +3843,36 @@
+       }
+     },
+     {
+-      "offsetMs": 10320,
++      "offsetMs": 10641,
++      "event": {
++        "type": "trace",
++        "message": {
++          "ts": 1784929764013,
++          "seq": 56,
++          "from": "playerB",
++          "to": "all",
++          "kind": "evolution_event",
++          "payload": {
++            "handId": 5,
++            "status": "timeout",
++            "before": {
++              "aggression": 0.58,
++              "bluffRate": 0.2,
++              "callThreshold": 0.43
++            },
++            "after": {
++              "aggression": 0.58,
++              "bluffRate": 0.2,
++              "callThreshold": 0.43
++            },
++            "reason": "no response within 20s — strategy left untouched",
++            "evidence": []
++          }
++        }
++      }
++    },
++    {
++      "offsetMs": 10641,
+       "event": {
+         "type": "evolution",
+         "event": {
+@@ -2580,7 +3909,39 @@
+       }
+     },
+     {
+-      "offsetMs": 10321,
++      "offsetMs": 10641,
++      "event": {
++        "type": "trace",
++        "message": {
++          "ts": 1784929764013,
++          "seq": 57,
++          "from": "playerC",
++          "to": "all",
++          "kind": "evolution_event",
++          "payload": {
++            "handId": 5,
++            "status": "applied",
++            "before": {
++              "aggression": 0.25,
++              "bluffRate": 0,
++              "callThreshold": 0.7
++            },
++            "after": {
++              "aggression": 0.85,
++              "bluffRate": 0.25,
++              "callThreshold": 0.25
++            },
++            "reason": "Hand-5 showed the table folding to pressure. Going maximally aggressive.",
++            "evidence": [
++              "hand-4",
++              "hand-5"
++            ]
++          }
++        }
++      }
++    },
++    {
++      "offsetMs": 10642,
+       "event": {
+         "type": "metrics",
+         "snapshot": {
+@@ -2874,7 +4235,7 @@
+       }
+     },
+     {
+-      "offsetMs": 10350,
++      "offsetMs": 10713,
+       "event": {
+         "type": "hand_start",
+         "handId": 6,
+@@ -2907,7 +4268,47 @@
+       }
+     },
+     {
+-      "offsetMs": 10350,
++      "offsetMs": 10714,
++      "event": {
++        "type": "trace",
++        "message": {
++          "ts": 1784929764086,
++          "seq": 58,
++          "from": "dealer",
++          "to": "playerA",
++          "kind": "turn_request",
++          "payload": {
++            "handId": 6,
++            "potSize": 30,
++            "toCall": 0,
++            "canRaise": true,
++            "raiseAmount": 50,
++            "myChips": 940
++          }
++        }
++      }
++    },
++    {
++      "offsetMs": 10714,
++      "event": {
++        "type": "trace",
++        "message": {
++          "ts": 1784929764086,
++          "seq": 59,
++          "from": "playerA",
++          "to": "dealer",
++          "kind": "turn_action",
++          "payload": {
++            "handId": 6,
++            "action": "check",
++            "amount": 0,
++            "potAfter": 30
++          }
++        }
++      }
++    },
++    {
++      "offsetMs": 10714,
+       "event": {
+         "type": "action",
+         "handId": 6,
+@@ -2919,7 +4320,47 @@
+       }
+     },
+     {
+-      "offsetMs": 10350,
++      "offsetMs": 10714,
++      "event": {
++        "type": "trace",
++        "message": {
++          "ts": 1784929764086,
++          "seq": 60,
++          "from": "dealer",
++          "to": "playerB",
++          "kind": "turn_request",
++          "payload": {
++            "handId": 6,
++            "potSize": 30,
++            "toCall": 0,
++            "canRaise": true,
++            "raiseAmount": 50,
++            "myChips": 1030
++          }
++        }
++      }
++    },
++    {
++      "offsetMs": 10714,
++      "event": {
++        "type": "trace",
++        "message": {
++          "ts": 1784929764086,
++          "seq": 61,
++          "from": "playerB",
++          "to": "dealer",
++          "kind": "turn_action",
++          "payload": {
++            "handId": 6,
++            "action": "check",
++            "amount": 0,
++            "potAfter": 30
++          }
++        }
++      }
++    },
++    {
++      "offsetMs": 10714,
+       "event": {
+         "type": "action",
+         "handId": 6,
+@@ -2931,7 +4372,47 @@
+       }
+     },
+     {
+-      "offsetMs": 10350,
++      "offsetMs": 10714,
++      "event": {
++        "type": "trace",
++        "message": {
++          "ts": 1784929764086,
++          "seq": 62,
++          "from": "dealer",
++          "to": "playerC",
++          "kind": "turn_request",
++          "payload": {
++            "handId": 6,
++            "potSize": 30,
++            "toCall": 0,
++            "canRaise": true,
++            "raiseAmount": 50,
++            "myChips": 1000
++          }
++        }
++      }
++    },
++    {
++      "offsetMs": 10714,
++      "event": {
++        "type": "trace",
++        "message": {
++          "ts": 1784929764086,
++          "seq": 63,
++          "from": "playerC",
++          "to": "dealer",
++          "kind": "turn_action",
++          "payload": {
++            "handId": 6,
++            "action": "check",
++            "amount": 0,
++            "potAfter": 30
++          }
++        }
++      }
++    },
++    {
++      "offsetMs": 10714,
+       "event": {
+         "type": "action",
+         "handId": 6,
+@@ -2943,7 +4424,7 @@
+       }
+     },
+     {
+-      "offsetMs": 10350,
++      "offsetMs": 10714,
+       "event": {
+         "type": "hand_end",
+         "record": {
+@@ -3024,7 +4505,35 @@
+       }
+     },
+     {
+-      "offsetMs": 12500,
++      "offsetMs": 10714,
++      "event": {
++        "type": "trace",
++        "message": {
++          "ts": 1784929764086,
++          "seq": 64,
++          "from": "dealer",
++          "to": "all",
++          "kind": "hand_summary",
++          "payload": {
++            "handId": 6,
++            "winner": "playerA",
++            "potSize": 30,
++            "showdown": [
++              "playerA",
++              "playerB",
++              "playerC"
++            ],
++            "chipDeltas": {
++              "playerA": 20,
++              "playerB": -10,
++              "playerC": -10
++            }
++          }
++        }
++      }
++    },
++    {
++      "offsetMs": 12860,
+       "event": {
+         "type": "evolution",
+         "event": {
+@@ -3061,7 +4570,39 @@
+       }
+     },
+     {
+-      "offsetMs": 12500,
++      "offsetMs": 12860,
++      "event": {
++        "type": "trace",
++        "message": {
++          "ts": 1784929766232,
++          "seq": 65,
++          "from": "playerA",
++          "to": "all",
++          "kind": "evolution_event",
++          "payload": {
++            "handId": 6,
++            "status": "applied",
++            "before": {
++              "aggression": 0.02,
++              "bluffRate": 0,
++              "callThreshold": 0.9
++            },
++            "after": {
++              "aggression": 0.12,
++              "bluffRate": 0.06,
++              "callThreshold": 0.85
++            },
++            "reason": "Hand-6 rewarded pressure. Nudging aggression and bluffRate up, call bar down.",
++            "evidence": [
++              "hand-5",
++              "hand-6"
++            ]
++          }
++        }
++      }
++    },
++    {
++      "offsetMs": 12860,
+       "event": {
+         "type": "evolution",
+         "event": {
+@@ -3098,7 +4639,39 @@
+       }
+     },
+     {
+-      "offsetMs": 12500,
++      "offsetMs": 12860,
++      "event": {
++        "type": "trace",
++        "message": {
++          "ts": 1784929766232,
++          "seq": 66,
++          "from": "playerB",
++          "to": "all",
++          "kind": "evolution_event",
++          "payload": {
++            "handId": 6,
++            "status": "no_change",
++            "before": {
++              "aggression": 0.58,
++              "bluffRate": 0.2,
++              "callThreshold": 0.43
++            },
++            "after": {
++              "aggression": 0.58,
++              "bluffRate": 0.2,
++              "callThreshold": 0.43
++            },
++            "reason": "Hand-6 outcome is within variance for a 6-hand sample. Holding.",
++            "evidence": [
++              "hand-5",
++              "hand-6"
++            ]
++          }
++        }
++      }
++    },
++    {
++      "offsetMs": 12860,
+       "event": {
+         "type": "evolution",
+         "event": {
+@@ -3135,7 +4708,39 @@
+       }
+     },
+     {
+-      "offsetMs": 12501,
++      "offsetMs": 12860,
++      "event": {
++        "type": "trace",
++        "message": {
++          "ts": 1784929766232,
++          "seq": 67,
++          "from": "playerC",
++          "to": "all",
++          "kind": "evolution_event",
++          "payload": {
++            "handId": 6,
++            "status": "applied",
++            "before": {
++              "aggression": 0.85,
++              "bluffRate": 0.25,
++              "callThreshold": 0.25
++            },
++            "after": {
++              "aggression": 0.25,
++              "bluffRate": 0,
++              "callThreshold": 0.7
++            },
++            "reason": "Hand-6 punished the aggression I added. Reversing hard to a tight, high-call-bar profile.",
++            "evidence": [
++              "hand-5",
++              "hand-6"
++            ]
++          }
++        }
++      }
++    },
++    {
++      "offsetMs": 12861,
+       "event": {
+         "type": "metrics",
+         "snapshot": {
+@@ -3429,7 +5034,7 @@
+       }
+     },
+     {
+-      "offsetMs": 12501,
++      "offsetMs": 12863,
+       "event": {
+         "type": "tournament_end",
+         "standings": {
+@@ -3811,7 +5416,7 @@
+   ],
+   "trace": [
+     {
+-      "ts": 1784928619202,
++      "ts": 1784929753564,
+       "seq": 0,
+       "from": "dealer",
+       "to": "playerB",
+@@ -3826,7 +5431,7 @@
+       }
+     },
+     {
+-      "ts": 1784928619203,
++      "ts": 1784929753565,
+       "seq": 1,
+       "from": "playerB",
+       "to": "dealer",
+@@ -3839,7 +5444,7 @@
+       }
+     },
+     {
+-      "ts": 1784928619203,
++      "ts": 1784929753565,
+       "seq": 2,
+       "from": "dealer",
+       "to": "playerC",
+@@ -3854,7 +5459,7 @@
+       }
+     },
+     {
+-      "ts": 1784928619203,
++      "ts": 1784929753565,
+       "seq": 3,
+       "from": "playerC",
+       "to": "dealer",
+@@ -3867,7 +5472,7 @@
+       }
+     },
+     {
+-      "ts": 1784928619203,
++      "ts": 1784929753565,
+       "seq": 4,
+       "from": "dealer",
+       "to": "playerA",
+@@ -3882,7 +5487,7 @@
+       }
+     },
+     {
+-      "ts": 1784928619203,
++      "ts": 1784929753565,
+       "seq": 5,
+       "from": "playerA",
+       "to": "dealer",
+@@ -3895,7 +5500,7 @@
+       }
+     },
+     {
+-      "ts": 1784928619203,
++      "ts": 1784929753565,
+       "seq": 6,
+       "from": "dealer",
+       "to": "playerB",
+@@ -3910,7 +5515,7 @@
+       }
+     },
+     {
+-      "ts": 1784928619203,
++      "ts": 1784929753565,
+       "seq": 7,
+       "from": "playerB",
+       "to": "dealer",
+@@ -3923,7 +5528,7 @@
+       }
+     },
+     {
+-      "ts": 1784928619203,
++      "ts": 1784929753565,
+       "seq": 8,
+       "from": "dealer",
+       "to": "playerC",
+@@ -3938,7 +5543,7 @@
+       }
+     },
+     {
+-      "ts": 1784928619203,
++      "ts": 1784929753565,
+       "seq": 9,
+       "from": "playerC",
+       "to": "dealer",
+@@ -3951,7 +5556,7 @@
+       }
+     },
+     {
+-      "ts": 1784928619203,
++      "ts": 1784929753565,
+       "seq": 10,
+       "from": "dealer",
+       "to": "all",
+@@ -3972,7 +5577,7 @@
+       }
+     },
+     {
+-      "ts": 1784928621181,
++      "ts": 1784929755532,
+       "seq": 11,
+       "from": "playerA",
+       "to": "all",
+@@ -3997,7 +5602,7 @@
+       }
+     },
+     {
+-      "ts": 1784928621181,
++      "ts": 1784929755532,
+       "seq": 12,
+       "from": "playerB",
+       "to": "all",
+@@ -4022,7 +5627,7 @@
+       }
+     },
+     {
+-      "ts": 1784928621181,
++      "ts": 1784929755532,
+       "seq": 13,
+       "from": "playerC",
+       "to": "all",
+@@ -4047,7 +5652,7 @@
+       }
+     },
+     {
+-      "ts": 1784928621213,
++      "ts": 1784929755634,
+       "seq": 14,
+       "from": "dealer",
+       "to": "playerC",
+@@ -4062,7 +5667,7 @@
+       }
+     },
+     {
+-      "ts": 1784928621213,
++      "ts": 1784929755634,
+       "seq": 15,
+       "from": "playerC",
+       "to": "dealer",
+@@ -4075,7 +5680,7 @@
+       }
+     },
+     {
+-      "ts": 1784928621213,
++      "ts": 1784929755634,
+       "seq": 16,
+       "from": "dealer",
+       "to": "playerA",
+@@ -4090,7 +5695,7 @@
+       }
+     },
+     {
+-      "ts": 1784928621213,
++      "ts": 1784929755634,
+       "seq": 17,
+       "from": "playerA",
+       "to": "dealer",
+@@ -4103,7 +5708,7 @@
+       }
+     },
+     {
+-      "ts": 1784928621213,
++      "ts": 1784929755634,
+       "seq": 18,
+       "from": "dealer",
+       "to": "playerB",
+@@ -4118,7 +5723,7 @@
+       }
+     },
+     {
+-      "ts": 1784928621213,
++      "ts": 1784929755634,
+       "seq": 19,
+       "from": "playerB",
+       "to": "dealer",
+@@ -4131,7 +5736,7 @@
+       }
+     },
+     {
+-      "ts": 1784928621213,
++      "ts": 1784929755635,
+       "seq": 20,
+       "from": "dealer",
+       "to": "all",
+@@ -4152,7 +5757,7 @@
+       }
+     },
+     {
+-      "ts": 1784928622926,
++      "ts": 1784929757345,
+       "seq": 21,
+       "from": "playerA",
+       "to": "all",
+@@ -4178,7 +5783,7 @@
+       }
+     },
+     {
+-      "ts": 1784928622926,
++      "ts": 1784929757345,
+       "seq": 22,
+       "from": "playerB",
+       "to": "all",
+@@ -4204,7 +5809,7 @@
+       }
+     },
+     {
+-      "ts": 1784928622926,
++      "ts": 1784929757345,
+       "seq": 23,
+       "from": "playerC",
+       "to": "all",
+@@ -4230,7 +5835,7 @@
+       }
+     },
+     {
+-      "ts": 1784928622954,
++      "ts": 1784929757458,
+       "seq": 24,
+       "from": "dealer",
+       "to": "playerA",
+@@ -4245,7 +5850,7 @@
+       }
+     },
+     {
+-      "ts": 1784928622954,
++      "ts": 1784929757458,
+       "seq": 25,
+       "from": "playerA",
+       "to": "dealer",
+@@ -4258,7 +5863,7 @@
+       }
+     },
+     {
+-      "ts": 1784928622954,
++      "ts": 1784929757458,
+       "seq": 26,
+       "from": "dealer",
+       "to": "playerB",
+@@ -4273,7 +5878,7 @@
+       }
+     },
+     {
+-      "ts": 1784928622954,
++      "ts": 1784929757458,
+       "seq": 27,
+       "from": "playerB",
+       "to": "dealer",
+@@ -4286,7 +5891,7 @@
+       }
+     },
+     {
+-      "ts": 1784928622955,
++      "ts": 1784929757458,
+       "seq": 28,
+       "from": "dealer",
+       "to": "playerC",
+@@ -4301,7 +5906,7 @@
+       }
+     },
+     {
+-      "ts": 1784928622955,
++      "ts": 1784929757458,
+       "seq": 29,
+       "from": "playerC",
+       "to": "dealer",
+@@ -4314,7 +5919,7 @@
+       }
+     },
+     {
+-      "ts": 1784928622955,
++      "ts": 1784929757458,
+       "seq": 30,
+       "from": "dealer",
+       "to": "playerA",
+@@ -4329,7 +5934,7 @@
+       }
+     },
+     {
+-      "ts": 1784928622955,
++      "ts": 1784929757458,
+       "seq": 31,
+       "from": "playerA",
+       "to": "dealer",
+@@ -4342,7 +5947,7 @@
+       }
+     },
+     {
+-      "ts": 1784928622955,
++      "ts": 1784929757458,
+       "seq": 32,
+       "from": "dealer",
+       "to": "playerB",
+@@ -4357,7 +5962,7 @@
+       }
+     },
+     {
+-      "ts": 1784928622955,
++      "ts": 1784929757458,
+       "seq": 33,
+       "from": "playerB",
+       "to": "dealer",
+@@ -4370,7 +5975,7 @@
+       }
+     },
+     {
+-      "ts": 1784928622955,
++      "ts": 1784929757459,
+       "seq": 34,
+       "from": "dealer",
+       "to": "all",
+@@ -4391,7 +5996,7 @@
+       }
+     },
+     {
+-      "ts": 1784928625728,
++      "ts": 1784929760205,
+       "seq": 35,
+       "from": "playerA",
+       "to": "all",
+@@ -4417,7 +6022,7 @@
+       }
+     },
+     {
+-      "ts": 1784928625728,
++      "ts": 1784929760205,
+       "seq": 36,
+       "from": "playerB",
+       "to": "all",
+@@ -4444,7 +6049,7 @@
+       }
+     },
+     {
+-      "ts": 1784928625728,
++      "ts": 1784929760205,
+       "seq": 37,
+       "from": "playerC",
+       "to": "all",
+@@ -4467,7 +6072,7 @@
+       }
+     },
+     {
+-      "ts": 1784928625757,
++      "ts": 1784929760290,
+       "seq": 38,
+       "from": "dealer",
+       "to": "playerB",
+@@ -4482,7 +6087,7 @@
+       }
+     },
+     {
+-      "ts": 1784928625757,
++      "ts": 1784929760290,
+       "seq": 39,
+       "from": "playerB",
+       "to": "dealer",
+@@ -4495,7 +6100,7 @@
+       }
+     },
+     {
+-      "ts": 1784928625757,
++      "ts": 1784929760290,
+       "seq": 40,
+       "from": "dealer",
+       "to": "playerC",
+@@ -4510,7 +6115,7 @@
+       }
+     },
+     {
+-      "ts": 1784928625757,
++      "ts": 1784929760290,
+       "seq": 41,
+       "from": "playerC",
+       "to": "dealer",
+@@ -4523,7 +6128,7 @@
+       }
+     },
+     {
+-      "ts": 1784928625757,
++      "ts": 1784929760290,
+       "seq": 42,
+       "from": "dealer",
+       "to": "playerA",
+@@ -4538,7 +6143,7 @@
+       }
+     },
+     {
+-      "ts": 1784928625757,
++      "ts": 1784929760290,
+       "seq": 43,
+       "from": "playerA",
+       "to": "dealer",
+@@ -4551,7 +6156,7 @@
+       }
+     },
+     {
+-      "ts": 1784928625757,
++      "ts": 1784929760290,
+       "seq": 44,
+       "from": "dealer",
+       "to": "all",
+@@ -4569,7 +6174,7 @@
+       }
+     },
+     {
+-      "ts": 1784928627656,
++      "ts": 1784929762174,
+       "seq": 45,
+       "from": "playerA",
+       "to": "all",
+@@ -4595,7 +6200,7 @@
+       }
+     },
+     {
+-      "ts": 1784928627656,
++      "ts": 1784929762174,
+       "seq": 46,
+       "from": "playerB",
+       "to": "all",
+@@ -4621,7 +6226,7 @@
+       }
+     },
+     {
+-      "ts": 1784928627656,
++      "ts": 1784929762174,
+       "seq": 47,
+       "from": "playerC",
+       "to": "all",
+@@ -4647,7 +6252,7 @@
+       }
+     },
+     {
+-      "ts": 1784928627711,
++      "ts": 1784929762250,
+       "seq": 48,
+       "from": "dealer",
+       "to": "playerC",
+@@ -4662,7 +6267,7 @@
+       }
+     },
+     {
+-      "ts": 1784928627711,
++      "ts": 1784929762250,
+       "seq": 49,
+       "from": "playerC",
+       "to": "dealer",
+@@ -4675,7 +6280,7 @@
+       }
+     },
+     {
+-      "ts": 1784928627711,
++      "ts": 1784929762250,
+       "seq": 50,
+       "from": "dealer",
+       "to": "playerA",
+@@ -4690,7 +6295,7 @@
+       }
+     },
+     {
+-      "ts": 1784928627711,
++      "ts": 1784929762250,
+       "seq": 51,
+       "from": "playerA",
+       "to": "dealer",
+@@ -4703,7 +6308,7 @@
+       }
+     },
+     {
+-      "ts": 1784928627711,
++      "ts": 1784929762250,
+       "seq": 52,
+       "from": "dealer",
+       "to": "playerB",
+@@ -4718,7 +6323,7 @@
+       }
+     },
+     {
+-      "ts": 1784928627711,
++      "ts": 1784929762250,
+       "seq": 53,
+       "from": "playerB",
+       "to": "dealer",
+@@ -4731,7 +6336,7 @@
+       }
+     },
+     {
+-      "ts": 1784928627711,
++      "ts": 1784929762250,
+       "seq": 54,
+       "from": "dealer",
+       "to": "all",
+@@ -4749,7 +6354,7 @@
+       }
+     },
+     {
+-      "ts": 1784928629487,
++      "ts": 1784929764013,
+       "seq": 55,
+       "from": "playerA",
+       "to": "all",
+@@ -4775,7 +6380,7 @@
+       }
+     },
+     {
+-      "ts": 1784928629487,
++      "ts": 1784929764013,
+       "seq": 56,
+       "from": "playerB",
+       "to": "all",
+@@ -4798,7 +6403,7 @@
+       }
+     },
+     {
+-      "ts": 1784928629487,
++      "ts": 1784929764013,
+       "seq": 57,
+       "from": "playerC",
+       "to": "all",
+@@ -4824,7 +6429,7 @@
+       }
+     },
+     {
+-      "ts": 1784928629517,
++      "ts": 1784929764086,
+       "seq": 58,
+       "from": "dealer",
+       "to": "playerA",
+@@ -4839,7 +6444,7 @@
+       }
+     },
+     {
+-      "ts": 1784928629517,
++      "ts": 1784929764086,
+       "seq": 59,
+       "from": "playerA",
+       "to": "dealer",
+@@ -4852,7 +6457,7 @@
+       }
+     },
+     {
+-      "ts": 1784928629517,
++      "ts": 1784929764086,
+       "seq": 60,
+       "from": "dealer",
+       "to": "playerB",
+@@ -4867,7 +6472,7 @@
+       }
+     },
+     {
+-      "ts": 1784928629517,
++      "ts": 1784929764086,
+       "seq": 61,
+       "from": "playerB",
+       "to": "dealer",
+@@ -4880,7 +6485,7 @@
+       }
+     },
+     {
+-      "ts": 1784928629517,
++      "ts": 1784929764086,
+       "seq": 62,
+       "from": "dealer",
+       "to": "playerC",
+@@ -4895,7 +6500,7 @@
+       }
+     },
+     {
+-      "ts": 1784928629517,
++      "ts": 1784929764086,
+       "seq": 63,
+       "from": "playerC",
+       "to": "dealer",
+@@ -4908,7 +6513,7 @@
+       }
+     },
+     {
+-      "ts": 1784928629517,
++      "ts": 1784929764086,
+       "seq": 64,
+       "from": "dealer",
+       "to": "all",
+@@ -4930,7 +6535,7 @@
+       }
+     },
+     {
+-      "ts": 1784928631667,
++      "ts": 1784929766232,
+       "seq": 65,
+       "from": "playerA",
+       "to": "all",
+@@ -4956,7 +6561,7 @@
+       }
+     },
+     {
+-      "ts": 1784928631667,
++      "ts": 1784929766232,
+       "seq": 66,
+       "from": "playerB",
+       "to": "all",
+@@ -4982,7 +6587,7 @@
+       }
+     },
+     {
+-      "ts": 1784928631667,
++      "ts": 1784929766232,
+       "seq": 67,
+       "from": "playerC",
+       "to": "all",
+diff --git a/package-lock.json b/package-lock.json
+index 2d4a194..22a37e8 100644
+--- a/package-lock.json
++++ b/package-lock.json
+@@ -49,7 +49,6 @@
+       "integrity": "sha512-RgHBCvtjbOK2gXSNBNIkNoEc9qoVEtau3hj8gEqKQuL3HZAibKarWFEI3Lfm6EYKkLalOh8eSrj9b+ch9H/VBA==",
+       "dev": true,
+       "license": "MIT",
+-      "peer": true,
+       "dependencies": {
+         "@babel/code-frame": "^7.29.7",
+         "@babel/generator": "^7.29.7",
+@@ -1237,7 +1236,6 @@
+       "integrity": "sha512-vfEqpXTvwT91yhmwdfouStN2hSKwTvyRs8qpLfADyrq/kxDw0hZM7Wk9Ug1FELj8hIby+S/+kQCSRFF32nv2Qw==",
+       "dev": true,
+       "license": "MIT",
+-      "peer": true,
+       "dependencies": {
+         "@types/prop-types": "*",
+         "csstype": "^3.2.2"
+@@ -1440,7 +1438,6 @@
+         }
+       ],
+       "license": "MIT",
+-      "peer": true,
+       "dependencies": {
+         "baseline-browser-mapping": "^2.10.44",
+         "caniuse-lite": "^1.0.30001806",
+@@ -1671,7 +1668,6 @@
+       "resolved": "https://registry.npmjs.org/hono/-/hono-4.12.32.tgz",
+       "integrity": "sha512-XcuyW9qE2kJn07PkecMOBd5Vq/hMy7mmGw+idz1yblbg9N17ijJODrvPkn7/dwL3Kulj8LcRJ69DLOWf91dRUg==",
+       "license": "MIT",
+-      "peer": true,
+       "engines": {
+         "node": ">=16.9.0"
+       }
+@@ -1850,7 +1846,6 @@
+       "resolved": "https://registry.npmjs.org/react/-/react-18.3.1.tgz",
+       "integrity": "sha512-wS+hAgJShR0KhEvPJArfuPVN1+Hz1t0Y6n5jLrGQbkb4urgPE/0Rve+1kMB1v/oWgHgm4WIcV+i7F2pTVj+2iQ==",
+       "license": "MIT",
+-      "peer": true,
+       "dependencies": {
+         "loose-envify": "^1.1.0"
+       },
+@@ -2101,7 +2096,6 @@
+       "integrity": "sha512-o5a9xKjbtuhY6Bi5S3+HvbRERmouabWbyUcpXXUA1u+GNUKoROi9byOJ8M0nHbHYHkYICiMlqxkg1KkYmm25Sw==",
+       "dev": true,
+       "license": "MIT",
+-      "peer": true,
+       "dependencies": {
+         "esbuild": "^0.21.3",
+         "postcss": "^8.4.43",
+diff --git a/server/src/index.ts b/server/src/index.ts
+index cb2d954..15ba862 100644
+--- a/server/src/index.ts
++++ b/server/src/index.ts
+@@ -179,6 +179,13 @@ async function cmdTournament(flags: Record<string, string | boolean>) {
+ 
+   const recorder = new Recorder();
+   const trace = new Trace();
++  // Every Band-routed message becomes a first-class stream event, so the
++  // spectator's Agent Wire renders live and fixtures replay it verbatim.
++  trace.onMessage((message) => {
++    const ev: TournamentEvent = { type: "trace", message };
++    recorder.capture(ev);
++    server?.broadcaster.publish(ev);
++  });
+   state.trace = trace;
+   state.mode = "live";
+   state.seed = seed;
+diff --git a/shared/types.ts b/shared/types.ts
+index cf7d639..240ecdf 100644
+--- a/shared/types.ts
++++ b/shared/types.ts
+@@ -318,6 +318,7 @@ export type TournamentEvent =
+       isBluff: boolean;
+     }
+   | { type: "hand_end"; record: HandRecord; chips: Record<PlayerId, number> }
++  | { type: "trace"; message: TraceMessage }
+   | { type: "evolution"; event: EvolutionEvent }
+   | { type: "metrics"; snapshot: MetricsSnapshot }
+   | { type: "tournament_end"; standings: FinalStandings };
+diff --git a/web/src/App.tsx b/web/src/App.tsx
+index f508704..2fc9cd9 100644
+--- a/web/src/App.tsx
++++ b/web/src/App.tsx
+@@ -1,4 +1,5 @@
+ import { useCallback } from "react";
++import { BandWire } from "./components/BandWire";
+ import { ComparisonStrip } from "./components/ComparisonStrip";
+ import { Drawers } from "./components/Drawers";
+ import { EmptyState } from "./components/EmptyState";
+@@ -55,6 +56,7 @@ export default function App() {
+           </main>
+ 
+           <aside className="app__log">
++            <BandWire wire={state.wire} players={state.players} />
+             <EvolutionLog
+               events={state.evolutions}
+               players={state.players}
+diff --git a/web/src/components/BandWire.tsx b/web/src/components/BandWire.tsx
+new file mode 100644
+index 0000000..b906ccc
+--- /dev/null
++++ b/web/src/components/BandWire.tsx
+@@ -0,0 +1,235 @@
++import { useEffect, useRef } from "react";
++import type {
++  PlayerId,
++  PlayerState,
++  Strategy,
++  TraceMessage,
++} from "../../../shared/types";
++import { fmtChips } from "../lib/format";
++import { accentStyle } from "../lib/style";
++
++/**
++ * THE AGENT WIRE — the Band message bus rendered as conversation.
++ *
++ * Same data as the "Message trace" drawer, but live, human-readable, and
++ * impossible to miss: dealer requests, agent actions, hand results, and each
++ * model narrating its own strategy rewrite in first person. This panel is the
++ * demo's answer to "what am I looking at?" — you are watching agents talk,
++ * then watching them change their minds.
++ */
++
++interface Props {
++  wire: TraceMessage[];
++  players: PlayerState[];
++}
++
++interface TurnRequestPayload {
++  handId: number;
++  potSize: number;
++  toCall: number;
++  canRaise: boolean;
++  raiseAmount: number;
++  myChips: number;
++}
++interface TurnActionPayload {
++  handId: number;
++  action: string;
++  amount: number;
++  potAfter: number;
++}
++interface HandSummaryPayload {
++  handId: number;
++  winner: PlayerId;
++  potSize: number;
++  showdown: PlayerId[];
++  chipDeltas: Record<PlayerId, number>;
++}
++interface EvolutionPayload {
++  handId: number;
++  status: "applied" | "no_change" | "invalid" | "timeout";
++  before: Strategy;
++  after: Strategy;
++  reason: string;
++  evidence: string[];
++}
++
++const DIAL_LABEL: Record<keyof Strategy, string> = {
++  aggression: "aggr",
++  bluffRate: "bluff",
++  callThreshold: "call",
++};
++
++const STATUS_LABEL: Record<EvolutionPayload["status"], string> = {
++  applied: "REWROTE ITSELF",
++  no_change: "HELD",
++  invalid: "INVALID REPLY",
++  timeout: "TIMED OUT",
++};
++
++export function BandWire({ wire, players }: Props) {
++  const feedRef = useRef<HTMLDivElement>(null);
++
++  useEffect(() => {
++    const el = feedRef.current;
++    if (el) el.scrollTop = el.scrollHeight;
++  }, [wire.length]);
++
++  const byId = (id: string): PlayerState | undefined =>
++    players.find((p) => p.id === id);
++
++  // A seat is "deciding" between its turn_request and its turn_action.
++  const pending = new Set<string>();
++  for (const m of wire) {
++    if (m.kind === "turn_request" && m.to !== "all" && m.to !== "dealer") {
++      pending.add(m.to);
++    }
++    if (m.kind === "turn_action" && m.from !== "dealer") pending.delete(m.from);
++    if (m.kind === "hand_summary") pending.clear();
++  }
++
++  return (
++    <section className="wire">
++      <header className="wire__head">
++        <div>
++          <h2 className="wire__title">AGENT WIRE</h2>
++          <p className="wire__sub">
++            dealer + 3 signed identities · routed via <b>BAND</b> · every
++            message logged
++          </p>
++        </div>
++        <div className="wire__count mono">{wire.length} msgs</div>
++      </header>
++
++      <div className="wire__feed" ref={feedRef}>
++        {wire.length === 0 ? (
++          <div className="wire__empty">
++            Waiting for the table to open — dealer speaks first.
++          </div>
++        ) : null}
++
++        {wire.map((m) => {
++          const key = `w${m.seq}`;
++
++          if (m.kind === "turn_request") {
++            const p = m.payload as TurnRequestPayload;
++            const who = byId(String(m.to));
++            return (
++              <div className="wire__row wire__row--dealer" key={key}>
++                <span className="wire__tag">DEALER</span>
++                <span className="wire__txt">
++                  <b style={who ? { color: who.color } : undefined}>
++                    {who?.name ?? m.to}
++                  </b>
++                  , your action — pot {fmtChips(p.potSize)},{" "}
++                  {p.toCall > 0 ? `${fmtChips(p.toCall)} to call` : "check is free"}
++                  .
++                </span>
++              </div>
++            );
++          }
++
++          if (m.kind === "turn_action") {
++            const p = m.payload as TurnActionPayload;
++            const who = byId(String(m.from));
++            if (!who) return null;
++            const verb =
++              p.action === "raise"
++                ? `Raise ${fmtChips(p.amount)}.`
++                : p.action === "call"
++                  ? `Call ${fmtChips(p.amount)}.`
++                  : p.action === "check"
++                    ? "Check."
++                    : "Fold.";
++            return (
++              <div
++                className="wire__row wire__row--agent"
++                style={accentStyle(who.color)}
++                key={key}
++              >
++                <span className="wire__tag wire__tag--agent">{who.name}</span>
++                <span className="wire__txt">{verb}</span>
++              </div>
++            );
++          }
++
++          if (m.kind === "hand_summary") {
++            const p = m.payload as HandSummaryPayload;
++            const who = byId(p.winner);
++            return (
++              <div className="wire__row wire__row--summary" key={key}>
++                <span className="wire__rule" />
++                <span className="wire__txt">
++                  HAND {p.handId} ·{" "}
++                  <b style={who ? { color: who.color } : undefined}>
++                    {who?.name ?? p.winner}
++                  </b>{" "}
++                  wins {fmtChips(p.potSize)}
++                  {p.showdown.length > 0 ? " at showdown" : " — everyone folded"}
++                </span>
++                <span className="wire__rule" />
++              </div>
++            );
++          }
++
++          if (m.kind === "evolution_event") {
++            const p = m.payload as EvolutionPayload;
++            const who = byId(String(m.from));
++            if (!who) return null;
++            const deltas = (
++              Object.keys(DIAL_LABEL) as (keyof Strategy)[]
++            ).filter((k) => p.before[k] !== p.after[k]);
++            return (
++              <div
++                className={`wire__evo wire__evo--${p.status}`}
++                style={accentStyle(who.color)}
++                key={key}
++              >
++                <div className="wire__evohead">
++                  <span className="wire__tag wire__tag--agent">{who.name}</span>
++                  <span className="wire__status">{STATUS_LABEL[p.status]}</span>
++                  <span className="wire__hand mono">h{p.handId}</span>
++                </div>
++                <p className="wire__reason">“{p.reason}”</p>
++                {deltas.length > 0 ? (
++                  <div className="wire__deltas mono">
++                    {deltas.map((k) => (
++                      <span className="wire__delta" key={k}>
++                        {DIAL_LABEL[k]} {p.before[k].toFixed(2)}
++                        <i>→</i>
++                        {p.after[k].toFixed(2)}
++                      </span>
++                    ))}
++                  </div>
++                ) : null}
++              </div>
++            );
++          }
++
++          return null;
++        })}
++
++        {[...pending].map((id) => {
++          const who = byId(id);
++          if (!who) return null;
++          return (
++            <div
++              className="wire__row wire__row--agent wire__row--typing"
++              style={accentStyle(who.color)}
++              key={`t${id}`}
++            >
++              <span className="wire__tag wire__tag--agent">{who.name}</span>
++              <span className="wire__txt">
++                deciding
++                <span className="wire__dots">
++                  <i />
++                  <i />
++                  <i />
++                </span>
++              </span>
++            </div>
++          );
++        })}
++      </div>
++    </section>
++  );
++}
+diff --git a/web/src/state/reducer.ts b/web/src/state/reducer.ts
+index 20a63fd..c7b99ba 100644
+--- a/web/src/state/reducer.ts
++++ b/web/src/state/reducer.ts
+@@ -9,6 +9,7 @@ import type {
+   PlayerState,
+   Strategy,
+   TournamentEvent,
++  TraceMessage,
+ } from "../../../shared/types";
+ import { NEUTRAL_STRATEGY, TOTAL_HANDS } from "../../../shared/types";
+ 
+@@ -42,6 +43,7 @@ export interface UiState {
+   handRecords: HandRecord[];
+   lastRecord: HandRecord | null;
+   evolutions: EvolutionEvent[];
++  wire: TraceMessage[];
+   metrics: MetricsSnapshot | null;
+   standings: FinalStandings | null;
+   eventCount: number;
+@@ -77,6 +79,7 @@ export const initialState: UiState = {
+   handRecords: [],
+   lastRecord: null,
+   evolutions: [],
++  wire: [],
+   metrics: null,
+   standings: null,
+   eventCount: 0,
+@@ -173,6 +176,12 @@ export function reducer(state: UiState, action: StoreAction): UiState {
+       };
+     }
+ 
++    case "trace": {
++      const wire = [...state.wire, event.message];
++      // Keep the feed bounded; the drawer + audit pack hold the full log.
++      return { ...state, wire: wire.length > 240 ? wire.slice(-240) : wire };
++    }
++
+     case "evolution": {
+       const ev = event.event;
+       return {
+diff --git a/web/src/styles.css b/web/src/styles.css
+index 387ca3b..13f424c 100644
+--- a/web/src/styles.css
++++ b/web/src/styles.css
+@@ -1429,3 +1429,204 @@ button {
+     transition: none !important;
+   }
+ }
++
++
++/* ===================== AGENT WIRE (Band live feed) ===================== */
++
++.wire {
++  display: flex;
++  flex-direction: column;
++  min-height: 0;
++  flex: 0 0 42%;
++  max-height: 42%;
++  border: 1px solid var(--line);
++  border-radius: 10px;
++  background: linear-gradient(180deg, var(--panel-a, #121813), var(--panel-b, #0c110d));
++  overflow: hidden;
++  margin-bottom: 12px;
++}
++
++.wire__head {
++  display: flex;
++  align-items: baseline;
++  justify-content: space-between;
++  gap: 10px;
++  padding: 10px 14px;
++  border-bottom: 1px solid var(--line);
++}
++
++.wire__title {
++  font-family: var(--font-display);
++  font-size: 17px;
++  font-weight: 700;
++  letter-spacing: 0.16em;
++}
++
++.wire__sub {
++  font-size: 9px;
++  letter-spacing: 0.14em;
++  text-transform: uppercase;
++  color: var(--muted);
++}
++.wire__sub b { color: #69b8a7; }
++
++.wire__count {
++  font-size: 10px;
++  color: var(--muted);
++  letter-spacing: 0.12em;
++  white-space: nowrap;
++}
++
++.wire__feed {
++  flex: 1;
++  min-height: 0;
++  overflow-y: auto;
++  padding: 10px 12px;
++  display: flex;
++  flex-direction: column;
++  gap: 7px;
++  scrollbar-width: thin;
++  scrollbar-color: var(--line) transparent;
++}
++
++.wire__empty {
++  font-size: 11px;
++  color: var(--muted);
++  padding: 14px 4px;
++}
++
++.wire__row {
++  display: flex;
++  align-items: baseline;
++  gap: 8px;
++  font-size: 11.5px;
++  line-height: 1.45;
++  animation: wire-rise 0.3s ease;
++}
++@keyframes wire-rise {
++  from { opacity: 0; transform: translateY(5px); }
++  to { opacity: 1; transform: none; }
++}
++
++.wire__tag {
++  flex: 0 0 auto;
++  font-size: 8px;
++  letter-spacing: 0.18em;
++  text-transform: uppercase;
++  padding: 2px 7px;
++  border-radius: 2px;
++  border: 1px solid var(--line);
++  color: var(--muted);
++  background: rgba(0, 0, 0, 0.35);
++}
++.wire__tag--agent {
++  color: var(--accent);
++  border-color: color-mix(in srgb, var(--accent) 55%, transparent);
++}
++
++.wire__row--dealer .wire__txt { color: #aab5aa; }
++.wire__row--agent .wire__txt { color: var(--cream, #f5f0e4); }
++
++.wire__row--summary {
++  margin: 3px 0;
++  gap: 10px;
++}
++.wire__row--summary .wire__txt {
++  flex: 0 0 auto;
++  font-size: 9.5px;
++  letter-spacing: 0.16em;
++  color: var(--muted);
++  text-transform: uppercase;
++  white-space: nowrap;
++}
++.wire__rule {
++  flex: 1;
++  height: 1px;
++  background: var(--line);
++}
++
++/* evolution speech card */
++.wire__evo {
++  border: 1px solid var(--line);
++  border-left: 3px solid var(--accent);
++  border-radius: 6px;
++  padding: 8px 11px;
++  background: rgba(0, 0, 0, 0.28);
++  animation: wire-rise 0.35s ease;
++}
++.wire__evo--no_change { border-left-color: #5a6b5c; }
++.wire__evo--timeout,
++.wire__evo--invalid { border-left-color: var(--bad, #f87171); }
++
++.wire__evohead {
++  display: flex;
++  align-items: baseline;
++  gap: 8px;
++}
++.wire__status {
++  font-size: 8px;
++  letter-spacing: 0.2em;
++  text-transform: uppercase;
++  color: var(--gold, #c9a227);
++}
++.wire__evo--no_change .wire__status { color: #9fb8a0; }
++.wire__evo--timeout .wire__status,
++.wire__evo--invalid .wire__status { color: var(--bad, #f87171); }
++.wire__hand {
++  margin-left: auto;
++  font-size: 9px;
++  color: var(--muted);
++}
++
++.wire__reason {
++  margin-top: 5px;
++  font-size: 11.5px;
++  line-height: 1.5;
++  color: #dde2d6;
++  font-style: italic;
++}
++
++.wire__deltas {
++  display: flex;
++  flex-wrap: wrap;
++  gap: 6px;
++  margin-top: 6px;
++}
++.wire__delta {
++  font-size: 9.5px;
++  letter-spacing: 0.06em;
++  border: 1px solid color-mix(in srgb, var(--accent) 40%, transparent);
++  border-radius: 2px;
++  padding: 2px 7px;
++  color: var(--accent);
++}
++.wire__delta i {
++  font-style: normal;
++  color: var(--muted);
++  padding: 0 3px;
++}
++
++/* typing indicator */
++.wire__dots { display: inline-flex; gap: 3px; margin-left: 6px; }
++.wire__dots i {
++  width: 4px;
++  height: 4px;
++  border-radius: 50%;
++  background: var(--accent);
++  animation: wire-blink 1.1s infinite;
++}
++.wire__dots i:nth-child(2) { animation-delay: 0.18s; }
++.wire__dots i:nth-child(3) { animation-delay: 0.36s; }
++@keyframes wire-blink {
++  0%, 100% { opacity: 0.25; }
++  40% { opacity: 1; }
++}
++
++@media (prefers-reduced-motion: reduce) {
++  .wire__row, .wire__evo { animation: none; }
++  .wire__dots i { animation: none; }
++}
++
++@media (max-width: 1080px) {
++  .wire { flex-basis: auto; max-height: 300px; }
++}
