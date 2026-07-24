@@ -4,10 +4,11 @@ Three LLMs play poker and rewrite their own strategy after every hand.
 
 Three AI players, one deterministic dealer, six hands. No LLM ever picks a poker
 action — the action loop is a pure function of `(hand strength, pot odds, position,
-strategy dials)`. Between hands each player gets one shot at rewriting its own four
+strategy dials)`. Between hands each player gets one shot at rewriting its own three
 strategy dials, and the tournament shows you what that rewrite did to its results.
 
-**6 hands x 3 players = exactly 18 LLM calls.** That is the whole model budget.
+**6 hands × 3 players = 18 reflections. Retries are counted, capped at one per
+reflection, and shown on screen.**
 
 ---
 
@@ -31,6 +32,7 @@ npm run serve -- --fixture fixtures/demo.json     # replay a recording
 npm run serve -- --fixture fixtures/demo.json --speed 2 --loop
 npm run record                                    # re-record fixtures/demo.json
 npm run find-seed -- --limit 500                  # score seeds for demo-worthiness
+npm run tune -- --seeds 1..20                     # per-model self-modification profile
 npm run build                                     # production web bundle
 ```
 
@@ -86,6 +88,22 @@ Two rules the whole design hangs on:
 2. **Models are never babysat.** `server/src/evolution/schema.ts` validates shape and
    range only — no step-size cap, no one-dial-at-a-time rule, no anti-reversal rule.
    If a model oscillates a dial, that is a finding, and `metrics.ts` counts it.
+
+The parser repairs **transport, never judgement**: a dial sent as `"0.45"` becomes
+`0.45` and evidence sent as a bare string gets wrapped, but an out-of-range dial is
+still rejected. Every repair is recorded per model, because which model needed which
+repair is itself a result. Each reflection gets at most one retry, and a rejected
+response is fed back into that model's next prompt — a model that cannot see it was
+rejected will emit the same broken shape again next hand.
+
+### Tuning the prompt
+
+`npm run tune -- --seeds 1..20` runs the same seeds and reports, per model: no-change
+rate, dial drift per hand, oscillations, parse failures, repairs, calls spent, and
+final chips. `--prompt-variant <file>` swaps the closing instruction block from a file
+so wording can be A/B'd without editing source. Note that the mock adapter is scripted
+and ignores prompt wording — a variant only moves these numbers under
+`PIONEER_MODE=real`.
 
 Failure is rendered, not swallowed. The mock script deliberately returns malformed
 JSON on hand 3 (both attempts) and times out on hand 5, so you can watch the retry,

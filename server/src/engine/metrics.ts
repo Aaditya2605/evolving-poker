@@ -246,6 +246,7 @@ export class MetricsTracker {
       updatesAttempted: events.length,
       changesApplied: events.filter((e) => e.status === "applied").length,
       noChanges: events.filter((e) => e.status === "no_change").length,
+      noChangeRate: round3(ratio(events.filter((e) => e.status === "no_change").length, events.length)),
       invalid: events.filter((e) => e.status === "invalid").length,
       timeouts: events.filter((e) => e.status === "timeout").length,
       totalAbsMovement: round3(totalAbsMovement),
@@ -287,7 +288,8 @@ export class MetricsTracker {
       evolution: this.blank((id) => this.evolutionMetrics(id)),
       models,
       totals: {
-        llmCalls: allEvents.length,
+        reflections: allEvents.length,
+        llmCalls: allEvents.reduce((a, e) => a + e.llmCalls, 0),
         estCostUsd: Number(allEvents.reduce((a, e) => a + e.estCostUsd, 0).toFixed(6)),
         avgLatencyMs: Math.round(ratio(latencies.reduce((a, b) => a + b, 0), latencies.length)),
         invalid: allEvents.filter((e) => e.status === "invalid").length,

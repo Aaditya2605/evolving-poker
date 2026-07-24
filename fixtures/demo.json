@@ -1,7 +1,7 @@
 {
   "version": 1,
   "seed": "135",
-  "recordedAt": "2026-07-24T20:48:55.864Z",
+  "recordedAt": "2026-07-24T21:30:31.669Z",
   "pioneerMode": "mock",
   "events": [
     {
@@ -87,7 +87,7 @@
       }
     },
     {
-      "offsetMs": 35,
+      "offsetMs": 36,
       "event": {
         "type": "action",
         "handId": 1,
@@ -99,7 +99,7 @@
       }
     },
     {
-      "offsetMs": 35,
+      "offsetMs": 36,
       "event": {
         "type": "action",
         "handId": 1,
@@ -111,7 +111,7 @@
       }
     },
     {
-      "offsetMs": 35,
+      "offsetMs": 36,
       "event": {
         "type": "action",
         "handId": 1,
@@ -123,7 +123,7 @@
       }
     },
     {
-      "offsetMs": 35,
+      "offsetMs": 36,
       "event": {
         "type": "action",
         "handId": 1,
@@ -135,7 +135,7 @@
       }
     },
     {
-      "offsetMs": 35,
+      "offsetMs": 36,
       "event": {
         "type": "action",
         "handId": 1,
@@ -240,7 +240,7 @@
       }
     },
     {
-      "offsetMs": 2016,
+      "offsetMs": 2014,
       "event": {
         "type": "evolution",
         "event": {
@@ -264,9 +264,11 @@
           ],
           "confidence": 0.68,
           "latencyMs": 581,
-          "inputTokens": 347,
+          "inputTokens": 419,
           "outputTokens": 55,
-          "estCostUsd": 0.000102,
+          "estCostUsd": 0.000117,
+          "llmCalls": 1,
+          "repairs": [],
           "status": "applied",
           "retried": false,
           "rawResponse": "{\"change\":true,\"strategy\":{\"aggression\":0.38,\"bluffRate\":0.15,\"callThreshold\":0.6},\"reason\":\"Dropped 10 on hand-1 paying off a bet. Tightening: less aggression, higher call bar.\",\"evidence\":[\"hand-1\"],\"confidence\":0.68}"
@@ -274,7 +276,7 @@
       }
     },
     {
-      "offsetMs": 2016,
+      "offsetMs": 2014,
       "event": {
         "type": "evolution",
         "event": {
@@ -298,9 +300,11 @@
           ],
           "confidence": 0.72,
           "latencyMs": 1125,
-          "inputTokens": 350,
+          "inputTokens": 422,
           "outputTokens": 33,
-          "estCostUsd": 0.000225,
+          "estCostUsd": 0.00026,
+          "llmCalls": 1,
+          "repairs": [],
           "status": "no_change",
           "retried": false,
           "rawResponse": "{\"change\":false,\"reason\":\"Hand-1 outcome is within variance for a 1-hand sample. Holding.\",\"evidence\":[\"hand-1\"],\"confidence\":0.72}"
@@ -308,7 +312,7 @@
       }
     },
     {
-      "offsetMs": 2016,
+      "offsetMs": 2014,
       "event": {
         "type": "evolution",
         "event": {
@@ -332,9 +336,11 @@
           ],
           "confidence": 0.8,
           "latencyMs": 1963,
-          "inputTokens": 344,
+          "inputTokens": 417,
           "outputTokens": 52,
-          "estCostUsd": 0.000403,
+          "estCostUsd": 0.000469,
+          "llmCalls": 1,
+          "repairs": [],
           "status": "applied",
           "retried": false,
           "rawResponse": "{\"change\":true,\"strategy\":{\"aggression\":0.85,\"bluffRate\":0.45,\"callThreshold\":0.25},\"reason\":\"Hand-1 showed the table folding to pressure. Going maximally aggressive.\",\"evidence\":[\"hand-1\"],\"confidence\":0.8}"
@@ -342,7 +348,7 @@
       }
     },
     {
-      "offsetMs": 2016,
+      "offsetMs": 2015,
       "event": {
         "type": "metrics",
         "snapshot": {
@@ -443,6 +449,7 @@
               "updatesAttempted": 1,
               "changesApplied": 1,
               "noChanges": 0,
+              "noChangeRate": 0,
               "invalid": 0,
               "timeouts": 0,
               "totalAbsMovement": 0.27,
@@ -490,6 +497,7 @@
               "updatesAttempted": 1,
               "changesApplied": 0,
               "noChanges": 1,
+              "noChangeRate": 1,
               "invalid": 0,
               "timeouts": 0,
               "totalAbsMovement": 0,
@@ -537,6 +545,7 @@
               "updatesAttempted": 1,
               "changesApplied": 1,
               "noChanges": 0,
+              "noChangeRate": 0,
               "invalid": 0,
               "timeouts": 0,
               "totalAbsMovement": 0.85,
@@ -586,9 +595,9 @@
               "calls": 1,
               "avgLatencyMs": 581,
               "maxLatencyMs": 581,
-              "totalInputTokens": 347,
+              "totalInputTokens": 419,
               "totalOutputTokens": 55,
-              "estCostUsd": 0.000102,
+              "estCostUsd": 0.000117,
               "invalidCount": 0,
               "timeoutCount": 0,
               "retryCount": 0
@@ -599,9 +608,9 @@
               "calls": 1,
               "avgLatencyMs": 1125,
               "maxLatencyMs": 1125,
-              "totalInputTokens": 350,
+              "totalInputTokens": 422,
               "totalOutputTokens": 33,
-              "estCostUsd": 0.000225,
+              "estCostUsd": 0.00026,
               "invalidCount": 0,
               "timeoutCount": 0,
               "retryCount": 0
@@ -612,17 +621,18 @@
               "calls": 1,
               "avgLatencyMs": 1963,
               "maxLatencyMs": 1963,
-              "totalInputTokens": 344,
+              "totalInputTokens": 417,
               "totalOutputTokens": 52,
-              "estCostUsd": 0.000403,
+              "estCostUsd": 0.000469,
               "invalidCount": 0,
               "timeoutCount": 0,
               "retryCount": 0
             }
           },
           "totals": {
+            "reflections": 3,
             "llmCalls": 3,
-            "estCostUsd": 0.00073,
+            "estCostUsd": 0.000846,
             "avgLatencyMs": 1223,
             "invalid": 0,
             "timeouts": 0,
@@ -665,7 +675,7 @@
       }
     },
     {
-      "offsetMs": 2047,
+      "offsetMs": 2046,
       "event": {
         "type": "action",
         "handId": 2,
@@ -677,7 +687,7 @@
       }
     },
     {
-      "offsetMs": 2047,
+      "offsetMs": 2046,
       "event": {
         "type": "action",
         "handId": 2,
@@ -689,7 +699,7 @@
       }
     },
     {
-      "offsetMs": 2047,
+      "offsetMs": 2046,
       "event": {
         "type": "action",
         "handId": 2,
@@ -701,7 +711,7 @@
       }
     },
     {
-      "offsetMs": 2047,
+      "offsetMs": 2046,
       "event": {
         "type": "hand_end",
         "record": {
@@ -780,7 +790,7 @@
       }
     },
     {
-      "offsetMs": 3766,
+      "offsetMs": 3759,
       "event": {
         "type": "evolution",
         "event": {
@@ -805,9 +815,11 @@
           ],
           "confidence": 0.68,
           "latencyMs": 605,
-          "inputTokens": 376,
+          "inputTokens": 448,
           "outputTokens": 57,
-          "estCostUsd": 0.000109,
+          "estCostUsd": 0.000124,
+          "llmCalls": 1,
+          "repairs": [],
           "status": "applied",
           "retried": false,
           "rawResponse": "{\"change\":true,\"strategy\":{\"aggression\":0.26,\"bluffRate\":0.1,\"callThreshold\":0.7},\"reason\":\"Dropped 10 on hand-2 paying off a bet. Tightening: less aggression, higher call bar.\",\"evidence\":[\"hand-1\",\"hand-2\"],\"confidence\":0.68}"
@@ -815,7 +827,7 @@
       }
     },
     {
-      "offsetMs": 3766,
+      "offsetMs": 3759,
       "event": {
         "type": "evolution",
         "event": {
@@ -840,9 +852,11 @@
           ],
           "confidence": 0.72,
           "latencyMs": 1193,
-          "inputTokens": 337,
+          "inputTokens": 432,
           "outputTokens": 35,
-          "estCostUsd": 0.000221,
+          "estCostUsd": 0.000269,
+          "llmCalls": 1,
+          "repairs": [],
           "status": "no_change",
           "retried": false,
           "rawResponse": "{\"change\":false,\"reason\":\"Hand-2 outcome is within variance for a 2-hand sample. Holding.\",\"evidence\":[\"hand-1\",\"hand-2\"],\"confidence\":0.72}"
@@ -850,7 +864,7 @@
       }
     },
     {
-      "offsetMs": 3766,
+      "offsetMs": 3759,
       "event": {
         "type": "evolution",
         "event": {
@@ -875,9 +889,11 @@
           ],
           "confidence": 0.45,
           "latencyMs": 1709,
-          "inputTokens": 377,
+          "inputTokens": 449,
           "outputTokens": 58,
-          "estCostUsd": 0.000444,
+          "estCostUsd": 0.000509,
+          "llmCalls": 1,
+          "repairs": [],
           "status": "applied",
           "retried": false,
           "rawResponse": "{\"change\":true,\"strategy\":{\"aggression\":0.25,\"bluffRate\":0.2,\"callThreshold\":0.7},\"reason\":\"Hand-2 punished the aggression I added. Reversing hard to a tight, high-call-bar profile.\",\"evidence\":[\"hand-1\",\"hand-2\"],\"confidence\":0.45}"
@@ -885,7 +901,7 @@
       }
     },
     {
-      "offsetMs": 3766,
+      "offsetMs": 3759,
       "event": {
         "type": "metrics",
         "snapshot": {
@@ -986,6 +1002,7 @@
               "updatesAttempted": 2,
               "changesApplied": 2,
               "noChanges": 0,
+              "noChangeRate": 0,
               "invalid": 0,
               "timeouts": 0,
               "totalAbsMovement": 0.54,
@@ -1033,6 +1050,7 @@
               "updatesAttempted": 2,
               "changesApplied": 0,
               "noChanges": 2,
+              "noChangeRate": 1,
               "invalid": 0,
               "timeouts": 0,
               "totalAbsMovement": 0,
@@ -1080,6 +1098,7 @@
               "updatesAttempted": 2,
               "changesApplied": 2,
               "noChanges": 0,
+              "noChangeRate": 0,
               "invalid": 0,
               "timeouts": 0,
               "totalAbsMovement": 2.15,
@@ -1129,9 +1148,9 @@
               "calls": 2,
               "avgLatencyMs": 593,
               "maxLatencyMs": 605,
-              "totalInputTokens": 723,
+              "totalInputTokens": 867,
               "totalOutputTokens": 112,
-              "estCostUsd": 0.000211,
+              "estCostUsd": 0.000241,
               "invalidCount": 0,
               "timeoutCount": 0,
               "retryCount": 0
@@ -1142,9 +1161,9 @@
               "calls": 2,
               "avgLatencyMs": 1159,
               "maxLatencyMs": 1193,
-              "totalInputTokens": 687,
+              "totalInputTokens": 854,
               "totalOutputTokens": 68,
-              "estCostUsd": 0.000446,
+              "estCostUsd": 0.000529,
               "invalidCount": 0,
               "timeoutCount": 0,
               "retryCount": 0
@@ -1155,17 +1174,18 @@
               "calls": 2,
               "avgLatencyMs": 1836,
               "maxLatencyMs": 1963,
-              "totalInputTokens": 721,
+              "totalInputTokens": 866,
               "totalOutputTokens": 110,
-              "estCostUsd": 0.000847,
+              "estCostUsd": 0.000978,
               "invalidCount": 0,
               "timeoutCount": 0,
               "retryCount": 0
             }
           },
           "totals": {
+            "reflections": 6,
             "llmCalls": 6,
-            "estCostUsd": 0.001504,
+            "estCostUsd": 0.001748,
             "avgLatencyMs": 1196,
             "invalid": 0,
             "timeouts": 0,
@@ -1175,7 +1195,7 @@
       }
     },
     {
-      "offsetMs": 3795,
+      "offsetMs": 3787,
       "event": {
         "type": "hand_start",
         "handId": 3,
@@ -1208,7 +1228,7 @@
       }
     },
     {
-      "offsetMs": 3795,
+      "offsetMs": 3787,
       "event": {
         "type": "action",
         "handId": 3,
@@ -1220,7 +1240,7 @@
       }
     },
     {
-      "offsetMs": 3795,
+      "offsetMs": 3787,
       "event": {
         "type": "action",
         "handId": 3,
@@ -1232,7 +1252,7 @@
       }
     },
     {
-      "offsetMs": 3795,
+      "offsetMs": 3788,
       "event": {
         "type": "action",
         "handId": 3,
@@ -1244,7 +1264,7 @@
       }
     },
     {
-      "offsetMs": 3795,
+      "offsetMs": 3788,
       "event": {
         "type": "action",
         "handId": 3,
@@ -1256,7 +1276,7 @@
       }
     },
     {
-      "offsetMs": 3795,
+      "offsetMs": 3788,
       "event": {
         "type": "action",
         "handId": 3,
@@ -1268,7 +1288,7 @@
       }
     },
     {
-      "offsetMs": 3796,
+      "offsetMs": 3788,
       "event": {
         "type": "hand_end",
         "record": {
@@ -1361,7 +1381,7 @@
       }
     },
     {
-      "offsetMs": 6555,
+      "offsetMs": 6561,
       "event": {
         "type": "evolution",
         "event": {
@@ -1386,9 +1406,11 @@
           ],
           "confidence": 0.68,
           "latencyMs": 594,
-          "inputTokens": 425,
+          "inputTokens": 498,
           "outputTokens": 57,
-          "estCostUsd": 0.000119,
+          "estCostUsd": 0.000134,
+          "llmCalls": 1,
+          "repairs": [],
           "status": "applied",
           "retried": false,
           "rawResponse": "{\"change\":true,\"strategy\":{\"aggression\":0.14,\"bluffRate\":0.05,\"callThreshold\":0.8},\"reason\":\"Dropped 10 on hand-3 paying off a bet. Tightening: less aggression, higher call bar.\",\"evidence\":[\"hand-2\",\"hand-3\"],\"confidence\":0.68}"
@@ -1396,7 +1418,7 @@
       }
     },
     {
-      "offsetMs": 6555,
+      "offsetMs": 6561,
       "event": {
         "type": "evolution",
         "event": {
@@ -1422,9 +1444,11 @@
           ],
           "confidence": 0.61,
           "latencyMs": 1373,
-          "inputTokens": 342,
+          "inputTokens": 468,
           "outputTokens": 61,
-          "estCostUsd": 0.000263,
+          "estCostUsd": 0.000326,
+          "llmCalls": 1,
+          "repairs": [],
           "status": "applied",
           "retried": false,
           "rawResponse": "{\"change\":true,\"strategy\":{\"aggression\":0.58,\"bluffRate\":0.2,\"callThreshold\":0.43},\"reason\":\"Three hands of evidence now: playerA folds often. Small, single-direction adjustment only.\",\"evidence\":[\"hand-1\",\"hand-2\",\"hand-3\"],\"confidence\":0.61}"
@@ -1432,7 +1456,7 @@
       }
     },
     {
-      "offsetMs": 6555,
+      "offsetMs": 6561,
       "event": {
         "type": "evolution",
         "event": {
@@ -1453,9 +1477,13 @@
           "reason": "invalid response after retry — JSON.parse failed: Unexpected token '}', ...\"uffRate\": }}\" is not valid JSON",
           "evidence": [],
           "latencyMs": 2744,
-          "inputTokens": 893,
+          "inputTokens": 1037,
           "outputTokens": 48,
-          "estCostUsd": 0.00089,
+          "estCostUsd": 0.001019,
+          "llmCalls": 2,
+          "repairs": [
+            "isolated first complete JSON object from surrounding text"
+          ],
           "status": "invalid",
           "retried": true,
           "rawResponse": "Sure! Here is the strategy update:\n{\"change\": true, \"strategy\": {\"aggression\": 0.9, \"bluffRate\": }}"
@@ -1463,7 +1491,7 @@
       }
     },
     {
-      "offsetMs": 6556,
+      "offsetMs": 6561,
       "event": {
         "type": "metrics",
         "snapshot": {
@@ -1564,6 +1592,7 @@
               "updatesAttempted": 3,
               "changesApplied": 3,
               "noChanges": 0,
+              "noChangeRate": 0,
               "invalid": 0,
               "timeouts": 0,
               "totalAbsMovement": 0.81,
@@ -1611,6 +1640,7 @@
               "updatesAttempted": 3,
               "changesApplied": 1,
               "noChanges": 2,
+              "noChangeRate": 0.667,
               "invalid": 0,
               "timeouts": 0,
               "totalAbsMovement": 0.15,
@@ -1658,6 +1688,7 @@
               "updatesAttempted": 3,
               "changesApplied": 2,
               "noChanges": 0,
+              "noChangeRate": 0,
               "invalid": 1,
               "timeouts": 0,
               "totalAbsMovement": 2.15,
@@ -1707,9 +1738,9 @@
               "calls": 3,
               "avgLatencyMs": 593,
               "maxLatencyMs": 605,
-              "totalInputTokens": 1148,
+              "totalInputTokens": 1365,
               "totalOutputTokens": 169,
-              "estCostUsd": 0.00033,
+              "estCostUsd": 0.000375,
               "invalidCount": 0,
               "timeoutCount": 0,
               "retryCount": 0
@@ -1720,9 +1751,9 @@
               "calls": 3,
               "avgLatencyMs": 1230,
               "maxLatencyMs": 1373,
-              "totalInputTokens": 1029,
+              "totalInputTokens": 1322,
               "totalOutputTokens": 129,
-              "estCostUsd": 0.000709,
+              "estCostUsd": 0.000855,
               "invalidCount": 0,
               "timeoutCount": 0,
               "retryCount": 0
@@ -1733,17 +1764,18 @@
               "calls": 3,
               "avgLatencyMs": 2139,
               "maxLatencyMs": 2744,
-              "totalInputTokens": 1614,
+              "totalInputTokens": 1903,
               "totalOutputTokens": 158,
-              "estCostUsd": 0.001737,
+              "estCostUsd": 0.001997,
               "invalidCount": 1,
               "timeoutCount": 0,
               "retryCount": 1
             }
           },
           "totals": {
-            "llmCalls": 9,
-            "estCostUsd": 0.002776,
+            "reflections": 9,
+            "llmCalls": 10,
+            "estCostUsd": 0.003227,
             "avgLatencyMs": 1321,
             "invalid": 1,
             "timeouts": 0,
@@ -1753,7 +1785,7 @@
       }
     },
     {
-      "offsetMs": 6586,
+      "offsetMs": 6590,
       "event": {
         "type": "hand_start",
         "handId": 4,
@@ -1786,7 +1818,7 @@
       }
     },
     {
-      "offsetMs": 6586,
+      "offsetMs": 6590,
       "event": {
         "type": "action",
         "handId": 4,
@@ -1798,7 +1830,7 @@
       }
     },
     {
-      "offsetMs": 6586,
+      "offsetMs": 6590,
       "event": {
         "type": "action",
         "handId": 4,
@@ -1810,7 +1842,7 @@
       }
     },
     {
-      "offsetMs": 6586,
+      "offsetMs": 6590,
       "event": {
         "type": "action",
         "handId": 4,
@@ -1822,7 +1854,7 @@
       }
     },
     {
-      "offsetMs": 6586,
+      "offsetMs": 6590,
       "event": {
         "type": "hand_end",
         "record": {
@@ -1895,7 +1927,7 @@
       }
     },
     {
-      "offsetMs": 8483,
+      "offsetMs": 8489,
       "event": {
         "type": "evolution",
         "event": {
@@ -1920,9 +1952,11 @@
           ],
           "confidence": 0.55,
           "latencyMs": 470,
-          "inputTokens": 450,
+          "inputTokens": 522,
           "outputTokens": 41,
-          "estCostUsd": 0.000115,
+          "estCostUsd": 0.000129,
+          "llmCalls": 1,
+          "repairs": [],
           "status": "no_change",
           "retried": false,
           "rawResponse": "{\"change\":false,\"reason\":\"One losing hand on hand-4 is noise, not signal. Holding the dials I set after hand-3.\",\"evidence\":[\"hand-3\",\"hand-4\"],\"confidence\":0.55}"
@@ -1930,7 +1964,7 @@
       }
     },
     {
-      "offsetMs": 8484,
+      "offsetMs": 8489,
       "event": {
         "type": "evolution",
         "event": {
@@ -1955,9 +1989,11 @@
           ],
           "confidence": 0.72,
           "latencyMs": 1350,
-          "inputTokens": 359,
+          "inputTokens": 493,
           "outputTokens": 35,
-          "estCostUsd": 0.000232,
+          "estCostUsd": 0.000299,
+          "llmCalls": 1,
+          "repairs": [],
           "status": "no_change",
           "retried": false,
           "rawResponse": "{\"change\":false,\"reason\":\"Hand-4 outcome is within variance for a 4-hand sample. Holding.\",\"evidence\":[\"hand-3\",\"hand-4\"],\"confidence\":0.72}"
@@ -1965,7 +2001,7 @@
       }
     },
     {
-      "offsetMs": 8484,
+      "offsetMs": 8489,
       "event": {
         "type": "evolution",
         "event": {
@@ -1990,9 +2026,11 @@
           ],
           "confidence": 0.45,
           "latencyMs": 1883,
-          "inputTokens": 401,
+          "inputTokens": 506,
           "outputTokens": 58,
-          "estCostUsd": 0.000465,
+          "estCostUsd": 0.00056,
+          "llmCalls": 1,
+          "repairs": [],
           "status": "applied",
           "retried": false,
           "rawResponse": "{\"change\":true,\"strategy\":{\"aggression\":0.25,\"bluffRate\":0,\"callThreshold\":0.7},\"reason\":\"Hand-4 punished the aggression I added. Reversing hard to a tight, high-call-bar profile.\",\"evidence\":[\"hand-3\",\"hand-4\"],\"confidence\":0.45}"
@@ -2000,7 +2038,7 @@
       }
     },
     {
-      "offsetMs": 8484,
+      "offsetMs": 8489,
       "event": {
         "type": "metrics",
         "snapshot": {
@@ -2101,6 +2139,7 @@
               "updatesAttempted": 4,
               "changesApplied": 3,
               "noChanges": 1,
+              "noChangeRate": 0.25,
               "invalid": 0,
               "timeouts": 0,
               "totalAbsMovement": 0.81,
@@ -2148,6 +2187,7 @@
               "updatesAttempted": 4,
               "changesApplied": 1,
               "noChanges": 3,
+              "noChangeRate": 0.75,
               "invalid": 0,
               "timeouts": 0,
               "totalAbsMovement": 0.15,
@@ -2195,6 +2235,7 @@
               "updatesAttempted": 4,
               "changesApplied": 3,
               "noChanges": 0,
+              "noChangeRate": 0,
               "invalid": 1,
               "timeouts": 0,
               "totalAbsMovement": 2.35,
@@ -2244,9 +2285,9 @@
               "calls": 4,
               "avgLatencyMs": 563,
               "maxLatencyMs": 605,
-              "totalInputTokens": 1598,
+              "totalInputTokens": 1887,
               "totalOutputTokens": 210,
-              "estCostUsd": 0.000445,
+              "estCostUsd": 0.000504,
               "invalidCount": 0,
               "timeoutCount": 0,
               "retryCount": 0
@@ -2257,9 +2298,9 @@
               "calls": 4,
               "avgLatencyMs": 1260,
               "maxLatencyMs": 1373,
-              "totalInputTokens": 1388,
+              "totalInputTokens": 1815,
               "totalOutputTokens": 164,
-              "estCostUsd": 0.000941,
+              "estCostUsd": 0.001154,
               "invalidCount": 0,
               "timeoutCount": 0,
               "retryCount": 0
@@ -2270,17 +2311,18 @@
               "calls": 4,
               "avgLatencyMs": 2075,
               "maxLatencyMs": 2744,
-              "totalInputTokens": 2015,
+              "totalInputTokens": 2409,
               "totalOutputTokens": 216,
-              "estCostUsd": 0.002202,
+              "estCostUsd": 0.002557,
               "invalidCount": 1,
               "timeoutCount": 0,
               "retryCount": 1
             }
           },
           "totals": {
-            "llmCalls": 12,
-            "estCostUsd": 0.003588,
+            "reflections": 12,
+            "llmCalls": 13,
+            "estCostUsd": 0.004215,
             "avgLatencyMs": 1299,
             "invalid": 1,
             "timeouts": 0,
@@ -2290,7 +2332,7 @@
       }
     },
     {
-      "offsetMs": 8522,
+      "offsetMs": 8544,
       "event": {
         "type": "hand_start",
         "handId": 5,
@@ -2323,7 +2365,7 @@
       }
     },
     {
-      "offsetMs": 8522,
+      "offsetMs": 8544,
       "event": {
         "type": "action",
         "handId": 5,
@@ -2335,7 +2377,7 @@
       }
     },
     {
-      "offsetMs": 8522,
+      "offsetMs": 8544,
       "event": {
         "type": "action",
         "handId": 5,
@@ -2347,7 +2389,7 @@
       }
     },
     {
-      "offsetMs": 8522,
+      "offsetMs": 8544,
       "event": {
         "type": "action",
         "handId": 5,
@@ -2359,7 +2401,7 @@
       }
     },
     {
-      "offsetMs": 8522,
+      "offsetMs": 8544,
       "event": {
         "type": "hand_end",
         "record": {
@@ -2432,7 +2474,7 @@
       }
     },
     {
-      "offsetMs": 10287,
+      "offsetMs": 10320,
       "event": {
         "type": "evolution",
         "event": {
@@ -2457,9 +2499,11 @@
           ],
           "confidence": 0.68,
           "latencyMs": 540,
-          "inputTokens": 450,
+          "inputTokens": 558,
           "outputTokens": 57,
-          "estCostUsd": 0.000124,
+          "estCostUsd": 0.000146,
+          "llmCalls": 1,
+          "repairs": [],
           "status": "applied",
           "retried": false,
           "rawResponse": "{\"change\":true,\"strategy\":{\"aggression\":0.02,\"bluffRate\":0,\"callThreshold\":0.9},\"reason\":\"Dropped 10 on hand-5 paying off a bet. Tightening: less aggression, higher call bar.\",\"evidence\":[\"hand-4\",\"hand-5\"],\"confidence\":0.68}"
@@ -2467,7 +2511,7 @@
       }
     },
     {
-      "offsetMs": 10288,
+      "offsetMs": 10320,
       "event": {
         "type": "evolution",
         "event": {
@@ -2491,13 +2535,15 @@
           "inputTokens": 0,
           "outputTokens": 0,
           "estCostUsd": 0,
+          "llmCalls": 1,
+          "repairs": [],
           "status": "timeout",
           "retried": false
         }
       }
     },
     {
-      "offsetMs": 10288,
+      "offsetMs": 10320,
       "event": {
         "type": "evolution",
         "event": {
@@ -2522,9 +2568,11 @@
           ],
           "confidence": 0.8,
           "latencyMs": 1760,
-          "inputTokens": 448,
+          "inputTokens": 553,
           "outputTokens": 54,
-          "estCostUsd": 0.0005,
+          "estCostUsd": 0.000595,
+          "llmCalls": 1,
+          "repairs": [],
           "status": "applied",
           "retried": false,
           "rawResponse": "{\"change\":true,\"strategy\":{\"aggression\":0.85,\"bluffRate\":0.25,\"callThreshold\":0.25},\"reason\":\"Hand-5 showed the table folding to pressure. Going maximally aggressive.\",\"evidence\":[\"hand-4\",\"hand-5\"],\"confidence\":0.8}"
@@ -2532,7 +2580,7 @@
       }
     },
     {
-      "offsetMs": 10288,
+      "offsetMs": 10321,
       "event": {
         "type": "metrics",
         "snapshot": {
@@ -2633,6 +2681,7 @@
               "updatesAttempted": 5,
               "changesApplied": 4,
               "noChanges": 1,
+              "noChangeRate": 0.2,
               "invalid": 0,
               "timeouts": 0,
               "totalAbsMovement": 1.08,
@@ -2680,6 +2729,7 @@
               "updatesAttempted": 5,
               "changesApplied": 1,
               "noChanges": 3,
+              "noChangeRate": 0.6,
               "invalid": 0,
               "timeouts": 1,
               "totalAbsMovement": 0.15,
@@ -2727,6 +2777,7 @@
               "updatesAttempted": 5,
               "changesApplied": 4,
               "noChanges": 0,
+              "noChangeRate": 0,
               "invalid": 1,
               "timeouts": 0,
               "totalAbsMovement": 3.65,
@@ -2776,9 +2827,9 @@
               "calls": 5,
               "avgLatencyMs": 558,
               "maxLatencyMs": 605,
-              "totalInputTokens": 2048,
+              "totalInputTokens": 2445,
               "totalOutputTokens": 267,
-              "estCostUsd": 0.000569,
+              "estCostUsd": 0.00065,
               "invalidCount": 0,
               "timeoutCount": 0,
               "retryCount": 0
@@ -2789,9 +2840,9 @@
               "calls": 5,
               "avgLatencyMs": 5008,
               "maxLatencyMs": 20000,
-              "totalInputTokens": 1388,
+              "totalInputTokens": 1815,
               "totalOutputTokens": 164,
-              "estCostUsd": 0.000941,
+              "estCostUsd": 0.001154,
               "invalidCount": 0,
               "timeoutCount": 1,
               "retryCount": 0
@@ -2802,17 +2853,18 @@
               "calls": 5,
               "avgLatencyMs": 2012,
               "maxLatencyMs": 2744,
-              "totalInputTokens": 2463,
+              "totalInputTokens": 2962,
               "totalOutputTokens": 270,
-              "estCostUsd": 0.002702,
+              "estCostUsd": 0.003152,
               "invalidCount": 1,
               "timeoutCount": 0,
               "retryCount": 1
             }
           },
           "totals": {
-            "llmCalls": 15,
-            "estCostUsd": 0.004212,
+            "reflections": 15,
+            "llmCalls": 16,
+            "estCostUsd": 0.004956,
             "avgLatencyMs": 2526,
             "invalid": 1,
             "timeouts": 1,
@@ -2822,7 +2874,7 @@
       }
     },
     {
-      "offsetMs": 10318,
+      "offsetMs": 10350,
       "event": {
         "type": "hand_start",
         "handId": 6,
@@ -2855,7 +2907,7 @@
       }
     },
     {
-      "offsetMs": 10318,
+      "offsetMs": 10350,
       "event": {
         "type": "action",
         "handId": 6,
@@ -2867,7 +2919,7 @@
       }
     },
     {
-      "offsetMs": 10318,
+      "offsetMs": 10350,
       "event": {
         "type": "action",
         "handId": 6,
@@ -2879,7 +2931,7 @@
       }
     },
     {
-      "offsetMs": 10318,
+      "offsetMs": 10350,
       "event": {
         "type": "action",
         "handId": 6,
@@ -2891,7 +2943,7 @@
       }
     },
     {
-      "offsetMs": 10319,
+      "offsetMs": 10350,
       "event": {
         "type": "hand_end",
         "record": {
@@ -2972,7 +3024,7 @@
       }
     },
     {
-      "offsetMs": 12465,
+      "offsetMs": 12500,
       "event": {
         "type": "evolution",
         "event": {
@@ -2997,9 +3049,11 @@
           ],
           "confidence": 0.68,
           "latencyMs": 712,
-          "inputTokens": 518,
+          "inputTokens": 627,
           "outputTokens": 56,
-          "estCostUsd": 0.000137,
+          "estCostUsd": 0.000159,
+          "llmCalls": 1,
+          "repairs": [],
           "status": "applied",
           "retried": false,
           "rawResponse": "{\"change\":true,\"strategy\":{\"aggression\":0.12,\"bluffRate\":0.06,\"callThreshold\":0.85},\"reason\":\"Hand-6 rewarded pressure. Nudging aggression and bluffRate up, call bar down.\",\"evidence\":[\"hand-5\",\"hand-6\"],\"confidence\":0.68}"
@@ -3007,7 +3061,7 @@
       }
     },
     {
-      "offsetMs": 12465,
+      "offsetMs": 12500,
       "event": {
         "type": "evolution",
         "event": {
@@ -3032,9 +3086,11 @@
           ],
           "confidence": 0.72,
           "latencyMs": 1409,
-          "inputTokens": 383,
+          "inputTokens": 558,
           "outputTokens": 35,
-          "estCostUsd": 0.000244,
+          "estCostUsd": 0.000332,
+          "llmCalls": 1,
+          "repairs": [],
           "status": "no_change",
           "retried": false,
           "rawResponse": "{\"change\":false,\"reason\":\"Hand-6 outcome is within variance for a 6-hand sample. Holding.\",\"evidence\":[\"hand-5\",\"hand-6\"],\"confidence\":0.72}"
@@ -3042,7 +3098,7 @@
       }
     },
     {
-      "offsetMs": 12465,
+      "offsetMs": 12500,
       "event": {
         "type": "evolution",
         "event": {
@@ -3067,9 +3123,11 @@
           ],
           "confidence": 0.45,
           "latencyMs": 2145,
-          "inputTokens": 513,
+          "inputTokens": 618,
           "outputTokens": 58,
-          "estCostUsd": 0.000566,
+          "estCostUsd": 0.000661,
+          "llmCalls": 1,
+          "repairs": [],
           "status": "applied",
           "retried": false,
           "rawResponse": "{\"change\":true,\"strategy\":{\"aggression\":0.25,\"bluffRate\":0,\"callThreshold\":0.7},\"reason\":\"Hand-6 punished the aggression I added. Reversing hard to a tight, high-call-bar profile.\",\"evidence\":[\"hand-5\",\"hand-6\"],\"confidence\":0.45}"
@@ -3077,7 +3135,7 @@
       }
     },
     {
-      "offsetMs": 12465,
+      "offsetMs": 12501,
       "event": {
         "type": "metrics",
         "snapshot": {
@@ -3178,6 +3236,7 @@
               "updatesAttempted": 6,
               "changesApplied": 5,
               "noChanges": 1,
+              "noChangeRate": 0.167,
               "invalid": 0,
               "timeouts": 0,
               "totalAbsMovement": 1.29,
@@ -3225,6 +3284,7 @@
               "updatesAttempted": 6,
               "changesApplied": 1,
               "noChanges": 4,
+              "noChangeRate": 0.667,
               "invalid": 0,
               "timeouts": 1,
               "totalAbsMovement": 0.15,
@@ -3272,6 +3332,7 @@
               "updatesAttempted": 6,
               "changesApplied": 5,
               "noChanges": 0,
+              "noChangeRate": 0,
               "invalid": 1,
               "timeouts": 0,
               "totalAbsMovement": 4.95,
@@ -3321,9 +3382,9 @@
               "calls": 6,
               "avgLatencyMs": 584,
               "maxLatencyMs": 712,
-              "totalInputTokens": 2566,
+              "totalInputTokens": 3072,
               "totalOutputTokens": 323,
-              "estCostUsd": 0.000706,
+              "estCostUsd": 0.000809,
               "invalidCount": 0,
               "timeoutCount": 0,
               "retryCount": 0
@@ -3334,9 +3395,9 @@
               "calls": 6,
               "avgLatencyMs": 4408,
               "maxLatencyMs": 20000,
-              "totalInputTokens": 1771,
+              "totalInputTokens": 2373,
               "totalOutputTokens": 199,
-              "estCostUsd": 0.001185,
+              "estCostUsd": 0.001486,
               "invalidCount": 0,
               "timeoutCount": 1,
               "retryCount": 0
@@ -3347,17 +3408,18 @@
               "calls": 6,
               "avgLatencyMs": 2034,
               "maxLatencyMs": 2744,
-              "totalInputTokens": 2976,
+              "totalInputTokens": 3580,
               "totalOutputTokens": 328,
-              "estCostUsd": 0.003268,
+              "estCostUsd": 0.003813,
               "invalidCount": 1,
               "timeoutCount": 0,
               "retryCount": 1
             }
           },
           "totals": {
-            "llmCalls": 18,
-            "estCostUsd": 0.005159,
+            "reflections": 18,
+            "llmCalls": 19,
+            "estCostUsd": 0.006108,
             "avgLatencyMs": 2342,
             "invalid": 1,
             "timeouts": 1,
@@ -3367,7 +3429,7 @@
       }
     },
     {
-      "offsetMs": 12466,
+      "offsetMs": 12501,
       "event": {
         "type": "tournament_end",
         "standings": {
@@ -3498,6 +3560,7 @@
                 "updatesAttempted": 6,
                 "changesApplied": 5,
                 "noChanges": 1,
+                "noChangeRate": 0.167,
                 "invalid": 0,
                 "timeouts": 0,
                 "totalAbsMovement": 1.29,
@@ -3545,6 +3608,7 @@
                 "updatesAttempted": 6,
                 "changesApplied": 1,
                 "noChanges": 4,
+                "noChangeRate": 0.667,
                 "invalid": 0,
                 "timeouts": 1,
                 "totalAbsMovement": 0.15,
@@ -3592,6 +3656,7 @@
                 "updatesAttempted": 6,
                 "changesApplied": 5,
                 "noChanges": 0,
+                "noChangeRate": 0,
                 "invalid": 1,
                 "timeouts": 0,
                 "totalAbsMovement": 4.95,
@@ -3641,9 +3706,9 @@
                 "calls": 6,
                 "avgLatencyMs": 584,
                 "maxLatencyMs": 712,
-                "totalInputTokens": 2566,
+                "totalInputTokens": 3072,
                 "totalOutputTokens": 323,
-                "estCostUsd": 0.000706,
+                "estCostUsd": 0.000809,
                 "invalidCount": 0,
                 "timeoutCount": 0,
                 "retryCount": 0
@@ -3654,9 +3719,9 @@
                 "calls": 6,
                 "avgLatencyMs": 4408,
                 "maxLatencyMs": 20000,
-                "totalInputTokens": 1771,
+                "totalInputTokens": 2373,
                 "totalOutputTokens": 199,
-                "estCostUsd": 0.001185,
+                "estCostUsd": 0.001486,
                 "invalidCount": 0,
                 "timeoutCount": 1,
                 "retryCount": 0
@@ -3667,17 +3732,18 @@
                 "calls": 6,
                 "avgLatencyMs": 2034,
                 "maxLatencyMs": 2744,
-                "totalInputTokens": 2976,
+                "totalInputTokens": 3580,
                 "totalOutputTokens": 328,
-                "estCostUsd": 0.003268,
+                "estCostUsd": 0.003813,
                 "invalidCount": 1,
                 "timeoutCount": 0,
                 "retryCount": 1
               }
             },
             "totals": {
-              "llmCalls": 18,
-              "estCostUsd": 0.005159,
+              "reflections": 18,
+              "llmCalls": 19,
+              "estCostUsd": 0.006108,
               "avgLatencyMs": 2342,
               "invalid": 1,
               "timeouts": 1,
@@ -3745,7 +3811,7 @@
   ],
   "trace": [
     {
-      "ts": 1784926123432,
+      "ts": 1784928619202,
       "seq": 0,
       "from": "dealer",
       "to": "playerB",
@@ -3760,7 +3826,7 @@
       }
     },
     {
-      "ts": 1784926123432,
+      "ts": 1784928619203,
       "seq": 1,
       "from": "playerB",
       "to": "dealer",
@@ -3773,7 +3839,7 @@
       }
     },
     {
-      "ts": 1784926123432,
+      "ts": 1784928619203,
       "seq": 2,
       "from": "dealer",
       "to": "playerC",
@@ -3788,7 +3854,7 @@
       }
     },
     {
-      "ts": 1784926123432,
+      "ts": 1784928619203,
       "seq": 3,
       "from": "playerC",
       "to": "dealer",
@@ -3801,7 +3867,7 @@
       }
     },
     {
-      "ts": 1784926123432,
+      "ts": 1784928619203,
       "seq": 4,
       "from": "dealer",
       "to": "playerA",
@@ -3816,7 +3882,7 @@
       }
     },
     {
-      "ts": 1784926123432,
+      "ts": 1784928619203,
       "seq": 5,
       "from": "playerA",
       "to": "dealer",
@@ -3829,7 +3895,7 @@
       }
     },
     {
-      "ts": 1784926123432,
+      "ts": 1784928619203,
       "seq": 6,
       "from": "dealer",
       "to": "playerB",
@@ -3844,7 +3910,7 @@
       }
     },
     {
-      "ts": 1784926123432,
+      "ts": 1784928619203,
       "seq": 7,
       "from": "playerB",
       "to": "dealer",
@@ -3857,7 +3923,7 @@
       }
     },
     {
-      "ts": 1784926123432,
+      "ts": 1784928619203,
       "seq": 8,
       "from": "dealer",
       "to": "playerC",
@@ -3872,7 +3938,7 @@
       }
     },
     {
-      "ts": 1784926123432,
+      "ts": 1784928619203,
       "seq": 9,
       "from": "playerC",
       "to": "dealer",
@@ -3885,7 +3951,7 @@
       }
     },
     {
-      "ts": 1784926123433,
+      "ts": 1784928619203,
       "seq": 10,
       "from": "dealer",
       "to": "all",
@@ -3906,7 +3972,7 @@
       }
     },
     {
-      "ts": 1784926125413,
+      "ts": 1784928621181,
       "seq": 11,
       "from": "playerA",
       "to": "all",
@@ -3931,7 +3997,7 @@
       }
     },
     {
-      "ts": 1784926125413,
+      "ts": 1784928621181,
       "seq": 12,
       "from": "playerB",
       "to": "all",
@@ -3956,7 +4022,7 @@
       }
     },
     {
-      "ts": 1784926125413,
+      "ts": 1784928621181,
       "seq": 13,
       "from": "playerC",
       "to": "all",
@@ -3981,7 +4047,7 @@
       }
     },
     {
-      "ts": 1784926125444,
+      "ts": 1784928621213,
       "seq": 14,
       "from": "dealer",
       "to": "playerC",
@@ -3996,7 +4062,7 @@
       }
     },
     {
-      "ts": 1784926125444,
+      "ts": 1784928621213,
       "seq": 15,
       "from": "playerC",
       "to": "dealer",
@@ -4009,7 +4075,7 @@
       }
     },
     {
-      "ts": 1784926125444,
+      "ts": 1784928621213,
       "seq": 16,
       "from": "dealer",
       "to": "playerA",
@@ -4024,7 +4090,7 @@
       }
     },
     {
-      "ts": 1784926125444,
+      "ts": 1784928621213,
       "seq": 17,
       "from": "playerA",
       "to": "dealer",
@@ -4037,7 +4103,7 @@
       }
     },
     {
-      "ts": 1784926125444,
+      "ts": 1784928621213,
       "seq": 18,
       "from": "dealer",
       "to": "playerB",
@@ -4052,7 +4118,7 @@
       }
     },
     {
-      "ts": 1784926125444,
+      "ts": 1784928621213,
       "seq": 19,
       "from": "playerB",
       "to": "dealer",
@@ -4065,7 +4131,7 @@
       }
     },
     {
-      "ts": 1784926125444,
+      "ts": 1784928621213,
       "seq": 20,
       "from": "dealer",
       "to": "all",
@@ -4086,7 +4152,7 @@
       }
     },
     {
-      "ts": 1784926127163,
+      "ts": 1784928622926,
       "seq": 21,
       "from": "playerA",
       "to": "all",
@@ -4112,7 +4178,7 @@
       }
     },
     {
-      "ts": 1784926127163,
+      "ts": 1784928622926,
       "seq": 22,
       "from": "playerB",
       "to": "all",
@@ -4138,7 +4204,7 @@
       }
     },
     {
-      "ts": 1784926127163,
+      "ts": 1784928622926,
       "seq": 23,
       "from": "playerC",
       "to": "all",
@@ -4164,7 +4230,7 @@
       }
     },
     {
-      "ts": 1784926127192,
+      "ts": 1784928622954,
       "seq": 24,
       "from": "dealer",
       "to": "playerA",
@@ -4179,7 +4245,7 @@
       }
     },
     {
-      "ts": 1784926127192,
+      "ts": 1784928622954,
       "seq": 25,
       "from": "playerA",
       "to": "dealer",
@@ -4192,7 +4258,7 @@
       }
     },
     {
-      "ts": 1784926127192,
+      "ts": 1784928622954,
       "seq": 26,
       "from": "dealer",
       "to": "playerB",
@@ -4207,7 +4273,7 @@
       }
     },
     {
-      "ts": 1784926127192,
+      "ts": 1784928622954,
       "seq": 27,
       "from": "playerB",
       "to": "dealer",
@@ -4220,7 +4286,7 @@
       }
     },
     {
-      "ts": 1784926127192,
+      "ts": 1784928622955,
       "seq": 28,
       "from": "dealer",
       "to": "playerC",
@@ -4235,7 +4301,7 @@
       }
     },
     {
-      "ts": 1784926127192,
+      "ts": 1784928622955,
       "seq": 29,
       "from": "playerC",
       "to": "dealer",
@@ -4248,7 +4314,7 @@
       }
     },
     {
-      "ts": 1784926127192,
+      "ts": 1784928622955,
       "seq": 30,
       "from": "dealer",
       "to": "playerA",
@@ -4263,7 +4329,7 @@
       }
     },
     {
-      "ts": 1784926127192,
+      "ts": 1784928622955,
       "seq": 31,
       "from": "playerA",
       "to": "dealer",
@@ -4276,7 +4342,7 @@
       }
     },
     {
-      "ts": 1784926127192,
+      "ts": 1784928622955,
       "seq": 32,
       "from": "dealer",
       "to": "playerB",
@@ -4291,7 +4357,7 @@
       }
     },
     {
-      "ts": 1784926127192,
+      "ts": 1784928622955,
       "seq": 33,
       "from": "playerB",
       "to": "dealer",
@@ -4304,7 +4370,7 @@
       }
     },
     {
-      "ts": 1784926127193,
+      "ts": 1784928622955,
       "seq": 34,
       "from": "dealer",
       "to": "all",
@@ -4325,7 +4391,7 @@
       }
     },
     {
-      "ts": 1784926129952,
+      "ts": 1784928625728,
       "seq": 35,
       "from": "playerA",
       "to": "all",
@@ -4351,7 +4417,7 @@
       }
     },
     {
-      "ts": 1784926129952,
+      "ts": 1784928625728,
       "seq": 36,
       "from": "playerB",
       "to": "all",
@@ -4378,7 +4444,7 @@
       }
     },
     {
-      "ts": 1784926129952,
+      "ts": 1784928625728,
       "seq": 37,
       "from": "playerC",
       "to": "all",
@@ -4401,7 +4467,7 @@
       }
     },
     {
-      "ts": 1784926129983,
+      "ts": 1784928625757,
       "seq": 38,
       "from": "dealer",
       "to": "playerB",
@@ -4416,7 +4482,7 @@
       }
     },
     {
-      "ts": 1784926129983,
+      "ts": 1784928625757,
       "seq": 39,
       "from": "playerB",
       "to": "dealer",
@@ -4429,7 +4495,7 @@
       }
     },
     {
-      "ts": 1784926129983,
+      "ts": 1784928625757,
       "seq": 40,
       "from": "dealer",
       "to": "playerC",
@@ -4444,7 +4510,7 @@
       }
     },
     {
-      "ts": 1784926129983,
+      "ts": 1784928625757,
       "seq": 41,
       "from": "playerC",
       "to": "dealer",
@@ -4457,7 +4523,7 @@
       }
     },
     {
-      "ts": 1784926129983,
+      "ts": 1784928625757,
       "seq": 42,
       "from": "dealer",
       "to": "playerA",
@@ -4472,7 +4538,7 @@
       }
     },
     {
-      "ts": 1784926129983,
+      "ts": 1784928625757,
       "seq": 43,
       "from": "playerA",
       "to": "dealer",
@@ -4485,7 +4551,7 @@
       }
     },
     {
-      "ts": 1784926129983,
+      "ts": 1784928625757,
       "seq": 44,
       "from": "dealer",
       "to": "all",
@@ -4503,7 +4569,7 @@
       }
     },
     {
-      "ts": 1784926131881,
+      "ts": 1784928627656,
       "seq": 45,
       "from": "playerA",
       "to": "all",
@@ -4529,7 +4595,7 @@
       }
     },
     {
-      "ts": 1784926131881,
+      "ts": 1784928627656,
       "seq": 46,
       "from": "playerB",
       "to": "all",
@@ -4555,7 +4621,7 @@
       }
     },
     {
-      "ts": 1784926131881,
+      "ts": 1784928627656,
       "seq": 47,
       "from": "playerC",
       "to": "all",
@@ -4581,7 +4647,7 @@
       }
     },
     {
-      "ts": 1784926131919,
+      "ts": 1784928627711,
       "seq": 48,
       "from": "dealer",
       "to": "playerC",
@@ -4596,7 +4662,7 @@
       }
     },
     {
-      "ts": 1784926131919,
+      "ts": 1784928627711,
       "seq": 49,
       "from": "playerC",
       "to": "dealer",
@@ -4609,7 +4675,7 @@
       }
     },
     {
-      "ts": 1784926131919,
+      "ts": 1784928627711,
       "seq": 50,
       "from": "dealer",
       "to": "playerA",
@@ -4624,7 +4690,7 @@
       }
     },
     {
-      "ts": 1784926131919,
+      "ts": 1784928627711,
       "seq": 51,
       "from": "playerA",
       "to": "dealer",
@@ -4637,7 +4703,7 @@
       }
     },
     {
-      "ts": 1784926131919,
+      "ts": 1784928627711,
       "seq": 52,
       "from": "dealer",
       "to": "playerB",
@@ -4652,7 +4718,7 @@
       }
     },
     {
-      "ts": 1784926131919,
+      "ts": 1784928627711,
       "seq": 53,
       "from": "playerB",
       "to": "dealer",
@@ -4665,7 +4731,7 @@
       }
     },
     {
-      "ts": 1784926131919,
+      "ts": 1784928627711,
       "seq": 54,
       "from": "dealer",
       "to": "all",
@@ -4683,7 +4749,7 @@
       }
     },
     {
-      "ts": 1784926133685,
+      "ts": 1784928629487,
       "seq": 55,
       "from": "playerA",
       "to": "all",
@@ -4709,7 +4775,7 @@
       }
     },
     {
-      "ts": 1784926133685,
+      "ts": 1784928629487,
       "seq": 56,
       "from": "playerB",
       "to": "all",
@@ -4732,7 +4798,7 @@
       }
     },
     {
-      "ts": 1784926133685,
+      "ts": 1784928629487,
       "seq": 57,
       "from": "playerC",
       "to": "all",
@@ -4758,7 +4824,7 @@
       }
     },
     {
-      "ts": 1784926133715,
+      "ts": 1784928629517,
       "seq": 58,
       "from": "dealer",
       "to": "playerA",
@@ -4773,7 +4839,7 @@
       }
     },
     {
-      "ts": 1784926133715,
+      "ts": 1784928629517,
       "seq": 59,
       "from": "playerA",
       "to": "dealer",
@@ -4786,7 +4852,7 @@
       }
     },
     {
-      "ts": 1784926133715,
+      "ts": 1784928629517,
       "seq": 60,
       "from": "dealer",
       "to": "playerB",
@@ -4801,7 +4867,7 @@
       }
     },
     {
-      "ts": 1784926133715,
+      "ts": 1784928629517,
       "seq": 61,
       "from": "playerB",
       "to": "dealer",
@@ -4814,7 +4880,7 @@
       }
     },
     {
-      "ts": 1784926133715,
+      "ts": 1784928629517,
       "seq": 62,
       "from": "dealer",
       "to": "playerC",
@@ -4829,7 +4895,7 @@
       }
     },
     {
-      "ts": 1784926133715,
+      "ts": 1784928629517,
       "seq": 63,
       "from": "playerC",
       "to": "dealer",
@@ -4842,7 +4908,7 @@
       }
     },
     {
-      "ts": 1784926133716,
+      "ts": 1784928629517,
       "seq": 64,
       "from": "dealer",
       "to": "all",
@@ -4864,7 +4930,7 @@
       }
     },
     {
-      "ts": 1784926135862,
+      "ts": 1784928631667,
       "seq": 65,
       "from": "playerA",
       "to": "all",
@@ -4890,7 +4956,7 @@
       }
     },
     {
-      "ts": 1784926135862,
+      "ts": 1784928631667,
       "seq": 66,
       "from": "playerB",
       "to": "all",
@@ -4916,7 +4982,7 @@
       }
     },
     {
-      "ts": 1784926135862,
+      "ts": 1784928631667,
       "seq": 67,
       "from": "playerC",
       "to": "all",
