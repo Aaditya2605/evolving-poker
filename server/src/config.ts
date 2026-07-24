@@ -3,13 +3,41 @@ import { STARTING_CHIPS } from "../../shared/types.js";
 
 const env = (k: string, fallback = "") => process.env[k]?.trim() || fallback;
 
+/** A registered Band agent account. Empty strings when Band is not configured. */
+export interface BandUser {
+  id: string;
+  handle: string;
+  key: string;
+}
+
+const bandUser = (n: number): BandUser => ({
+  id: env(`BAND_${n}_ID`),
+  handle: env(`BAND_${n}_HANDLE`).replace(/^@/, ""),
+  key: env(`BAND_${n}_KEY`),
+});
+
 export const config = {
   pioneerMode: env("PIONEER_MODE", "mock") as "mock" | "real",
   pioneerBaseUrl: env("PIONEER_BASE_URL"),
   pioneerApiKey: env("PIONEER_API_KEY"),
   bandMode: env("BAND_MODE", "local") as "local" | "real",
   bandApiKey: env("BAND_API_KEY"),
+  bandBaseUrl: env("BAND_BASE_URL", "https://app.band.ai/api/v1/agent"),
+  bandWsUrl: env("BAND_WS_URL", "wss://app.band.ai/api/v1/socket/websocket"),
   bandRoom: env("BAND_ROOM", "evolving-poker"),
+  /** Band addresses rooms by uuid; create one with POST /chats. */
+  bandChatId: env("BAND_CHAT_ID"),
+  /**
+   * One Band user per player: 1=playerA, 2=playerB, 3=playerC. The dealer is
+   * not among them — it is the in-process engine and holds no Band identity.
+   * An agent cannot @mention itself, so a message is published by one player
+   * and addressed to the other two; there is no neutral broadcaster.
+   */
+  bandUsers: {
+    playerA: bandUser(1),
+    playerB: bandUser(2),
+    playerC: bandUser(3),
+  } as Record<PlayerId, BandUser>,
   x402Mode: env("X402_MODE", "test") as "test" | "real",
   x402PriceUsd: Number(env("X402_PRICE_USD", "0.05")),
   x402PayTo: env("X402_PAY_TO"),
