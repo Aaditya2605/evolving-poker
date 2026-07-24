@@ -192,9 +192,9 @@ describe("5. betting legality", () => {
 });
 
 describe("hand strength", () => {
-  it("is bounded and deterministic", () => {
-    const one = playHand({ handId: 1, seed: "hs", players: initialPlayers(neutral) });
-    const two = playHand({ handId: 1, seed: "hs", players: initialPlayers(neutral) });
+  it("is bounded and deterministic", async () => {
+    const one = await playHand({ handId: 1, seed: "hs", players: initialPlayers(neutral) });
+    const two = await playHand({ handId: 1, seed: "hs", players: initialPlayers(neutral) });
     for (const id of PLAYER_IDS) {
       const hs = one.record.handStrength[id];
       expect(hs).toBeGreaterThanOrEqual(0);

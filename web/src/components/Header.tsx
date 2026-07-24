@@ -57,7 +57,7 @@ export function Header({
           EVOLVING <span className="header__title-accent">POKER</span>
         </h1>
         <p className="header__tagline">
-          Three models. One table. Strategy rewritten after every hand.
+          Pioneer agents play every turn · adaptive traffic retained
         </p>
       </div>
 

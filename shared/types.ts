@@ -23,6 +23,7 @@ export interface PlayerState {
   id: PlayerId;
   name: string; // display name
   model: string; // Pioneer model id (label on UI)
+  personality: string; // stable behavioral lens; evidence may still change the strategy
   color: string; // UI accent
   chips: number;
   strategy: Strategy;
@@ -47,6 +48,23 @@ export interface Decision {
   action: Action;
   amount: number; // chips added by this action
   isBluff: boolean; // hs < BLUFF_HS_CAP && action === "raise"
+  agent?: AgentActionMeta;
+}
+
+export type AgentActionStatus = "ok" | "invalid" | "timeout";
+
+export interface AgentActionMeta {
+  model: string;
+  servedModel?: string;
+  inferenceId?: string;
+  reason: string;
+  confidence?: number;
+  latencyMs: number;
+  inputTokens: number;
+  outputTokens: number;
+  estCostUsd: number;
+  llmCalls: number;
+  status: AgentActionStatus;
 }
 
 export interface HandAction {
@@ -55,6 +73,7 @@ export interface HandAction {
   amount: number;
   potAfter: number;
   isBluff: boolean; // spectator-only
+  agent?: AgentActionMeta;
 }
 
 /** Broadcast after each hand. */
@@ -115,7 +134,13 @@ export interface OpponentBehavior {
 
 /** What each model receives. Public information + own private information only. */
 export interface ReflectionInput {
-  identity: { name: string; model: string; chips: number; strategy: Strategy };
+  identity: {
+    name: string;
+    model: string;
+    personality: string;
+    chips: number;
+    strategy: Strategy;
+  };
   latestHand: ReflectionLatestHand;
   cumulative: ReflectionCumulative;
   opponents: Record<string, OpponentBehavior>;
@@ -141,6 +166,8 @@ export interface ReflectionOutput {
   reason: string; // ≤200 chars, public-facing
   evidence: string[]; // hand ids, e.g. ["hand-2","hand-3"]
   confidence?: number; // [0,1] optional
+  /** Optional agent-selected model for the next hand. Must be in MODEL_POOL. */
+  nextModel?: string;
 }
 
 export type EvolutionStatus = "applied" | "no_change" | "invalid" | "timeout";
@@ -150,6 +177,8 @@ export interface EvolutionEvent {
   handId: number;
   playerId: PlayerId;
   model: string;
+  modelAfter: string;
+  modelChanged: boolean;
   before: Strategy;
   after: Strategy; // === before when no change / invalid / timeout
   changed: boolean;
@@ -230,6 +259,8 @@ export interface ModelPerformance {
   playerId: PlayerId;
   model: string;
   calls: number;
+  actionCalls: number;
+  reflectionCalls: number;
   avgLatencyMs: number;
   maxLatencyMs: number;
   totalInputTokens: number;
@@ -251,6 +282,7 @@ export interface MetricsSnapshot {
   totals: {
     /** Reflections run: hands × players. Exactly one per player per hand. */
     reflections: number;
+    actionCalls: number;
     /** Adapter calls actually spent. ≥ reflections, because retries cost a call. */
     llmCalls: number;
     estCostUsd: number;
@@ -316,6 +348,7 @@ export type TournamentEvent =
       amount: number;
       potAfter: number;
       isBluff: boolean;
+      agent?: AgentActionMeta;
     }
   | { type: "hand_end"; record: HandRecord; chips: Record<PlayerId, number> }
   | { type: "evolution"; event: EvolutionEvent }

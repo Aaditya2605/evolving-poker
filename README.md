@@ -2,26 +2,24 @@
 
 Three LLMs play poker and rewrite their own strategy after every hand.
 
-Three AI players, one deterministic dealer, six hands. No LLM ever picks a poker
-action — the action loop is a pure function of `(hand strength, pot odds, strategy
-dials)`. Between hands each player gets one shot at rewriting its own three strategy
-dials, and the tournament shows you what that rewrite did to its results.
+Three persistent AI players, one mechanical dealer, six hands. Pioneer models choose
+every fold, check, call, and raise from a legal-action list. Between hands each player
+may rewrite its three strategy dials and migrate to another allowed Pioneer model.
 
-**6 hands × 3 players = 18 reflections. Retries are counted, capped at one per
-reflection, and shown on screen.**
+All action and reflection calls are counted and shown on screen.
 
 ---
 
 ## Run it
 
-Requires Node 20+. **No API keys. No network.**
+Requires Node 20+ and `PIONEER_API_KEY` in `.env` for a live tournament.
 
 ```bash
 npm install
 
-npm run demo      # full 6-hand tournament, mock LLMs, server stays up on :8787
+npm run demo      # full 6-hand live Pioneer tournament, server stays up on :8787
 npm run web       # spectator UI at http://localhost:5173 (separate terminal)
-npm test          # 50 tests
+npm test          # 53 tests
 ```
 
 Other entry points:
@@ -36,10 +34,8 @@ npm run tune -- --seeds 1..20                     # per-model self-modification 
 npm run build                                     # production web bundle
 ```
 
-The default seed is `135`. It was not chosen by taste — `npm run find-seed` scanned
-seeds 1..500 and scored them on bluffs, showdowns, distinct hand-winners and final
-chip spread. Seed 135 gives 3 bluffs (one on hand 1), 4 showdowns, 3 different
-winners, and a 1030 / 1000 / 970 finish.
+The default seed is `135`; it fixes the deck, not the model decisions. Live Pioneer
+runs are intentionally not deterministic.
 
 ### Endpoints
 
@@ -56,8 +52,8 @@ winners, and a 1030 / 1000 / 970 finish.
 
 ## Demo disaster kit
 
-- **Network dies / API down.** Remove `PIONEER_API_KEY` to use the scripted,
-  deterministic mock.
+- **Network dies / API down.** Replay the last credential-backed fixture. Live
+  tournament mode never silently substitutes scripted agents.
 - **Everything dies.** `npm run serve -- --fixture fixtures/demo.json` replays a
   committed recording with original pacing. The UI cannot tell the difference — it
   gets the same events on the same socket, and the header just says `REPLAY`.
@@ -71,8 +67,8 @@ winners, and a 1030 / 1000 / 970 finish.
 
 ```
 shared/types.ts          single source of truth for every shape crossing a boundary
-server/src/engine/       dealer: deck, evaluate, strength, decide, hand, metrics
-server/src/evolution/    reflection: pioneer adapter, prompts, reflect loop, schema
+server/src/engine/       dealer: deck, evaluate, strength, legal betting, metrics
+server/src/evolution/    Pioneer action agent, reflection, model migration, schemas
 server/src/comm/         Band router + trace log
 server/src/outputs/      cited.md report, x402 paywall + audit pack
 server/src/index.ts      CLI + Hono server
@@ -81,11 +77,10 @@ web/src/                 React spectator UI (useReducer over the same event unio
 
 Two rules the whole design hangs on:
 
-1. **The poker loop is pure.** `decide()` in `server/src/engine/decide.ts` takes a
-   `DecisionContext` and returns a `Decision`. It deliberately ignores opponent
-   statistics, so any change in a player's behavior traces back to a dial change and
-   nothing else.
-2. **Models are never babysat.** `server/src/evolution/schema.ts` validates shape and
+1. **Agents decide; the engine enforces.** Pioneer receives private cards, public
+   state, hand strength, personality, strategy, and legal actions. The engine owns
+   legality, chip accounting, showdown evaluation, and safe failure fallback.
+2. **Models are never strategically babysat.** `server/src/evolution/schema.ts` validates shape and
    range only — no step-size cap, no one-dial-at-a-time rule, no anti-reversal rule.
    If a model oscillates a dial, that is a finding, and `metrics.ts` counts it.
 
@@ -105,25 +100,28 @@ so wording can be A/B'd without editing source. Note that the mock adapter is sc
 and ignores prompt wording — a variant only moves these numbers under
 `PIONEER_MODE=real`.
 
-Failure is rendered, not swallowed. The mock script deliberately returns malformed
-JSON on hand 3 (both attempts) and times out on hand 5, so you can watch the retry,
-the give-up, and the "strategy unchanged" card in the UI.
+Failure is rendered, not swallowed. Invalid or timed-out action output becomes a
+mechanical check/fold; invalid reflection output leaves strategy and model unchanged.
 
 ---
 
 ## Sponsor integrations
 
-Copy `.env.example` to `.env`. The server loads it automatically; keys enable their
-integration, so there are no mode switches or configurable production URLs.
+Copy `.env.example` to `.env`. The server loads it automatically; production service
+URLs remain fixed in code.
 
 ### Pioneer (three different models, one per player)
 
-- Add `PIONEER_API_KEY`. Its presence selects real inference; without it the scripted
-  mock runs with zero network calls.
+- Add `PIONEER_API_KEY`. Live mode fails clearly if inference is unavailable; it never
+  substitutes scripted agents. Mock adapters exist only for automated tests.
 - The adapter uses Pioneer's fixed OpenAI-compatible endpoint,
   `https://api.pioneer.ai/v1/chat/completions`, with `X-API-Key` authentication.
 - The three default model IDs were verified against Pioneer's live decoder catalog.
   `MODEL_A`, `MODEL_B`, and `MODEL_C` remain optional shell overrides.
+- `MODEL_POOL` optionally sets the comma-separated models agents may migrate to.
+- Requests remain stored so Pioneer can use the traffic for inference history,
+  evaluation, clustering, and Adaptive Inference. A six-hand run does not claim a
+  retraining cycle completed.
 
 ### Band (agent-to-agent messaging)
 

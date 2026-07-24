@@ -1,4 +1,5 @@
 import type { ReflectionInput } from "../../../shared/types.js";
+import { config } from "../config.js";
 
 const n2 = (x: number) => x.toFixed(2);
 const pct = (x: number) => `${Math.round(x * 100)}%`;
@@ -88,9 +89,10 @@ export function buildReflectionPrompt(input: ReflectionInput): string {
     .join("; ");
 
   return `You are the strategy coach for ${identity.name}, an AI poker player in a live 6-hand
-tournament. Your model: ${identity.model}. You control three dials, all 0.00-1.00:
+tournament. Your current model: ${identity.model}. You control three dials, all 0.00-1.00:
 aggression (raise frequency/thinness), bluffRate (weak-hand aggression),
 callThreshold (min strength to call).
+Your stable personality: ${identity.personality}
 
 CURRENT STRATEGY: ${strategyJson(identity.strategy)}
 CHIPS: ${identity.chips} (net ${cumulative.netChips >= 0 ? "+" : ""}${cumulative.netChips} over ${cumulative.handsPlayed} hands)
@@ -107,6 +109,11 @@ ${opponentLines}
 
 YOUR REFLECTION HISTORY (including responses that were rejected):
 ${historyLines}
+
+You may also migrate your agent to a different Pioneer model for the next hand.
+Allowed models: ${config.modelPool.join(", ")}.
+Only switch when the observed reliability, latency, cost, or reasoning quality justifies it.
+Set "nextModel" to one exact allowed ID, or omit it to keep ${identity.model}.
 
 ${closingBlock()}`;
 }
@@ -129,7 +136,7 @@ principle. If you cannot cite a hand, you do not have a reason.
 Respond with ONLY this JSON (no markdown, no extra text):
 {"change": <bool>, "strategy": {"aggression": <n>, "bluffRate": <n>,
 "callThreshold": <n>}, "reason": "<=200 chars, public>",
- "evidence": ["hand-N", ...], "confidence": <n>}`;
+ "evidence": ["hand-N", ...], "confidence": <n>, "nextModel": "<optional allowed model ID>"}`;
 
 let override: string | null = null;
 

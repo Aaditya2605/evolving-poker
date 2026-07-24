@@ -99,6 +99,12 @@ export function Seat({
         ) : null}
       </div>
 
+      {lastAction?.agent ? (
+        <p className="seat__agent-reason" title={lastAction.agent.reason}>
+          “{lastAction.agent.reason}”
+        </p>
+      ) : null}
+
       <div className="seat__chips">
         <span className="seat__chips-value mono">{fmtChips(chips)}</span>
         <span className="seat__chips-label">chips</span>

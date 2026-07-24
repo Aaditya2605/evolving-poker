@@ -9,8 +9,8 @@ import type {
 } from "../../../shared/types.js";
 import { PLAYER_IDS } from "../../../shared/types.js";
 import type { MetricsTracker } from "../engine/metrics.js";
-import { REFLECT_TIMEOUT_MS } from "../config.js";
-import { LlmTimeoutError, type LlmAdapter } from "./pioneer.js";
+import { config, REFLECT_TIMEOUT_MS } from "../config.js";
+import { LlmRequestError, LlmTimeoutError, type LlmAdapter } from "./pioneer.js";
 import { buildReflectionPrompt, withRetryHint } from "./prompt.js";
 import { parseReflection } from "./schema.js";
 
@@ -44,6 +44,7 @@ export interface ReflectAllArgs {
 
 const sameStrategy = (a: Strategy, b: Strategy) =>
   a.aggression === b.aggression && a.bluffRate === b.bluffRate && a.callThreshold === b.callThreshold;
+const isTimeoutError = (error: unknown) => (error as Error)?.name === "TimeoutError";
 
 export function buildReflectionInput(
   player: PlayerState,
@@ -54,7 +55,7 @@ export function buildReflectionInput(
   const id = player.id;
   const mine = record.actions.filter((a) => a.playerId === id);
   const bluffed = mine.some((a) => a.isBluff);
-  const wentToShowdown = record.showdown.length > 0;
+  const wentToShowdown = record.showdown.includes(id);
 
   const revealed: ReflectionInput["latestHand"]["revealed"] = {};
   for (const sid of record.showdown) {
@@ -73,6 +74,7 @@ export function buildReflectionInput(
     identity: {
       name: player.name,
       model: player.model,
+      personality: player.personality,
       chips: player.chips,
       strategy: { ...player.strategy },
     },
@@ -87,7 +89,10 @@ export function buildReflectionInput(
         .filter((a) => a.playerId !== id)
         .map((a) => ({ playerId: a.playerId, action: a.action, amount: a.amount })),
       bluffOutcome: bluffed
-        ? { attempted: true, succeeded: !wentToShowdown && record.winners.includes(id) }
+        ? {
+            attempted: true,
+            succeeded: record.showdown.length === 0 && record.winners.includes(id),
+          }
         : null,
       chipDelta: record.chipDeltas[id],
       winner: record.winner,
@@ -154,8 +159,13 @@ async function reflectOne(
         timeoutMs,
       );
     } catch (e) {
-      const latencyMs = e instanceof LlmTimeoutError ? e.latencyMs : timeoutMs;
-      const isTimeout = e instanceof LlmTimeoutError || (e as Error).name === "TimeoutError";
+      const latencyMs =
+        e instanceof LlmTimeoutError || e instanceof LlmRequestError
+          ? e.latencyMs
+          : isTimeoutError(e)
+            ? timeoutMs
+            : 0;
+      const isTimeout = e instanceof LlmTimeoutError || isTimeoutError(e);
       const ev = failureEvent(
         player,
         handId,
@@ -208,6 +218,8 @@ async function reflectOne(
       handId,
       playerId: player.id,
       model: player.model,
+      modelAfter: player.model,
+      modelChanged: false,
       before,
       after: before,
       changed: false,
@@ -254,16 +266,28 @@ function applyReflection(
 ): EvolutionEvent {
   const wantsChange = out.change && !!out.strategy;
   const after: Strategy = wantsChange ? { ...out.strategy! } : before;
-  const changed = wantsChange && !sameStrategy(before, after);
+  const strategyChanged = wantsChange && !sameStrategy(before, after);
+  const beforeModel = player.model;
+  const requestedModel = out.nextModel?.trim();
+  const modelAfter =
+    requestedModel && config.modelPool.includes(requestedModel) ? requestedModel : beforeModel;
+  if (requestedModel && modelAfter === beforeModel && requestedModel !== beforeModel) {
+    repairs.push(`nextModel ignored: "${requestedModel}" is not in MODEL_POOL`);
+  }
+  const modelChanged = modelAfter !== beforeModel;
+  const changed = strategyChanged || modelChanged;
 
-  if (changed) player.strategy = { ...after };
+  if (strategyChanged) player.strategy = { ...after };
+  if (modelChanged) player.model = modelAfter;
 
   const ev: EvolutionEvent = {
     handId,
     playerId: player.id,
-    model: player.model,
+    model: beforeModel,
+    modelAfter,
+    modelChanged,
     before,
-    after: changed ? after : before,
+    after: strategyChanged ? after : before,
     changed,
     reason: out.reason,
     evidence: out.evidence,
@@ -292,7 +316,9 @@ function failureEvent(
   const ev: EvolutionEvent = {
     handId,
     playerId: player.id,
-    model: player.model,
+      model: player.model,
+      modelAfter: player.model,
+      modelChanged: false,
     before,
     after: before,
     changed: false,
@@ -322,7 +348,7 @@ function capture(
   return {
     handId,
     playerId: player.id,
-    model: player.model,
+    model: ev.model,
     prompt,
     raw,
     parsed,

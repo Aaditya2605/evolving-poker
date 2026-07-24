@@ -8,6 +8,8 @@ export interface LlmResult {
   inputTokens: number;
   outputTokens: number;
   estCostUsd: number;
+  servedModel?: string;
+  inferenceId?: string;
 }
 
 export interface ReflectMeta {
@@ -18,12 +20,27 @@ export interface ReflectMeta {
 export interface LlmAdapter {
   readonly mode: string;
   reflect(playerId: PlayerId, prompt: string, meta: ReflectMeta): Promise<LlmResult>;
+  act?(
+    playerId: PlayerId,
+    prompt: string,
+    meta: { handId: number; model: string },
+  ): Promise<LlmResult>;
 }
 
 export class LlmTimeoutError extends Error {
   constructor(public latencyMs: number) {
     super("reflection timed out");
     this.name = "LlmTimeoutError";
+  }
+}
+
+export class LlmRequestError extends Error {
+  constructor(
+    message: string,
+    public latencyMs: number,
+  ) {
+    super(message);
+    this.name = "LlmRequestError";
   }
 }
 
@@ -193,8 +210,24 @@ export class MockAdapter implements LlmAdapter {
 export class PioneerAdapter implements LlmAdapter {
   readonly mode = "real";
 
-  async reflect(playerId: PlayerId, prompt: string): Promise<LlmResult> {
-    const model = config.models[playerId];
+  async reflect(_playerId: PlayerId, prompt: string, meta: ReflectMeta): Promise<LlmResult> {
+    return this.complete(meta.input.identity.model, prompt, 220, 0.3);
+  }
+
+  async act(
+    _playerId: PlayerId,
+    prompt: string,
+    meta: { handId: number; model: string },
+  ): Promise<LlmResult> {
+    return this.complete(meta.model, prompt, 120, 0.2);
+  }
+
+  private async complete(
+    model: string,
+    prompt: string,
+    maxTokens: number,
+    temperature: number,
+  ): Promise<LlmResult> {
     const started = Date.now();
 
     const res = await fetch("https://api.pioneer.ai/v1/chat/completions", {
@@ -205,19 +238,27 @@ export class PioneerAdapter implements LlmAdapter {
       },
       body: JSON.stringify({
         model,
-        temperature: 0.3,
-        max_tokens: 200,
+        temperature,
+        max_tokens: maxTokens,
         response_format: { type: "json_object" },
+        // Stored inference traffic is the input to Pioneer's evaluation,
+        // clustering, and Adaptive Inference pipeline.
+        store: true,
         messages: [{ role: "user", content: prompt }],
       }),
     });
 
     const latencyMs = Date.now() - started;
     if (!res.ok) {
-      throw new Error(`Pioneer ${res.status}: ${(await res.text()).slice(0, 200)}`);
+      throw new LlmRequestError(
+        `Pioneer ${res.status}: ${(await res.text()).slice(0, 240)}`,
+        latencyMs,
+      );
     }
 
     const body = (await res.json()) as {
+      id?: string;
+      model?: string;
       choices?: { message?: { content?: string } }[];
       usage?: { prompt_tokens?: number; completion_tokens?: number };
     };
@@ -231,12 +272,19 @@ export class PioneerAdapter implements LlmAdapter {
       inputTokens,
       outputTokens,
       estCostUsd: estimateCost(model, inputTokens, outputTokens),
+      servedModel: body.model,
+      inferenceId: body.id,
     };
   }
 }
 
 export function createAdapter(latencyScale = 1): LlmAdapter {
   if (config.pioneerMode === "real") {
+    if (!config.pioneerApiKey) {
+      throw new Error(
+        "PIONEER_MODE=real requires PIONEER_API_KEY. Use fixture replay for an offline demo.",
+      );
+    }
     return new PioneerAdapter();
   }
   return new MockAdapter(latencyScale);

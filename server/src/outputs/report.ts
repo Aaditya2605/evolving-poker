@@ -44,8 +44,8 @@ export function generateCited(
   push();
   push(
     `Seed \`${standings.seed}\` · ${standings.handsPlayed} hands · ` +
-      `${snap.totals.reflections} reflections costing ${snap.totals.llmCalls} model calls` +
-      `${snap.totals.llmCalls > snap.totals.reflections ? ` (${snap.totals.llmCalls - snap.totals.reflections} retry)` : ""} · ` +
+      `${snap.totals.actionCalls} action calls + ${snap.totals.reflections} reflections · ` +
+      `${snap.totals.llmCalls} total model calls · ` +
       `est. \$${snap.totals.estCostUsd.toFixed(4)} · Pioneer mode \`${extras.pioneerMode}\` · Band mode \`${extras.bandMode}\``,
   );
   push();
@@ -162,8 +162,8 @@ export function generateCited(
   push("## Method and limitations");
   push();
   push(
-    "- No LLM took a poker action. Play is a deterministic function of a seed and three numeric dials; " +
-      "models only rewrite the dials between hands. A changed action therefore traces back to a changed dial.",
+    "- Pioneer models chose every fold, check, call, and raise. The engine supplied private/public state, " +
+      "computed hand strength, constrained choices to legal actions, and owned chip accounting.",
   );
   push(
     "- Reflections were validated **mechanically only** — JSON shape and 0–1 range. No step-size cap, " +
@@ -171,8 +171,8 @@ export function generateCited(
       "oscillation counter above measures how often they did.",
   );
   push(
-    "- Decisions never saw opponent statistics. Those reach the models during reflection only, which is " +
-      "what keeps the audit trail honest.",
+    "- Every Pioneer request was stored for inference history, evaluation, clustering, and the platform's " +
+      "Adaptive Inference pipeline. A six-hand demo does not claim that retraining completed.",
   );
   push(
     `- Failures are reported, not hidden: ${snap.totals.invalid} invalid response(s) and ${snap.totals.timeouts} timeout(s) ` +

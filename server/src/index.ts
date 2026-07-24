@@ -315,6 +315,11 @@ function logEvent(e: TournamentEvent): void {
     console.log(
       `     ${e.playerId} ${e.action}${e.amount ? ` ${e.amount}` : ""}${e.isBluff ? "  (bluff)" : ""}  → pot ${e.potAfter}`,
     );
+    if (e.agent) {
+      console.log(
+        `       ↳ ${e.agent.model} [${e.agent.status}] ${e.agent.reason.slice(0, 120)}`,
+      );
+    }
   }
   if (e.type === "hand_end") {
     console.log(
@@ -324,7 +329,9 @@ function logEvent(e: TournamentEvent): void {
   if (e.type === "evolution") {
     const v = e.event;
     const tag = v.status === "applied" ? "CHANGED" : v.status.toUpperCase();
-    console.log(`     [${tag}] ${v.playerId} (${v.model}) — ${v.reason.slice(0, 90)}`);
+    console.log(
+      `     [${tag}] ${v.playerId} (${v.model}${v.modelChanged ? ` → ${v.modelAfter}` : ""}) — ${v.reason.slice(0, 90)}`,
+    );
   }
 }
 
