@@ -8,6 +8,8 @@ export interface LlmResult {
   inputTokens: number;
   outputTokens: number;
   estCostUsd: number;
+  servedModel?: string;
+  inferenceId?: string;
 }
 
 export interface ReflectMeta {
@@ -18,6 +20,11 @@ export interface ReflectMeta {
 export interface LlmAdapter {
   readonly mode: string;
   reflect(playerId: PlayerId, prompt: string, meta: ReflectMeta): Promise<LlmResult>;
+  act?(
+    playerId: PlayerId,
+    prompt: string,
+    meta: { handId: number; model: string },
+  ): Promise<LlmResult>;
 }
 
 export class LlmTimeoutError extends Error {
@@ -27,25 +34,26 @@ export class LlmTimeoutError extends Error {
   }
 }
 
+export class LlmRequestError extends Error {
+  constructor(
+    message: string,
+    public latencyMs: number,
+  ) {
+    super(message);
+    this.name = "LlmRequestError";
+  }
+}
+
 // --- pricing ---------------------------------------------------------------
 
 const DEFAULT_PRICING: Record<string, { in: number; out: number }> = {
-  "qwen2.5-7b-instruct": { in: 0.0002, out: 0.0006 },
-  "gpt-oss-20b": { in: 0.0005, out: 0.0015 },
-  "deepseek-v3": { in: 0.0009, out: 0.0018 },
+  "Qwen/Qwen3-4B-Instruct-2507": { in: 0.0002, out: 0.0006 },
+  "openai/gpt-oss-20b": { in: 0.0005, out: 0.0015 },
+  "deepseek-ai/DeepSeek-V3": { in: 0.0009, out: 0.0018 },
 };
 
-function pricingTable(): Record<string, { in: number; out: number }> {
-  const table = { ...DEFAULT_PRICING };
-  for (const entry of config.pricingRaw.split(",").filter(Boolean)) {
-    const [model, i, o] = entry.split(":");
-    if (model && i && o) table[model.trim()] = { in: Number(i), out: Number(o) };
-  }
-  return table;
-}
-
 export function estimateCost(model: string, inputTokens: number, outputTokens: number): number {
-  const p = pricingTable()[model] ?? { in: 0.0005, out: 0.0015 };
+  const p = DEFAULT_PRICING[model] ?? { in: 0.0005, out: 0.0015 };
   return Number(((inputTokens / 1000) * p.in + (outputTokens / 1000) * p.out).toFixed(6));
 }
 
@@ -202,31 +210,55 @@ export class MockAdapter implements LlmAdapter {
 export class PioneerAdapter implements LlmAdapter {
   readonly mode = "real";
 
-  async reflect(playerId: PlayerId, prompt: string): Promise<LlmResult> {
-    const model = config.models[playerId];
+  async reflect(_playerId: PlayerId, prompt: string, meta: ReflectMeta): Promise<LlmResult> {
+    return this.complete(meta.input.identity.model, prompt, 220, 0.3);
+  }
+
+  async act(
+    _playerId: PlayerId,
+    prompt: string,
+    meta: { handId: number; model: string },
+  ): Promise<LlmResult> {
+    return this.complete(meta.model, prompt, 120, 0.2);
+  }
+
+  private async complete(
+    model: string,
+    prompt: string,
+    maxTokens: number,
+    temperature: number,
+  ): Promise<LlmResult> {
     const started = Date.now();
 
-    const res = await fetch(`${config.pioneerBaseUrl.replace(/\/$/, "")}/chat/completions`, {
+    const res = await fetch("https://api.pioneer.ai/v1/chat/completions", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${config.pioneerApiKey}`,
+        "X-API-Key": config.pioneerApiKey,
       },
       body: JSON.stringify({
         model,
-        temperature: 0.3,
-        max_tokens: 200,
+        temperature,
+        max_tokens: maxTokens,
         response_format: { type: "json_object" },
+        // Stored inference traffic is the input to Pioneer's evaluation,
+        // clustering, and Adaptive Inference pipeline.
+        store: true,
         messages: [{ role: "user", content: prompt }],
       }),
     });
 
     const latencyMs = Date.now() - started;
     if (!res.ok) {
-      throw new Error(`Pioneer ${res.status}: ${(await res.text()).slice(0, 200)}`);
+      throw new LlmRequestError(
+        `Pioneer ${res.status}: ${(await res.text()).slice(0, 240)}`,
+        latencyMs,
+      );
     }
 
     const body = (await res.json()) as {
+      id?: string;
+      model?: string;
       choices?: { message?: { content?: string } }[];
       usage?: { prompt_tokens?: number; completion_tokens?: number };
     };
@@ -240,14 +272,18 @@ export class PioneerAdapter implements LlmAdapter {
       inputTokens,
       outputTokens,
       estCostUsd: estimateCost(model, inputTokens, outputTokens),
+      servedModel: body.model,
+      inferenceId: body.id,
     };
   }
 }
 
 export function createAdapter(latencyScale = 1): LlmAdapter {
   if (config.pioneerMode === "real") {
-    if (!config.pioneerBaseUrl || !config.pioneerApiKey) {
-      throw new Error("PIONEER_MODE=real requires PIONEER_BASE_URL and PIONEER_API_KEY");
+    if (!config.pioneerApiKey) {
+      throw new Error(
+        "PIONEER_MODE=real requires PIONEER_API_KEY. Use fixture replay for an offline demo.",
+      );
     }
     return new PioneerAdapter();
   }

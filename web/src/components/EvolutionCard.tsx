@@ -98,6 +98,13 @@ export function EvolutionCard({ event, player, isNewest }: Props) {
         {event.reason || "(no reason returned)"}
       </p>
 
+      {event.modelChanged ? (
+        <p className="evo__note">
+          Model migration: <span className="mono">{event.model}</span> →{" "}
+          <span className="mono">{event.modelAfter}</span>
+        </p>
+      ) : null}
+
       {event.evidence.length > 0 ? (
         <div className="evo__evidence">
           {event.evidence.map((item, i) => (

@@ -23,7 +23,13 @@ class ScriptedAdapter implements LlmAdapter {
 
 function inputWithHistory(history: ReflectionInput["evolutionHistory"]): ReflectionInput {
   return {
-    identity: { name: "ATLAS", model: "test-model", chips: 1000, strategy: neutral },
+    identity: {
+      name: "ATLAS",
+      model: "test-model",
+      personality: "test",
+      chips: 1000,
+      strategy: neutral,
+    },
     latestHand: {
       handId: 1,
       communityCards: ["Qh", "Jc", "4h"],
@@ -122,6 +128,28 @@ describe("4. reflection schema", () => {
     });
     for (const p of held.players) expect(p.strategy).toEqual(neutral);
     expect(held.standings.snapshot.evolution.playerA.noChanges).toBe(1);
+  });
+
+  it("lets an agent migrate to an allowed Pioneer model without changing its dials", async () => {
+    const result = await runTournament({
+      seed: "model-switch",
+      totalHands: 1,
+      players: initialPlayers(neutral),
+      adapter: new ScriptedAdapter([
+        '{"change":false,"nextModel":"openai/gpt-oss-20b","reason":"Need stronger structured output.","evidence":["hand-1"]}',
+      ]),
+      timeoutMs: 1000,
+    });
+    const event = result.events.find(
+      (candidate) =>
+        candidate.type === "evolution" && candidate.event.playerId === "playerA",
+    );
+    expect(event?.type).toBe("evolution");
+    if (event?.type === "evolution") {
+      expect(event.event.modelChanged).toBe(true);
+      expect(event.event.modelAfter).toBe("openai/gpt-oss-20b");
+      expect(event.event.before).toEqual(event.event.after);
+    }
   });
 
   it("marks a doubly-malformed response invalid, retries once, and continues", async () => {
@@ -442,7 +470,13 @@ describe("reflection input", () => {
 describe("prompt builder", () => {
   it("renders a first reflection without history", () => {
     const prompt = buildReflectionPrompt({
-      identity: { name: "ATLAS", model: "m", chips: 990, strategy: neutral },
+      identity: {
+        name: "ATLAS",
+        model: "m",
+        personality: "test",
+        chips: 990,
+        strategy: neutral,
+      },
       latestHand: {
         handId: 1,
         communityCards: ["Qh", "Jc", "4h"],

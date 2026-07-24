@@ -9,6 +9,7 @@ import { createRouter, type BandRouter } from "../comm/band.js";
 import { Trace } from "../comm/trace.js";
 import { initialPlayers } from "../config.js";
 import { createAdapter, type LlmAdapter } from "../evolution/pioneer.js";
+import { decideWithAgent } from "../evolution/action.js";
 import { reflectAll, type CapturedReflection } from "../evolution/reflect.js";
 import { playHand } from "./hand.js";
 import { MetricsTracker } from "./metrics.js";
@@ -68,7 +69,7 @@ export async function runTournament(opts: TournamentOptions): Promise<Tournament
   for (let handId = 1; handId <= totalHands; handId++) {
     if (opts.gate) await opts.gate();
 
-    const { record, chipsAfter } = playHand({
+    const { record, chipsAfter } = await playHand({
       handId,
       seed: opts.seed,
       players,
@@ -76,6 +77,19 @@ export async function runTournament(opts: TournamentOptions): Promise<Tournament
       deps: {
         emit,
         onCoercion: (note) => tracker.recordCoercion(note),
+        decideAction:
+          adapter?.act
+            ? ({ player, ctx, holeCards, communityCards, actions }) =>
+                decideWithAgent({
+                  adapter,
+                  player,
+                  ctx,
+                  holeCards,
+                  communityCards,
+                  actions,
+                  timeoutMs: opts.timeoutMs ?? 20_000,
+                })
+            : undefined,
         traceTurnRequest: (playerId, ctx) =>
           router.send("dealer", playerId, "turn_request", {
             handId: ctx.handId,
@@ -91,6 +105,9 @@ export async function runTournament(opts: TournamentOptions): Promise<Tournament
             action: decision.action,
             amount: decision.amount,
             potAfter,
+            model: decision.agent?.model,
+            reason: decision.agent?.reason,
+            status: decision.agent?.status,
           }),
       },
     });

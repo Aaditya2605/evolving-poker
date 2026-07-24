@@ -1,5 +1,6 @@
 import type {
   AgentPerformance,
+  AgentActionMeta,
   DialMovement,
   DialName,
   EvolutionEvent,
@@ -83,6 +84,7 @@ const round3 = (n: number) => Math.round(n * 1000) / 1000;
 export class MetricsTracker {
   private counters: Record<PlayerId, AgentCounters>;
   private evolutions: Record<PlayerId, EvolutionEvent[]>;
+  private actionInferences: Record<PlayerId, AgentActionMeta[]>;
   private initial: Record<PlayerId, Strategy>;
   private handsPlayed = 0;
   readonly coercions: string[] = [];
@@ -90,6 +92,7 @@ export class MetricsTracker {
   constructor(private players: PlayerState[]) {
     this.counters = this.blank(zeroCounters);
     this.evolutions = this.blank<EvolutionEvent[]>(() => []);
+    this.actionInferences = this.blank<AgentActionMeta[]>(() => []);
     this.initial = this.blank((id) => ({ ...this.byId(id).strategy }));
   }
 
@@ -108,6 +111,9 @@ export class MetricsTracker {
   recordHand(record: HandRecord): void {
     this.handsPlayed++;
     const annotated = annotateToCall(record.actions);
+    for (const action of record.actions) {
+      if (action.agent) this.actionInferences[action.playerId].push(action.agent);
+    }
     const noShowdown = record.showdown.length === 0;
 
     for (const id of PLAYER_IDS) {
@@ -259,19 +265,37 @@ export class MetricsTracker {
 
   private modelPerformance(id: PlayerId): ModelPerformance {
     const events = this.evolutions[id];
+    const actions = this.actionInferences[id];
     const p = this.byId(id);
-    const latencies = events.map((e) => e.latencyMs);
+    const latencies = [...actions.map((a) => a.latencyMs), ...events.map((e) => e.latencyMs)];
+    const actionCalls = actions.reduce((sum, a) => sum + a.llmCalls, 0);
+    const reflectionCalls = events.reduce((sum, e) => sum + e.llmCalls, 0);
     return {
       playerId: id,
       model: p.model,
-      calls: events.length,
+      calls: actionCalls + reflectionCalls,
+      actionCalls,
+      reflectionCalls,
       avgLatencyMs: Math.round(ratio(latencies.reduce((a, b) => a + b, 0), latencies.length)),
       maxLatencyMs: latencies.length ? Math.max(...latencies) : 0,
-      totalInputTokens: events.reduce((a, e) => a + e.inputTokens, 0),
-      totalOutputTokens: events.reduce((a, e) => a + e.outputTokens, 0),
-      estCostUsd: Number(events.reduce((a, e) => a + e.estCostUsd, 0).toFixed(6)),
-      invalidCount: events.filter((e) => e.status === "invalid").length,
-      timeoutCount: events.filter((e) => e.status === "timeout").length,
+      totalInputTokens:
+        actions.reduce((a, e) => a + e.inputTokens, 0) +
+        events.reduce((a, e) => a + e.inputTokens, 0),
+      totalOutputTokens:
+        actions.reduce((a, e) => a + e.outputTokens, 0) +
+        events.reduce((a, e) => a + e.outputTokens, 0),
+      estCostUsd: Number(
+        (
+          actions.reduce((a, e) => a + e.estCostUsd, 0) +
+          events.reduce((a, e) => a + e.estCostUsd, 0)
+        ).toFixed(6),
+      ),
+      invalidCount:
+        actions.filter((e) => e.status === "invalid").length +
+        events.filter((e) => e.status === "invalid").length,
+      timeoutCount:
+        actions.filter((e) => e.status === "timeout").length +
+        events.filter((e) => e.status === "timeout").length,
       retryCount: events.filter((e) => e.retried).length,
     };
   }
@@ -279,7 +303,13 @@ export class MetricsTracker {
   snapshot(handId: number): MetricsSnapshot {
     const models = this.blank((id) => this.modelPerformance(id));
     const allEvents = PLAYER_IDS.flatMap((id) => this.evolutions[id]);
-    const latencies = allEvents.map((e) => e.latencyMs);
+    const allActions = PLAYER_IDS.flatMap((id) => this.actionInferences[id]);
+    const latencies = [
+      ...allActions.map((e) => e.latencyMs),
+      ...allEvents.map((e) => e.latencyMs),
+    ];
+    const actionCalls = allActions.reduce((a, e) => a + e.llmCalls, 0);
+    const reflectionCalls = allEvents.reduce((a, e) => a + e.llmCalls, 0);
     return {
       handId,
       handsPlayed: this.handsPlayed,
@@ -289,11 +319,21 @@ export class MetricsTracker {
       models,
       totals: {
         reflections: allEvents.length,
-        llmCalls: allEvents.reduce((a, e) => a + e.llmCalls, 0),
-        estCostUsd: Number(allEvents.reduce((a, e) => a + e.estCostUsd, 0).toFixed(6)),
+        actionCalls,
+        llmCalls: actionCalls + reflectionCalls,
+        estCostUsd: Number(
+          (
+            allActions.reduce((a, e) => a + e.estCostUsd, 0) +
+            allEvents.reduce((a, e) => a + e.estCostUsd, 0)
+          ).toFixed(6),
+        ),
         avgLatencyMs: Math.round(ratio(latencies.reduce((a, b) => a + b, 0), latencies.length)),
-        invalid: allEvents.filter((e) => e.status === "invalid").length,
-        timeouts: allEvents.filter((e) => e.status === "timeout").length,
+        invalid:
+          allActions.filter((e) => e.status === "invalid").length +
+          allEvents.filter((e) => e.status === "invalid").length,
+        timeouts:
+          allActions.filter((e) => e.status === "timeout").length +
+          allEvents.filter((e) => e.status === "timeout").length,
         chipsInPlay: PLAYER_IDS.reduce((a, id) => a + this.byId(id).chips, 0),
       },
     };

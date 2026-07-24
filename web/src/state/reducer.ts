@@ -1,5 +1,6 @@
 import type {
   Action,
+  AgentActionMeta,
   EvolutionEvent,
   FinalStandings,
   HandAction,
@@ -22,6 +23,7 @@ export interface ResolvedAction {
   amount: number;
   potAfter: number;
   isBluff: boolean;
+  agent?: AgentActionMeta;
 }
 
 export interface UiState {
@@ -44,6 +46,8 @@ export interface UiState {
   evolutions: EvolutionEvent[];
   metrics: MetricsSnapshot | null;
   standings: FinalStandings | null;
+  agentActionCalls: number;
+  agentActionCostUsd: number;
   eventCount: number;
 }
 
@@ -79,6 +83,8 @@ export const initialState: UiState = {
   evolutions: [],
   metrics: null,
   standings: null,
+  agentActionCalls: 0,
+  agentActionCostUsd: 0,
   eventCount: 0,
 };
 
@@ -107,6 +113,8 @@ export function reducer(state: UiState, action: StoreAction): UiState {
         seed: event.seed,
         totalHands: event.totalHands || TOTAL_HANDS,
         players: event.players,
+        agentActionCalls: 0,
+        agentActionCostUsd: 0,
         chips,
         strategies,
       };
@@ -154,6 +162,8 @@ export function reducer(state: UiState, action: StoreAction): UiState {
             : base.folded,
         handActions: [...base.handActions, handAction],
         lastAction: { seq, handId: event.handId, ...handAction },
+        agentActionCalls: base.agentActionCalls + (event.agent?.llmCalls ?? 0),
+        agentActionCostUsd: base.agentActionCostUsd + (event.agent?.estCostUsd ?? 0),
       };
     }
 
@@ -182,6 +192,11 @@ export function reducer(state: UiState, action: StoreAction): UiState {
           ev.status === "applied"
             ? { ...base.strategies, [ev.playerId]: ev.after }
             : base.strategies,
+        players: ev.modelChanged
+          ? base.players.map((player) =>
+              player.id === ev.playerId ? { ...player, model: ev.modelAfter } : player,
+            )
+          : base.players,
       };
     }
 
@@ -213,7 +228,9 @@ export function reducer(state: UiState, action: StoreAction): UiState {
 }
 
 export function totalLlmCalls(state: UiState): number {
-  return Math.max(state.evolutions.length, state.metrics?.totals.llmCalls ?? 0);
+  const fromEvents =
+    state.agentActionCalls + state.evolutions.reduce((sum, event) => sum + event.llmCalls, 0);
+  return Math.max(fromEvents, state.metrics?.totals.llmCalls ?? 0);
 }
 
 export function totalCostUsd(state: UiState): number {
@@ -221,5 +238,8 @@ export function totalCostUsd(state: UiState): number {
     (sum, e) => sum + (Number.isFinite(e.estCostUsd) ? e.estCostUsd : 0),
     0,
   );
-  return Math.max(fromEvents, state.metrics?.totals.estCostUsd ?? 0);
+  return Math.max(
+    state.agentActionCostUsd + fromEvents,
+    state.metrics?.totals.estCostUsd ?? 0,
+  );
 }

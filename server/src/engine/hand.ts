@@ -20,6 +20,13 @@ export interface HandDeps {
   traceTurnRequest?: (playerId: PlayerId, ctx: DecisionContext) => void;
   traceTurnAction?: (playerId: PlayerId, decision: Decision, potAfter: number) => void;
   onCoercion?: (note: string) => void;
+  decideAction?: (args: {
+    player: PlayerState;
+    ctx: DecisionContext;
+    holeCards: string[];
+    communityCards: string[];
+    actions: HandAction[];
+  }) => Promise<Decision>;
 }
 
 export interface PlayHandArgs {
@@ -49,7 +56,7 @@ export function dealerFor(handId: number): PlayerId {
   return PLAYER_IDS[(handId - 1) % PLAYER_IDS.length];
 }
 
-export function playHand(args: PlayHandArgs): HandResult {
+export async function playHand(args: PlayHandArgs): Promise<HandResult> {
   const { handId, seed, players, strengthOptions, deps = {} } = args;
   const byId = emptyRecord((id) => players.find((p) => p.id === id)!);
 
@@ -142,7 +149,15 @@ export function playHand(args: PlayHandArgs): HandResult {
     };
     deps.traceTurnRequest?.(id, ctx);
 
-    let decision = decide(ctx, byId[id].strategy);
+    let decision = deps.decideAction
+      ? await deps.decideAction({
+          player: byId[id],
+          ctx,
+          holeCards: holeCards[id],
+          communityCards,
+          actions: actions.slice(),
+        })
+      : decide(ctx, byId[id].strategy);
     decision = coerceLegal(decision, ctx, deps.onCoercion);
 
     hasActed[id] = true;
@@ -169,6 +184,7 @@ export function playHand(args: PlayHandArgs): HandResult {
       amount: act === "fold" || act === "check" ? 0 : decision.amount,
       potAfter: pot,
       isBluff: decision.isBluff,
+      agent: decision.agent,
     };
     actions.push(entry);
     deps.traceTurnAction?.(id, decision, pot);
@@ -180,6 +196,7 @@ export function playHand(args: PlayHandArgs): HandResult {
       amount: entry.amount,
       potAfter: pot,
       isBluff: entry.isBluff,
+      agent: entry.agent,
     });
   }
 

@@ -28,6 +28,7 @@ export const ReflectionZ = z
     reason: z.string().min(1).max(300),
     evidence: z.array(z.string()).max(10),
     confidence: z.number().min(0).max(1).optional(),
+    nextModel: z.string().min(1).max(160).optional(),
   })
   .refine((o) => !o.change || !!o.strategy, {
     message: "strategy required when change=true",

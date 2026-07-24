@@ -2,26 +2,24 @@
 
 Three LLMs play poker and rewrite their own strategy after every hand.
 
-Three AI players, one deterministic dealer, six hands. No LLM ever picks a poker
-action — the action loop is a pure function of `(hand strength, pot odds, strategy
-dials)`. Between hands each player gets one shot at rewriting its own three strategy
-dials, and the tournament shows you what that rewrite did to its results.
+Three persistent AI players, one mechanical dealer, six hands. Pioneer models choose
+every fold, check, call, and raise from a legal-action list. Between hands each player
+may rewrite its three strategy dials and migrate to another allowed Pioneer model.
 
-**6 hands × 3 players = 18 reflections. Retries are counted, capped at one per
-reflection, and shown on screen.**
+All action and reflection calls are counted and shown on screen.
 
 ---
 
 ## Run it
 
-Requires Node 20+. **No API keys. No network.**
+Requires Node 20+ and `PIONEER_API_KEY` in `.env` for a live tournament.
 
 ```bash
 npm install
 
-npm run demo      # full 6-hand tournament, mock LLMs, server stays up on :8787
+npm run demo      # full 6-hand live Pioneer tournament, server stays up on :8787
 npm run web       # spectator UI at http://localhost:5173 (separate terminal)
-npm test          # 50 tests
+npm test          # 53 tests
 ```
 
 Other entry points:
@@ -36,10 +34,8 @@ npm run tune -- --seeds 1..20                     # per-model self-modification 
 npm run build                                     # production web bundle
 ```
 
-The default seed is `135`. It was not chosen by taste — `npm run find-seed` scanned
-seeds 1..500 and scored them on bluffs, showdowns, distinct hand-winners and final
-chip spread. Seed 135 gives 3 bluffs (one on hand 1), 4 showdowns, 3 different
-winners, and a 1030 / 1000 / 970 finish.
+The default seed is `135`; it fixes the deck, not the model decisions. Live Pioneer
+runs are intentionally not deterministic.
 
 ### Endpoints
 
@@ -56,8 +52,8 @@ winners, and a 1030 / 1000 / 970 finish.
 
 ## Demo disaster kit
 
-- **Network dies / API down.** Nothing here needs the network. `PIONEER_MODE=mock`
-  is the default and the mock adapter is scripted, not random.
+- **Network dies / API down.** Replay the last credential-backed fixture. Live
+  tournament mode never silently substitutes scripted agents.
 - **Everything dies.** `npm run serve -- --fixture fixtures/demo.json` replays a
   committed recording with original pacing. The UI cannot tell the difference — it
   gets the same events on the same socket, and the header just says `REPLAY`.
@@ -71,8 +67,8 @@ winners, and a 1030 / 1000 / 970 finish.
 
 ```
 shared/types.ts          single source of truth for every shape crossing a boundary
-server/src/engine/       dealer: deck, evaluate, strength, decide, hand, metrics
-server/src/evolution/    reflection: pioneer adapter, prompts, reflect loop, schema
+server/src/engine/       dealer: deck, evaluate, strength, legal betting, metrics
+server/src/evolution/    Pioneer action agent, reflection, model migration, schemas
 server/src/comm/         Band router + trace log
 server/src/outputs/      cited.md report, x402 paywall + audit pack
 server/src/index.ts      CLI + Hono server
@@ -81,11 +77,10 @@ web/src/                 React spectator UI (useReducer over the same event unio
 
 Two rules the whole design hangs on:
 
-1. **The poker loop is pure.** `decide()` in `server/src/engine/decide.ts` takes a
-   `DecisionContext` and returns a `Decision`. It deliberately ignores opponent
-   statistics, so any change in a player's behavior traces back to a dial change and
-   nothing else.
-2. **Models are never babysat.** `server/src/evolution/schema.ts` validates shape and
+1. **Agents decide; the engine enforces.** Pioneer receives private cards, public
+   state, hand strength, personality, strategy, and legal actions. The engine owns
+   legality, chip accounting, showdown evaluation, and safe failure fallback.
+2. **Models are never strategically babysat.** `server/src/evolution/schema.ts` validates shape and
    range only — no step-size cap, no one-dial-at-a-time rule, no anti-reversal rule.
    If a model oscillates a dial, that is a finding, and `metrics.ts` counts it.
 
@@ -105,59 +100,51 @@ so wording can be A/B'd without editing source. Note that the mock adapter is sc
 and ignores prompt wording — a variant only moves these numbers under
 `PIONEER_MODE=real`.
 
-Failure is rendered, not swallowed. The mock script deliberately returns malformed
-JSON on hand 3 (both attempts) and times out on hand 5, so you can watch the retry,
-the give-up, and the "strategy unchanged" card in the UI.
+Failure is rendered, not swallowed. Invalid or timed-out action output becomes a
+mechanical check/fold; invalid reflection output leaves strategy and model unchanged.
 
 ---
 
 ## Sponsor integrations
 
-Everything below runs in mock/local/test mode by default and is a thin swap-in behind
-an interface. Copy `.env.example` to `.env` to change modes — every variable is
-optional.
+Copy `.env.example` to `.env`. The server loads it automatically; production service
+URLs remain fixed in code.
 
 ### Pioneer (three different models, one per player)
 
-- **Now:** `PIONEER_MODE=mock` — scripted personas, zero network.
-- **At the event:** set `PIONEER_MODE=real`, `PIONEER_API_KEY`, `PIONEER_BASE_URL`, and
-  `MODEL_A` / `MODEL_B` / `MODEL_C` in `.env`.
-- **File to touch:** `server/src/evolution/pioneer.ts` — `PioneerAdapter` already speaks
-  the OpenAI-compatible shape. Confirm the base URL and the header name; that is the
-  whole change. `createAdapter()` at the bottom of the file picks mock vs real.
-- Cost per call is estimated in `estimateCost()` in the same file. Set
-  `PIONEER_PRICING` in `.env` (`model:inPer1k:outPer1k,...`) to make the on-screen
-  number true.
+- Add `PIONEER_API_KEY`. Live mode fails clearly if inference is unavailable; it never
+  substitutes scripted agents. Mock adapters exist only for automated tests.
+- The adapter uses Pioneer's fixed OpenAI-compatible endpoint,
+  `https://api.pioneer.ai/v1/chat/completions`, with `X-API-Key` authentication.
+- The three default model IDs were verified against Pioneer's live decoder catalog.
+  `MODEL_A`, `MODEL_B`, and `MODEL_C` remain optional shell overrides.
+- `MODEL_POOL` optionally sets the comma-separated models agents may migrate to.
+- Requests remain stored so Pioneer can use the traffic for inference history,
+  evaluation, clustering, and Adaptive Inference. A six-hand run does not claim a
+  retraining cycle completed.
 
 ### Band (agent-to-agent messaging)
 
-- **Now:** `BAND_MODE=local` — `server/src/comm/trace.ts` writes a Band-shaped message
-  log in-process.
-- **At the event:** set `BAND_MODE=real`, `BAND_API_KEY`, `BAND_ROOM`. The trace is
-  written identically in both modes, so every consumer (UI drawer, audit pack,
-  `/api/trace`) is unaffected by the swap.
-- **File to touch:** `server/src/comm/band.ts` — `BandRouter_Real.connect()` currently
-  dynamic-imports a placeholder `band-sdk`. Replace that import and the `publish()`
-  call with the real SDK surface; nothing outside the class changes. If the SDK fails
-  to load it warns and degrades to local routing rather than dying.
+- **Now:** local trace only. The previous `band-sdk` npm import was removed because
+  Band documents a Python SDK, not a JavaScript package.
+- Real three-player routing needs `BAND_ROOM_ID` plus one registered remote-agent key
+  per player. A single shared key would only mirror an audit log as one identity.
+- The TypeScript implementation must use Band's REST API plus its Phoenix-channel
+  WebSocket. Until that transport exists, configured credentials warn and fall back
+  to the local trace.
 
-### x402 (paywalled audit pack)
+### Replay QA
 
-- **Now:** `X402_MODE=test` — `GET /audit` returns 402 with payment terms, then 200 with
-  the pack once a payment header is present.
-- **At the event:** set `X402_MODE=real`, `X402_PRICE_USD`, `X402_PAY_TO`.
-- **File to touch:** `server/src/outputs/x402.ts` — swap the stub header check for real
-  settlement verification. The route in `server/src/index.ts` does not change.
+- Replay is external QA, not a report publisher or runtime SDK.
+- Deploy or run the React spectator app at a reachable URL, then submit that URL at
+  `https://qa.replay.io/`.
+- No application key, package, or environment variable is needed for the stand-alone
+  or GitHub workflows.
 
-### Replay / cited.md
+### Local audit outputs
 
-- **Now:** `cited.md` is generated into the repo root at the end of every tournament and
-  served at `/api/cited`. It is gitignored — it is an artifact, not source.
-- **At the event:** publish it to the Replay account. Nothing in the app depends on
-  publication succeeding.
-- **File to touch:** `server/src/outputs/report.ts` — `publishCited()` is a stub that
-  warns and returns. Wire the event's publishing mechanism there. `generateCited()` in
-  the same file owns the content.
+- `cited.md` is generated into the repo root and served at `/api/cited`.
+- `GET /audit` is a test-only 402 demo endpoint; it is not a sponsor integration.
 
 ---
 
@@ -168,6 +155,7 @@ optional.
 - [ ] `npm run web` shows the tournament streaming live
 - [ ] `curl localhost:8787/audit` returns 402
 - [ ] `npm run serve -- --fixture fixtures/demo.json` replays cleanly
-- [ ] Pioneer keys + three model IDs in `.env` (see above)
-- [ ] Band SDK swapped in `trace.ts`, trace still populated
-- [ ] `cited.md` published to Replay
+- [ ] Pioneer key in `.env`; one real reflection request succeeds
+- [ ] Three Band remote agents and one shared room created
+- [ ] Band REST/WebSocket transport implemented; local trace still populated
+- [ ] Deployed spectator URL passes Replay QA

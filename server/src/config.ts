@@ -1,73 +1,103 @@
+import { existsSync } from "node:fs";
+import { resolve } from "node:path";
 import type { PlayerId, PlayerState, Strategy } from "../../shared/types.js";
 import { STARTING_CHIPS } from "../../shared/types.js";
 
-const env = (k: string, fallback = "") => process.env[k]?.trim() || fallback;
+const envFile = resolve(import.meta.dirname, "..", "..", ".env");
+if (process.env.NODE_ENV !== "test" && existsSync(envFile)) process.loadEnvFile(envFile);
 
-/** A registered Band agent account. Empty strings when Band is not configured. */
-export interface BandUser {
+const env = (k: string, fallback = "") => process.env[k]?.trim() || fallback;
+const pioneerApiKey = env("PIONEER_API_KEY");
+const pioneerMode = env(
+  "PIONEER_MODE",
+  process.env.NODE_ENV === "test" ? "mock" : "real",
+) as "mock" | "real";
+/**
+ * A registered Band agent. All three fields are needed to publish: the key
+ * authenticates the sender, and the id + handle identify a recipient inside the
+ * mandatory `mentions` array. Empty strings when Band is not configured.
+ */
+export interface BandAgent {
   id: string;
   handle: string;
   key: string;
 }
 
-const bandUser = (n: number): BandUser => ({
-  id: env(`BAND_${n}_ID`),
-  handle: env(`BAND_${n}_HANDLE`).replace(/^@/, ""),
-  key: env(`BAND_${n}_KEY`),
+/** Handles are stored bare; the API returns them without the leading `@`. */
+const bandAgent = (slot: string): BandAgent => ({
+  id: env(`BAND_AGENT_${slot}_ID`),
+  handle: env(`BAND_AGENT_${slot}_HANDLE`).replace(/^@/, ""),
+  key: env(`BAND_AGENT_${slot}_API_KEY`),
 });
 
+const bandAgents = {
+  playerA: bandAgent("A"),
+  playerB: bandAgent("B"),
+  playerC: bandAgent("C"),
+} as Record<PlayerId, BandAgent>;
+/**
+ * A fourth player, provisioned ahead of the engine — PLAYER_IDS seats three.
+ * Deliberately outside `bandAgents` so a Record<PlayerId, _> stays exhaustive
+ * and nothing iterates it into a seat that does not exist.
+ */
+const bandFourthSeat = bandAgent("D");
+const bandRoomId = env("BAND_ROOM_ID");
+const bandConfigured =
+  !!bandRoomId && Object.values(bandAgents).every((a) => a.id && a.handle && a.key);
+const configuredModels = {
+  playerA: env("MODEL_A", "Qwen/Qwen3-4B-Instruct-2507"),
+  playerB: env("MODEL_B", "openai/gpt-oss-20b"),
+  playerC: env("MODEL_C", "deepseek-ai/DeepSeek-V3"),
+} as Record<PlayerId, string>;
+
 export const config = {
-  pioneerMode: env("PIONEER_MODE", "mock") as "mock" | "real",
-  pioneerBaseUrl: env("PIONEER_BASE_URL"),
-  pioneerApiKey: env("PIONEER_API_KEY"),
-  bandMode: env("BAND_MODE", "local") as "local" | "real",
-  bandApiKey: env("BAND_API_KEY"),
+  pioneerMode,
+  pioneerApiKey,
+  bandMode: bandConfigured ? "unwired" : "local",
+  bandConfigured,
+  bandAgents,
+  bandFourthSeat,
+  bandRoomId,
+  /** Verified live. Auth is `X-API-Key`, not a bearer token. */
   bandBaseUrl: env("BAND_BASE_URL", "https://app.band.ai/api/v1/agent"),
   bandWsUrl: env("BAND_WS_URL", "wss://app.band.ai/api/v1/socket/websocket"),
-  bandRoom: env("BAND_ROOM", "evolving-poker"),
-  /** Band addresses rooms by uuid; create one with POST /chats. */
-  bandChatId: env("BAND_CHAT_ID"),
-  /**
-   * One Band user per player, in seat order. The dealer is not among them — it
-   * is the in-process engine and holds no Band identity.
-   *
-   * Four are configured but the engine seats three (PLAYER_IDS); slot 4 is
-   * provisioned ahead of a fourth seat, so index past `PLAYER_IDS.length` only
-   * once the engine actually deals to it.
-   *
-   * An agent cannot @mention itself, so a message published by a player is
-   * never delivered to that player — there is no self-addressed broadcast.
-   */
-  bandUsers: [1, 2, 3, 4].map(bandUser) as BandUser[],
   x402Mode: env("X402_MODE", "test") as "test" | "real",
   x402PriceUsd: Number(env("X402_PRICE_USD", "0.05")),
   x402PayTo: env("X402_PAY_TO"),
   port: Number(env("PORT", "8787")),
-  pricingRaw: env("PIONEER_PRICING"),
-  models: {
-    playerA: env("MODEL_A", "qwen2.5-7b-instruct"),
-    playerB: env("MODEL_B", "gpt-oss-20b"),
-    playerC: env("MODEL_C", "deepseek-v3"),
-  } as Record<PlayerId, string>,
+  models: configuredModels,
+  modelPool: env("MODEL_POOL", Object.values(configuredModels).join(","))
+    .split(",")
+    .map((model) => model.trim())
+    .filter(Boolean),
 };
 
 export const REFLECT_TIMEOUT_MS = 20_000;
 
-const PERSONAS: Record<PlayerId, { name: string; color: string; strategy: Strategy }> = {
+const PERSONAS: Record<
+  PlayerId,
+  { name: string; color: string; personality: string; strategy: Strategy }
+> = {
   playerA: {
     name: "ATLAS",
     color: "#e0a33e",
-    strategy: { aggression: 0.5, bluffRate: 0.2, callThreshold: 0.5 },
+    personality:
+      "The Aggressor: apply pressure, prefer initiative, and make opponents pay to continue.",
+    strategy: { aggression: 0.85, bluffRate: 0.25, callThreshold: 0.4 },
   },
   playerB: {
     name: "BOREAS",
     color: "#4fa3d1",
-    strategy: { aggression: 0.5, bluffRate: 0.2, callThreshold: 0.5 },
+    personality:
+      "The Bluffer: create uncertainty, represent strength selectively, and exploit opponents who fold.",
+    strategy: { aggression: 0.6, bluffRate: 0.8, callThreshold: 0.5 },
   },
   playerC: {
     name: "CIPHER",
     color: "#c2568f",
-    strategy: { aggression: 0.5, bluffRate: 0.2, callThreshold: 0.5 },
+    personality:
+      "The Mathematician: prioritize hand strength, pot odds, and evidence over emotion or table theatrics.",
+    strategy: { aggression: 0.35, bluffRate: 0.05, callThreshold: 0.6 },
   },
 };
 
@@ -76,6 +106,7 @@ export function initialPlayers(overrideStrategy?: Strategy): PlayerState[] {
     id,
     name: PERSONAS[id].name,
     model: config.models[id],
+    personality: PERSONAS[id].personality,
     color: PERSONAS[id].color,
     chips: STARTING_CHIPS,
     strategy: { ...(overrideStrategy ?? PERSONAS[id].strategy) },
