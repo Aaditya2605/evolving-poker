@@ -17,7 +17,7 @@ Requires Node 20+ and `PIONEER_API_KEY` in `.env` for a live tournament.
 ```bash
 npm install
 
-npm run demo      # full live tournament + spectator UI at http://localhost:8787
+npm run demo      # open tournament control at http://localhost:8787
 npm run web       # legacy React UI dev server, only needed for component work
 npm test          # 57 tests
 ```
@@ -43,6 +43,8 @@ runs are intentionally not deterministic.
 | --- | --- |
 | `ws://localhost:8787/ws` | live event stream (backlog replayed on connect; accepts `pause` / `play` / `speed`) |
 | `GET /api/state` | current tournament snapshot |
+| `GET /api/setup` | allowed models, defaults, hand limits, integration readiness |
+| `POST /api/tournament` | start a validated four-agent tournament from the control screen |
 | `GET /api/trace` | full agent-to-agent message log |
 | `GET /api/cited` | generated `cited.md` |
 | `GET /audit` | **402** with payment terms, then **200** with the audit pack once paid |

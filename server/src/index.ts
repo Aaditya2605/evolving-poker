@@ -5,7 +5,13 @@ import { Hono } from "hono";
 import type { AuditPack, FinalStandings, TournamentEvent } from "../../shared/types.js";
 import { Trace } from "./comm/trace.js";
 import { createRouter } from "./comm/band.js";
-import { config } from "./config.js";
+import {
+  config,
+  HAND_LIMITS,
+  initialPlayers,
+  parseTournamentSetup,
+  type TournamentSetupInput,
+} from "./config.js";
 import { runTournament } from "./engine/tournament.js";
 import { createAdapter } from "./evolution/pioneer.js";
 import { findSeeds } from "./find-seed.js";
@@ -59,6 +65,9 @@ const state: AppState = {
   pack: null,
   trace: new Trace(),
 };
+let startTournamentFromApi:
+  | ((setup: TournamentSetupInput) => Promise<void>)
+  | null = null;
 
 // --- http ------------------------------------------------------------------
 
@@ -100,6 +109,32 @@ function buildApp(broadcaster: () => Broadcaster | null) {
   );
 
   app.get("/api/trace", (c) => c.json(state.trace.all()));
+
+  app.get("/api/setup", (c) =>
+    c.json({
+      running: state.running,
+      canStart: !!startTournamentFromApi,
+      models: [...new Set([...config.modelPool, ...Object.values(config.models)])],
+      defaults: { hands: 6, models: config.models },
+      limits: { hands: HAND_LIMITS },
+      pioneerMode: config.pioneerMode,
+      bandMode: config.bandMode,
+    }),
+  );
+
+  app.post("/api/tournament", async (c) => {
+    if (state.running) return c.json({ error: "A tournament is already running." }, 409);
+    if (!startTournamentFromApi) {
+      return c.json({ error: "This server is replay-only." }, 503);
+    }
+    const parsed = parseTournamentSetup(await c.req.json().catch(() => null));
+    if (!parsed.ok) return c.json({ error: parsed.error }, 422);
+    void startTournamentFromApi(parsed.value).catch((error) => {
+      state.running = false;
+      console.error("Configured tournament failed:", error);
+    });
+    return c.json({ accepted: true, seed: "135", ...parsed.value }, 202);
+  });
 
   app.get("/api/cited", (c) =>
     state.cited
@@ -166,22 +201,23 @@ function startServer(): { broadcaster: Broadcaster; stop: () => void } {
 
 // --- commands --------------------------------------------------------------
 
-async function cmdTournament(flags: Record<string, string | boolean>) {
-  // Default chosen by `npm run find-seed` over seeds 1..500, not by taste.
-  const seed = str(flags.seed, "135");
-  const hands = num(flags.hands, 6);
-  const record = typeof flags.record === "string" ? resolve(ROOT, flags.record) : null;
-  const headless = flags["no-serve"] === true;
-
-  console.log(`\nEVOLVING POKER — seed "${seed}", ${hands} hands, Pioneer mode: ${config.pioneerMode}`);
-
-  const server = headless ? null : startServer();
-  if (server) {
-    server.broadcaster.setMode("live");
-    console.log("  waiting 1.5s for spectators to connect...");
-    await new Promise((r) => setTimeout(r, 1500));
-  }
-
+async function executeTournament(
+  seed: string,
+  setup: TournamentSetupInput,
+  record: string | null,
+  server: ReturnType<typeof startServer> | null,
+) {
+  state.mode = "live";
+  state.seed = seed;
+  state.running = true;
+  state.standings = null;
+  state.cited = null;
+  state.pack = null;
+  server?.broadcaster.reset();
+  server?.broadcaster.setMode("live");
+  console.log(
+    `\nEVOLVING POKER — seed "${seed}", ${setup.hands} hands, Pioneer mode: ${config.pioneerMode}`,
+  );
   const recorder = new Recorder();
   const trace = new Trace();
   trace.onMessage((message) => {
@@ -190,53 +226,72 @@ async function cmdTournament(flags: Record<string, string | boolean>) {
     server?.broadcaster.publish(event);
   });
   state.trace = trace;
-  state.mode = "live";
-  state.seed = seed;
-  state.running = true;
 
-  const result = await runTournament({
-    seed,
-    totalHands: hands,
-    trace,
-    router: createRouter(trace),
-    adapter: createAdapter(1),
-    gate: server?.broadcaster.gate,
-    emit: (e: TournamentEvent) => {
-      recorder.capture(e);
-      server?.broadcaster.publish(e);
-      logEvent(e);
-    },
-  });
+  try {
+    const result = await runTournament({
+      seed,
+      totalHands: setup.hands,
+      players: initialPlayers(undefined, setup.models),
+      trace,
+      router: createRouter(trace),
+      adapter: createAdapter(1),
+      gate: server?.broadcaster.gate,
+      emit: (e: TournamentEvent) => {
+        recorder.capture(e);
+        server?.broadcaster.publish(e);
+        logEvent(e);
+      },
+    });
 
-  state.running = false;
-  state.standings = result.standings;
-  state.cited = generateCited(result.events, result.standings, {
-    pioneerMode: config.pioneerMode,
-    bandMode: config.bandMode,
-    coercions: result.coercions,
-  });
-  state.pack = {
-    seed,
-    generatedAt: new Date().toISOString(),
-    events: result.events,
-    reflections: result.reflections,
-    trace: trace.all(),
-    standings: result.standings,
-  };
+    state.standings = result.standings;
+    state.cited = generateCited(result.events, result.standings, {
+      pioneerMode: config.pioneerMode,
+      bandMode: config.bandMode,
+      coercions: result.coercions,
+    });
+    state.pack = {
+      seed,
+      generatedAt: new Date().toISOString(),
+      events: result.events,
+      reflections: result.reflections,
+      trace: trace.all(),
+      standings: result.standings,
+    };
 
-  const citedPath = writeCited(state.cited, join(ROOT, "cited.md"));
-  console.log(`\n  report → ${citedPath}`);
+    const citedPath = writeCited(state.cited, join(ROOT, "cited.md"));
+    console.log(`\n  report → ${citedPath}`);
 
-  if (record) {
-    const p = writeFixture(record, seed, config.pioneerMode, recorder.timed, trace);
-    console.log(`  fixture → ${p}`);
+    if (record) {
+      const p = writeFixture(record, seed, config.pioneerMode, recorder.timed, trace);
+      console.log(`  fixture → ${p}`);
+    }
+
+    printSummary(result.standings);
+  } finally {
+    state.running = false;
   }
+}
 
-  printSummary(result.standings);
+async function cmdTournament(flags: Record<string, string | boolean>) {
+  // Default chosen by `npm run find-seed` over seeds 1..500, not by taste.
+  const seed = str(flags.seed, "135");
+  const setup = { hands: num(flags.hands, 6), models: { ...config.models } };
+  const record = typeof flags.record === "string" ? resolve(ROOT, flags.record) : null;
+  const headless = flags["no-serve"] === true;
+  const waitForSetup = flags.wait === true;
+  const server = headless ? null : startServer();
 
   if (server) {
-    console.log(`\n  Server still up. GET /audit for the paid pack. Ctrl-C to exit.`);
+    startTournamentFromApi = (requested) => executeTournament(seed, requested, null, server);
+    if (waitForSetup) {
+      console.log("\n  Tournament control ready. Choose models and hands in the browser.");
+      return;
+    }
+    console.log("  waiting 1.5s for spectators to connect...");
+    await new Promise((resolve) => setTimeout(resolve, 1500));
   }
+  await executeTournament(seed, setup, record, server);
+  if (server) console.log("\n  Server still up. Start another run in the browser or GET /audit.");
 }
 
 async function cmdServe(flags: Record<string, string | boolean>) {

@@ -60,6 +60,45 @@ export const config = {
 };
 
 export const REFLECT_TIMEOUT_MS = 20_000;
+export const HAND_LIMITS = { min: 1, max: 30 } as const;
+
+export interface TournamentSetupInput {
+  hands: number;
+  models: Record<PlayerId, string>;
+}
+
+export function parseTournamentSetup(
+  value: unknown,
+):
+  | { ok: true; value: TournamentSetupInput }
+  | { ok: false; error: string } {
+  if (!value || typeof value !== "object") return { ok: false, error: "Expected a JSON object." };
+  const input = value as { hands?: unknown; models?: unknown };
+  if (
+    !Number.isInteger(input.hands) ||
+    Number(input.hands) < HAND_LIMITS.min ||
+    Number(input.hands) > HAND_LIMITS.max
+  ) {
+    return {
+      ok: false,
+      error: `hands must be an integer from ${HAND_LIMITS.min} to ${HAND_LIMITS.max}.`,
+    };
+  }
+  if (!input.models || typeof input.models !== "object") {
+    return { ok: false, error: "models must contain all four player seats." };
+  }
+  const models = input.models as Record<string, unknown>;
+  const allowed = new Set([...config.modelPool, ...Object.values(config.models)]);
+  for (const id of Object.keys(PERSONAS) as PlayerId[]) {
+    if (typeof models[id] !== "string" || !allowed.has(models[id] as string)) {
+      return { ok: false, error: `${id} must use a configured MODEL_POOL model.` };
+    }
+  }
+  return {
+    ok: true,
+    value: { hands: Number(input.hands), models: { ...(models as Record<PlayerId, string>) } },
+  };
+}
 
 const PERSONAS: Record<
   PlayerId,
@@ -95,11 +134,14 @@ const PERSONAS: Record<
   },
 };
 
-export function initialPlayers(overrideStrategy?: Strategy): PlayerState[] {
+export function initialPlayers(
+  overrideStrategy?: Strategy,
+  models: Record<PlayerId, string> = config.models,
+): PlayerState[] {
   return (Object.keys(PERSONAS) as PlayerId[]).map((id) => ({
     id,
     name: PERSONAS[id].name,
-    model: config.models[id],
+    model: models[id],
     personality: PERSONAS[id].personality,
     color: PERSONAS[id].color,
     chips: STARTING_CHIPS,

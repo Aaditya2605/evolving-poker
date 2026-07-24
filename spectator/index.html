@@ -247,6 +247,32 @@ body.resizing{cursor:col-resize;user-select:none}
 footer{display:flex;justify-content:center;align-items:center;padding:8px 22px 12px;
   color:var(--muted);font-size:9px;letter-spacing:.2em;text-transform:uppercase;gap:10px;flex-wrap:wrap}
 footer b{color:var(--cream)}
+#newRun{display:none;font:inherit;letter-spacing:.16em;text-transform:uppercase;color:var(--brass);
+  background:transparent;border:1px solid var(--brass);border-radius:3px;padding:5px 9px;cursor:pointer}
+#newRun.on{display:inline-block}
+
+/* ================= TOURNAMENT CONTROL ================= */
+.setup{display:none;position:fixed;inset:0;z-index:100;background:rgba(5,8,6,.86);
+  backdrop-filter:blur(10px);align-items:center;justify-content:center;padding:24px}
+.setup.open{display:flex}
+.setup-card{width:min(760px,100%);border:1px solid #55401e;border-radius:7px;
+  background:linear-gradient(180deg,#152019,#0c120e);box-shadow:0 24px 80px rgba(0,0,0,.7);padding:24px}
+.setup-eyebrow{font-size:9px;letter-spacing:.25em;color:var(--brass);text-transform:uppercase}
+.setup h2{font-family:var(--disp);font-size:34px;letter-spacing:.04em;text-transform:uppercase;margin:5px 0}
+.setup-copy{color:var(--muted);font-size:11px;line-height:1.55;margin-bottom:20px}
+.readiness{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
+.ready{border:1px solid var(--line);border-radius:3px;padding:5px 8px;font-size:8px;letter-spacing:.15em;text-transform:uppercase}
+.ready b{color:var(--plus)}
+.setup-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.setup label{display:flex;flex-direction:column;gap:6px;color:var(--muted);font-size:8px;letter-spacing:.14em;text-transform:uppercase}
+.setup select,.setup input{width:100%;min-width:0;color:var(--cream);background:#0a100c;border:1px solid var(--line);
+  border-radius:3px;padding:10px;font:11px var(--mono)}
+.setup select:focus,.setup input:focus{outline:2px solid var(--brass);outline-offset:1px}
+.setup-actions{display:flex;align-items:end;gap:12px;margin-top:16px}
+.setup-actions label{width:150px}.setup-actions button{margin-left:auto;background:var(--brass);color:#151107;
+  border:0;border-radius:3px;padding:11px 18px;font:700 10px var(--mono);letter-spacing:.16em;text-transform:uppercase;cursor:pointer}
+.setup-actions button:disabled{opacity:.45;cursor:wait}
+.setup-error{min-height:16px;margin-top:10px;color:var(--minus);font-size:10px}
 
 /* ================= RESPONSIVE ================= */
 @media(max-width:1240px){
@@ -261,11 +287,32 @@ footer b{color:var(--cream)}
   .stat .v{font-size:18px}
   .ticker{flex-direction:column}
   .tk-label{padding:6px 12px;justify-content:center}
+  .setup-grid{grid-template-columns:1fr}.setup-actions{align-items:stretch;flex-direction:column}
+  .setup-actions label,.setup-actions button{width:100%;margin:0}
 }
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
 <body>
+
+<div class="setup" id="setupScreen" role="dialog" aria-modal="true" aria-labelledby="setupTitle">
+  <form class="setup-card" id="setupForm">
+    <div class="setup-eyebrow">Tournament control</div>
+    <h2 id="setupTitle">Build the table</h2>
+    <p class="setup-copy">Choose each agent's starting Pioneer model and the tournament length. Agents may still migrate to another allowed model while evolving.</p>
+    <div class="readiness">
+      <span class="ready">Pioneer <b id="pioneerReady">checking</b></span>
+      <span class="ready">Band <b id="bandReady">checking</b></span>
+      <span class="ready">Seed <b>135</b></span>
+    </div>
+    <div class="setup-grid" id="setupModels"></div>
+    <div class="setup-actions">
+      <label>Number of hands<input id="setupHands" name="hands" type="number" min="1" max="30" step="1" required></label>
+      <button id="setupStart" type="submit">Start tournament</button>
+    </div>
+    <div class="setup-error" id="setupError" role="alert"></div>
+  </form>
+</div>
 
 <header>
   <div class="brand">
@@ -273,7 +320,7 @@ footer b{color:var(--cream)}
     <h1>Evolving <span>Poker</span></h1>
   </div>
   <div class="hud">
-    <div class="stat"><div class="k">Hand</div><div class="v"><span id="handNo">0</span> of 6</div></div>
+    <div class="stat"><div class="k">Hand</div><div class="v"><span id="handNo">0</span> of <span id="handTotal">6</span></div></div>
     <div class="stat"><div class="k">Pot</div><div class="v" id="potNo">$0</div></div>
     <div class="stat"><div class="k">Pioneer calls</div><div class="v" id="callNo">0</div></div>
     <div class="stat"><div class="k">Est cost</div><div class="v" id="costNo">$0.000</div></div>
@@ -324,6 +371,7 @@ footer b{color:var(--cream)}
 
 <footer>
   <div><b>Pioneer</b> decides every action + reflection · player events publish through <b>Band</b> · dealer requests come from the game engine</div>
+  <button id="newRun" type="button">New tournament</button>
 </footer>
 
 <script>
@@ -404,6 +452,9 @@ P.forEach(p=>{
   stage.appendChild(el);
 });
 const $=id=>document.getElementById(id);
+const esc=value=>String(value).replace(/[&<>"']/g,char=>({
+  '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+})[char]);
 const M={};P.forEach(p=>{M[p.id]={vol:0,noch:0,osc:0,lat:0,cost:0,bw:0,bt:0,gain:0};});
 
 /* ================= POKER CHIPS ================= */
@@ -541,11 +592,11 @@ function chat(id,text){
   const m=document.createElement('div');
   m.className='msg'+(id==='X'?' band':'');m.style.setProperty('--ac',p.ac);
   m.innerHTML=`<div class="ava">${crew(p.col,32)}</div>
-    <div class="bub"><div class="who">${p.nm}${id==='X'?'<em>engine</em>':'<em>Pioneer · Band</em>'}</div><div class="txt">${text}</div></div>`;
+    <div class="bub"><div class="who">${esc(p.nm)}${id==='X'?'<em>engine</em>':'<em>Pioneer · Band</em>'}</div><div class="txt">${esc(text)}</div></div>`;
   push(m);
 }
 function sys(text){const m=document.createElement('div');m.className='msg sys';
-  m.innerHTML=`<div class="bub"><div class="txt">${text}</div></div>`;push(m);}
+  m.innerHTML=`<div class="bub"><div class="txt">${esc(text)}</div></div>`;push(m);}
 function typing(id){
   const p=ROSTER[id];
   const m=document.createElement('div');m.className='msg';m.id='typ'+id;m.style.setProperty('--ac',p.ac);
@@ -571,10 +622,10 @@ function evoCard({id,handN,before,after,reason,evidence,st,lat,c$,llmCalls=1}){
   const card=document.createElement('div');
   card.className='evo '+cls+gold;card.style.setProperty('--ac',p.ac);
   card.innerHTML=`
-    <div class="top"><span class="a">${p.nm}<small>${p.model}</small></span><span class="h">AFTER HAND ${handN}</span></div>
+    <div class="top"><span class="a">${esc(p.nm)}<small>${esc(p.model)}</small></span><span class="h">AFTER HAND ${handN}</span></div>
     ${badge}${st==='invalid'||st==='timeout'?'':rows}
-    <div class="reason">"${reason}"</div>
-    <div class="foot"><span class="ev">${evidence.map(e=>`<span>${e}</span>`).join('')}</span>
+    <div class="reason">"${esc(reason)}"</div>
+    <div class="foot"><span class="ev">${evidence.map(e=>`<span>${esc(e)}</span>`).join('')}</span>
       <span>${lat}ms · $${c$.toFixed(4)}</span></div>`;
   evo.appendChild(card);evo.scrollTop=evo.scrollHeight;
   $('seat'+id).classList.add('reflecting');setTimeout(()=>$('seat'+id).classList.remove('reflecting'),2200);
@@ -654,6 +705,50 @@ function resetUi(){
   renderTrails();
 }
 
+async function openSetup(){
+  const screen=$('setupScreen'),form=$('setupForm'),error=$('setupError'),button=$('setupStart');
+  error.textContent='';button.disabled=true;
+  try{
+    const response=await fetch('/api/setup');
+    if(!response.ok)throw new Error('Tournament setup is unavailable.');
+    const setup=await response.json();
+    if(!setup.canStart||setup.running)return;
+    $('pioneerReady').textContent=setup.pioneerMode;
+    $('bandReady').textContent=setup.bandMode;
+    $('setupHands').min=setup.limits.hands.min;$('setupHands').max=setup.limits.hands.max;
+    $('setupHands').value=setup.defaults.hands;
+    const grid=$('setupModels');grid.innerHTML='';
+    P.forEach(player=>{
+      const label=document.createElement('label');
+      label.textContent=player.nm+' · starting model';
+      const select=document.createElement('select');select.name=player.wid;
+      setup.models.forEach(model=>{
+        const option=document.createElement('option');option.value=model;option.textContent=model;
+        option.selected=model===setup.defaults.models[player.wid];select.appendChild(option);
+      });
+      label.appendChild(select);grid.appendChild(label);
+    });
+    button.disabled=false;screen.classList.add('open');
+  }catch(err){error.textContent=err.message||String(err);}
+
+  form.onsubmit=async event=>{
+    event.preventDefault();button.disabled=true;error.textContent='Starting agents…';
+    const data=new FormData(form),models={};
+    P.forEach(player=>models[player.wid]=data.get(player.wid));
+    try{
+      const response=await fetch('/api/tournament',{
+        method:'POST',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({hands:Number(data.get('hands')),models})
+      });
+      const result=await response.json();
+      if(!response.ok)throw new Error(result.error||'Could not start tournament.');
+      $('handTotal').textContent=result.hands;
+      screen.classList.remove('open');
+    }catch(err){error.textContent=err.message||String(err);button.disabled=false;}
+  };
+}
+$('newRun').onclick=()=>openSetup();
+
 /* ================= LIVE EVENT ADAPTER ================= */
 const WID={};P.forEach(p=>WID[p.wid]=p.id);WID['dealer']='X';
 const seat=w=>WID[w]||null;
@@ -705,6 +800,10 @@ function onEvent(ev){
   if(ev.type==='mode')return;
   if(ev.type==='tournament_start'){
     resetUi();
+    $('setupScreen').classList.remove('open');$('newRun').classList.remove('on');
+    $('handTotal').textContent=ev.totalHands;
+    const liveBadge=document.querySelector('.live');
+    liveBadge.classList.remove('complete');liveBadge.lastChild.textContent=' LIVE';
     ev.players.forEach(player=>{
       const id=seat(player.id);if(!id)return;
       const p=ROSTER[id];p.nm=player.name;p.model=player.model;p.chips=player.chips;
@@ -758,6 +857,7 @@ function onEvent(ev){
     const liveBadge=document.querySelector('.live');
     liveBadge.classList.add('complete');
     liveBadge.lastChild.textContent=' COMPLETE';
+    $('newRun').classList.add('on');
     tickNote(`tournament complete · ${winnerName} wins`);
     return;
   }
@@ -778,6 +878,7 @@ if(LIVE_URL){
 }else{
   sys('Open this page through the Evolving Poker server to connect.');
 }
+openSetup();
 
 </script>
 </body>

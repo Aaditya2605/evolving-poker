@@ -21,6 +21,9 @@ npm run demo
 # open http://localhost:8787
 ```
 
+The idle control screen lets the operator select one starting Pioneer model per
+seat and choose 1–30 hands. The server validates both before spending credits.
+
 For credit-free QA, replay a server-side recording through the same event stream:
 
 ```bash

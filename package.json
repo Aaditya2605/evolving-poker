@@ -16,7 +16,7 @@
     "test": "npm run test --workspace server",
     "web": "npm run dev --workspace web",
     "build": "npm run build --workspace web",
-    "demo": "npm run tournament -- --seed 135",
+    "demo": "npm run tournament -- --seed 135 --wait",
     "record": "npm run tournament -- --seed 135 --record fixtures/demo.json --no-serve"
   },
   "devDependencies": {
