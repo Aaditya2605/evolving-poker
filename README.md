@@ -3,9 +3,9 @@
 Three LLMs play poker and rewrite their own strategy after every hand.
 
 Three AI players, one deterministic dealer, six hands. No LLM ever picks a poker
-action — the action loop is a pure function of `(hand strength, pot odds, position,
-strategy dials)`. Between hands each player gets one shot at rewriting its own three
-strategy dials, and the tournament shows you what that rewrite did to its results.
+action — the action loop is a pure function of `(hand strength, pot odds, strategy
+dials)`. Between hands each player gets one shot at rewriting its own three strategy
+dials, and the tournament shows you what that rewrite did to its results.
 
 **6 hands × 3 players = 18 reflections. Retries are counted, capped at one per
 reflection, and shown on screen.**
@@ -21,7 +21,7 @@ npm install
 
 npm run demo      # full 6-hand tournament, mock LLMs, server stays up on :8787
 npm run web       # spectator UI at http://localhost:5173 (separate terminal)
-npm test          # 33 tests
+npm test          # 50 tests
 ```
 
 Other entry points:
@@ -163,7 +163,7 @@ optional.
 
 ## Pre-demo checklist
 
-- [ ] `npm install && npm test` — 33 green
+- [ ] `npm install && npm test` — 50 green
 - [ ] `npm run demo` finishes with chips conserved at 3000
 - [ ] `npm run web` shows the tournament streaming live
 - [ ] `curl localhost:8787/audit` returns 402
