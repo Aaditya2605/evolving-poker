@@ -16,6 +16,7 @@ import { runTournament } from "./engine/tournament.js";
 import { createAdapter } from "./evolution/pioneer.js";
 import { findSeeds } from "./find-seed.js";
 import { Recorder, loadFixture, replayFixture, writeFixture } from "./fixtures.js";
+import { buildEvaluationDashboard } from "./evaluation.js";
 import { generateCited, writeCited } from "./outputs/report.js";
 import { mountAudit } from "./outputs/x402.js";
 import { Broadcaster } from "./ws.js";
@@ -110,6 +111,23 @@ function buildApp(broadcaster: () => Broadcaster | null) {
 
   app.get("/api/trace", (c) => c.json(state.trace.all()));
 
+  app.get("/api/evaluation", (c) => {
+    if (!state.pack?.standings) {
+      return c.json(
+        {
+          status: state.running ? "running" : "empty",
+          message: state.running
+            ? "Evaluation becomes available when the tournament finishes."
+            : "Run a tournament to generate an evaluation.",
+        },
+        state.running ? 202 : 404,
+      );
+    }
+    return c.json(
+      buildEvaluationDashboard(state.pack.events, state.pack.standings, state.pack.trace),
+    );
+  });
+
   app.get("/api/setup", (c) =>
     c.json({
       running: state.running,
@@ -158,6 +176,10 @@ function buildApp(broadcaster: () => Broadcaster | null) {
     const path = new URL(c.req.url).pathname;
     if (path === "/" && existsSync(join(spectator, "index.html"))) {
       const file = safeRead(spectator, "/index.html");
+      if (file) return new Response(file.body, { status: 200, headers: { "Content-Type": file.type } });
+    }
+    if ((path === "/dashboard" || path === "/dashboard.html") && existsSync(join(spectator, "dashboard.html"))) {
+      const file = safeRead(spectator, "/dashboard.html");
       if (file) return new Response(file.body, { status: 200, headers: { "Content-Type": file.type } });
     }
     if (!existsSync(dist)) {
