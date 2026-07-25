@@ -228,6 +228,10 @@ body.resizing{cursor:col-resize;user-select:none}
 footer{display:flex;justify-content:center;align-items:center;padding:8px 22px 12px;
   color:var(--muted);font-size:9px;letter-spacing:.2em;text-transform:uppercase;gap:10px;flex-wrap:wrap}
 footer b{color:var(--cream)}
+.foot-actions{display:flex;align-items:center;gap:7px}
+.foot-actions a{color:var(--brass);border:1px solid var(--brass);border-radius:3px;padding:5px 9px;
+  text-decoration:none;font-size:9px;letter-spacing:.16em}
+.foot-actions a:hover{background:rgba(201,162,39,.1)}
 #newRun{display:none;font:inherit;letter-spacing:.16em;text-transform:uppercase;color:var(--brass);
   background:transparent;border:1px solid var(--brass);border-radius:3px;padding:5px 9px;cursor:pointer}
 #newRun.on{display:inline-block}
@@ -351,7 +355,10 @@ footer b{color:var(--cream)}
 
 <footer>
   <div><b>Pioneer</b> decides every action + reflection · player events publish through <b>Band</b> · dealer requests come from the game engine</div>
-  <button id="newRun" type="button">New tournament</button>
+  <div class="foot-actions">
+    <a href="/dashboard">Evaluation dashboard</a>
+    <button id="newRun" type="button">New tournament</button>
+  </div>
 </footer>
 
 <script>

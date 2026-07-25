@@ -41,6 +41,7 @@ npm run serve -- --fixture fixtures/demo.json
 | Agent Wire | Real Pioneer decision reasons and reflections; player events delivered through Band |
 | Adaptation | Four vertically stacked chip trajectories, strategy-change markers, and directional second-half gain |
 | Ticker | Play-by-play commentary strip |
+| Evaluation dashboard | Verdict, evidence quality, stability, reliability, proof chains, and Pioneer/Band readiness |
 
 Drag the gutters between panels to resize. Use the `‹` / `›` buttons in the
 Agent Wire and Adaptation headers collapse either side panel to a rail and hand
@@ -51,6 +52,7 @@ labeled correct action. It reports observed chip outcomes, strategy changes,
 oscillation, and the existing second-half-versus-first-half directional gain.
 Each trail's Y-axis is chip count on an independently scaled per-agent range.
 Detailed reflection evidence remains available in `cited.md` and `/audit`.
+Open `/dashboard` after a tournament to inspect the judge-facing evaluation.
 
 ---
 
