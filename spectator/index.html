@@ -156,6 +156,20 @@ body.resizing{cursor:col-resize;user-select:none}
   opacity:0;visibility:hidden;transition:transform .5s cubic-bezier(.2,.9,.3,1.2),opacity .4s,visibility .4s}
 #callback.show{transform:translateX(-50%) translateY(0);opacity:1;visibility:visible}
 
+.hand-result{position:absolute;inset:0;z-index:12;display:grid;place-items:center;pointer-events:none;
+  background:rgba(4,8,5,.58);backdrop-filter:blur(2px);opacity:0;visibility:hidden;
+  transition:opacity .25s ease-out,visibility .25s}
+.hand-result.show{opacity:1;visibility:visible}
+.hand-result-card{min-width:230px;border:1px solid var(--winner,var(--brass));border-radius:5px;
+  background:linear-gradient(180deg,rgba(19,26,21,.97),rgba(8,13,9,.97));
+  box-shadow:0 20px 60px rgba(0,0,0,.65);padding:18px 26px;text-align:center;
+  transform:scale(.96);transition:transform .3s cubic-bezier(.2,.85,.3,1.08)}
+.hand-result.show .hand-result-card{transform:scale(1)}
+.hand-result-label{font-size:8px;letter-spacing:.24em;text-transform:uppercase;color:var(--muted)}
+.hand-result-name{margin:5px 0 2px;font:800 30px/1 var(--disp);letter-spacing:.08em;
+  text-transform:uppercase;color:var(--winner,var(--brass))}
+.hand-result-pot{font-size:12px;color:var(--cream)}
+
 /* ================= FEEDS ================= */
 .feed{flex:1 1 auto;min-height:0;padding:12px 14px;overflow-y:auto;display:flex;flex-direction:column;gap:10px;
   scrollbar-width:thin;scrollbar-color:var(--line) transparent}
@@ -319,6 +333,13 @@ footer b{color:var(--cream)}
     <div class="ph"><h2>The Table</h2><div class="sub">spectator sees all cards<br>agents see their seat only</div></div>
     <div class="stage" id="stage">
       <div id="callback">Same spot as hand 3 · different action</div>
+      <div class="hand-result" id="handResult" role="status" aria-live="assertive" aria-atomic="true">
+        <div class="hand-result-card">
+          <div class="hand-result-label" id="handResultLabel">Hand complete</div>
+          <div class="hand-result-name" id="handResultName"></div>
+          <div class="hand-result-pot" id="handResultPot"></div>
+        </div>
+      </div>
       <div class="felt"></div>
       <div class="board" id="board"></div>
       <div class="pot"><div id="potChips"></div><b id="potCenter">$0</b><div class="plbl">pot</div></div>
@@ -462,6 +483,7 @@ function clearBets(){P.forEach(p=>bet(p.id,0));}
 /* ================= HELPERS ================= */
 const board=$('board'), chatEl=$('chat'), tick=$('tick');
 let calls=0, cost=0, reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
+let handResultTimer;
 const fmt$=n=>'$'+n.toLocaleString();
 function chips(id,v){const p=ROSTER[id];p.chips=v;$('ch'+id).textContent=fmt$(v);}
 function pot(v){$('potNo').textContent=fmt$(v);$('potCenter').textContent=fmt$(v);
@@ -481,6 +503,17 @@ function status(id,txt,on){const s=$('st'+id);s.textContent=txt||'';s.classList.
 function thinking(id,on){$('seat'+id).classList.toggle('thinking',on);if(on)status(id,'DECIDING…');}
 function fold(id){$('seat'+id).classList.add('folded');status(id,'FOLD');}
 function unfold(){P.forEach(p=>{$('seat'+p.id).classList.remove('folded');status(p.id,'');});}
+function hideHandResult(){clearTimeout(handResultTimer);$('handResult').classList.remove('show');}
+function showHandResult(id,handId,amount){
+  const player=ROSTER[id];if(!player)return;
+  clearTimeout(handResultTimer);
+  $('handResultLabel').textContent=`Hand ${handId} complete`;
+  $('handResultName').textContent=`${player.nm} wins`;
+  $('handResultPot').textContent=`Takes ${fmt$(amount)} from the pot`;
+  $('handResult').style.setProperty('--winner',player.ac);
+  $('handResult').classList.add('show');
+  handResultTimer=setTimeout(hideHandResult,2200);
+}
 function dealerBtn(id){P.forEach(p=>$('seat'+p.id).classList.toggle('dealer',p.id===id));}
 function setDial(id,d,v,flash){const p=ROSTER[id];
   M[id].vol=+(M[id].vol+Math.abs(v-p.s[d])).toFixed(2);
@@ -665,7 +698,7 @@ function resetUi(){
   P.forEach(p=>{chips(p.id,1000);['a','b','c'].forEach((d,i)=>setDial(p.id,d,[.5,.3,.5][i],false));});
   Object.values(M).forEach(m=>{m.vol=0;m.noch=0;m.osc=0;m.lat=0;m.cost=0;m.bw=0;m.bt=0;m.gain=0;});
   calls=0;cost=0;$('callNo').textContent=calls;$('costNo').textContent='$'+cost.toFixed(3);
-  unfold();clearHoles();clearBets();clearBubbles();community([]);pot(0);callback(false);
+  unfold();clearHoles();clearBets();clearBubbles();community([]);pot(0);callback(false);hideHandResult();
   chatEl.innerHTML='';tick.innerHTML='';
   P.forEach(p=>trails[p.id]={chips:[p.chips],changes:new Set(),metrics:null});
   renderTrails();
@@ -736,6 +769,7 @@ function onTrace(msg){
   if(kind==='hand_summary'){
     const w=seat(d.winner);
     if(w)status(w,`WINS $${d.potSize}`,1);
+    if(w)showHandResult(w,d.handId,d.potSize);
     clearBets();
     band(`Hand ${d.handId}: ${w?ROSTER[w].nm:d.winner} wins $${d.potSize}`+
          (d.showdown&&d.showdown.length?' at showdown.':' — everyone folded.'));
@@ -784,7 +818,7 @@ function onEvent(ev){
     return;
   }
   if(ev.type==='hand_start'){
-    hand(ev.handId);unfold();clearHoles();clearBets();clearBubbles();
+    hideHandResult();hand(ev.handId);unfold();clearHoles();clearBets();clearBubbles();
     if(ev.dealer)dealerBtn(seat(ev.dealer));
     pot(ev.pot||0);
     community(ev.communityCards||[]);
